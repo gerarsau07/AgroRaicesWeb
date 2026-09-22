@@ -1,5 +1,10 @@
-import { AgroRaicesApp } from '@/components/agro-raices'
+import { Hero, HomeCards } from '@/components/agro-raices'
 
-export default function Page() {
-  return <AgroRaicesApp />
+export default function HomePage() {
+  return (
+    <main>
+      <Hero />
+      <HomeCards />
+    </main>
+  )
 }
