@@ -194,6 +194,7 @@ export function Metric({ value, label }: { value: string; label: string }) {
   )
 }
 
+
 export function HomeCards() {
   return (
     <section className="bg-[#f6f5ef] py-20 text-[#17352a] lg:py-24">
