@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import Link from 'next/link'
+import Image from 'next/image'
 import { usePathname } from 'next/navigation'
 import {
   ArrowRight,
@@ -57,9 +58,13 @@ export function Navbar() {
     <header className="fixed inset-x-0 top-0 z-50 border-b border-white/10 bg-[#10281f]/90 backdrop-blur-xl">
       <div className="mx-auto flex h-[72px] max-w-7xl items-center justify-between px-5 lg:px-8">
         <Link href="/" className="flex items-center gap-3 text-left transition hover:opacity-90" aria-label="Ir al inicio">
-          <span className="flex size-10 items-center justify-center rounded-xl bg-[#d6a849] text-[#10281f] shadow-md shadow-[#d6a849]/20">
-            <Leaf className="size-5" />
-          </span>
+          <Image 
+            src="/images/logo.png" 
+            alt="Logo AgroRaíces" 
+            width={140} 
+            height={140} 
+            className="rounded-xl object-contain"
+          />
           <span>
             <span className="block text-lg font-semibold tracking-tight text-white">
               Agro<span className="text-[#e2b957]">Raíces</span>
@@ -673,9 +678,13 @@ export function Footer() {
     <footer className="border-t border-white/10 bg-[#10281f] px-5 py-10 text-[#a8c0af] lg:px-8">
       <div className="mx-auto flex max-w-7xl flex-col items-center justify-between gap-4 text-sm sm:flex-row">
         <div className="flex items-center gap-3">
-          <span className="flex size-7 items-center justify-center rounded-lg bg-[#d6a849] text-[#10281f]">
-            <Leaf className="size-4" />
-          </span>
+          <Image 
+            src="/images/logo.png" 
+            alt="Logo AgroRaíces" 
+            width={48} 
+            height={48} 
+            className="rounded-lg object-contain"
+          />
           <span>© 2026 AgroRaíces · Reto AgroCebada</span>
         </div>
         <div className="flex items-center gap-6 text-xs text-[#8aa895]">
