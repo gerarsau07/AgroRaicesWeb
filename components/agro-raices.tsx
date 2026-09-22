@@ -681,11 +681,11 @@ export function Footer() {
           <Image 
             src="/images/logo.png" 
             alt="Logo AgroRaíces" 
-            width={48} 
-            height={48} 
+            width={140} 
+            height={140} 
             className="rounded-lg object-contain"
           />
-          <span>© 2026 AgroRaíces · Reto AgroCebada</span>
+          <span>© 2026 AgroRaíces ·</span>
         </div>
         <div className="flex items-center gap-6 text-xs text-[#8aa895]">
           <Link href="/" className="hover:text-white transition">Inicio</Link>
