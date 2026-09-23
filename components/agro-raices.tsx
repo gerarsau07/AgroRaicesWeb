@@ -34,6 +34,8 @@ export type FormValues = {
   lai: string
 }
 
+
+
 export const initialValues: FormValues = {
   plot: '',
   area: '',
@@ -694,7 +696,7 @@ export function Footer() {
           <Link href="/inferencia" className="hover:text-white transition">Inferencia</Link>
         </div>
         <span className="flex items-center gap-2 text-xs">
-          <Leaf className="size-3.5 text-[#d6a849]" /> Ciencia de datos para cultivar futuro
+          <Leaf className="size-3.5 text-[#d6a849]" /> Cienci a  de datos para cultivar futuro
         </span>
       </div>
     </footer>
