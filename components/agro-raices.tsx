@@ -63,9 +63,9 @@ export function Navbar() {
           <Image 
             src="/images/logo.png" 
             alt="Logo AgroRaíces" 
-            width={140} 
-            height={140} 
-            className="rounded-xl object-contain"
+            width={160} 
+            height={160} 
+            className="rounded-xl object-contain "
           />
           <span>
             <span className="block text-lg font-semibold tracking-tight text-white">
@@ -182,11 +182,7 @@ export function Hero() {
           </div>
         </div>
 
-        <div className="mx-auto mt-16 grid max-w-5xl gap-4 sm:grid-cols-3">
-          <Metric value="85%" label="Precisión relativa" />
-          <Metric value="0.42–0.54" label="R² alcanzado" />
-          <Metric value="3 m" label="Resolución espacial" />
-        </div>
+
       </div>
     </section>
   )
