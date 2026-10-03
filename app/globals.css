@@ -189,3 +189,9 @@ input[type='number']::-webkit-inner-spin-button,
 input[type='number']::-webkit-outer-spin-button {
   opacity: 0.5;
 }
+
+/* Ocultar controles de zoom (+ / -) y barra de atribución de Leaflet */
+.leaflet-control-zoom,
+.leaflet-control-attribution {
+  display: none !important;
+}

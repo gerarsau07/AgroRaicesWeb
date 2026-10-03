@@ -9,6 +9,8 @@ import {
   TrendingUp,
   Mountain,
   Maximize2,
+  Minus,
+  Plus,
   RefreshCw,
   Download,
   Info,
@@ -68,6 +70,9 @@ export default function MapaParcelas() {
   const mapContainerRef = useRef<HTMLDivElement>(null)
   const mapInstanceRef = useRef<L.Map | null>(null)
   const geoJsonLayerRef = useRef<L.GeoJSON | null>(null)
+  const tileLayerRef = useRef<L.TileLayer | null>(null)
+  const selectedLayerRef = useRef<L.Path | null>(null)
+  const selectedParcelaRef = useRef<ParcelaProperties | null>(null)
 
   const [estado, setEstado] = useState<string>('todos')
   const [data, setData] = useState<ApiResponse | null>(null)
@@ -76,6 +81,24 @@ export default function MapaParcelas() {
   const [selectedParcela, setSelectedParcela] = useState<ParcelaProperties | null>(null)
   const [filtroConjunto, setFiltroConjunto] = useState<'todos' | 'ENTRENAMIENTO' | 'PREDICCION'>('todos')
   const [searchTerm, setSearchTerm] = useState<string>('')
+
+  // Funciones de control de zoom y centrado
+  const handleZoomIn = () => {
+    mapInstanceRef.current?.zoomIn()
+  }
+
+  const handleZoomOut = () => {
+    mapInstanceRef.current?.zoomOut()
+  }
+
+  const handleResetView = () => {
+    if (geoJsonLayerRef.current && mapInstanceRef.current) {
+      const bounds = geoJsonLayerRef.current.getBounds()
+      if (bounds.isValid()) {
+        mapInstanceRef.current.fitBounds(bounds, { padding: [30, 30], maxZoom: 14 })
+      }
+    }
+  }
 
   // Cargar datos de la API (soporta Next.js API y fallback a FastAPI si estuviera en localhost:8000)
   const fetchData = async (filtro: string) => {
@@ -122,7 +145,7 @@ export default function MapaParcelas() {
     })
   }, [data, filtroConjunto, searchTerm])
 
-  // Inicializar Leaflet Map
+  // Inicializar Leaflet Map con Esri World Imagery satelital
   useEffect(() => {
     if (!mapContainerRef.current) return
 
@@ -130,25 +153,20 @@ export default function MapaParcelas() {
       const map = L.map(mapContainerRef.current, {
         center: [19.7, -98.35],
         zoom: 9,
-        zoomControl: true,
+        zoomControl: false,
         attributionControl: false,
       })
 
-      // CartoDB Dark Matter / Basemap satelital limpio
-      L.tileLayer(
-        'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png',
+      // Fondo Satelital Real permanente (Esri World Imagery)
+      const baseLayer = L.tileLayer(
+        'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
         {
+          attribution: '',
           maxZoom: 19,
-          subdomains: 'abcd',
         }
       ).addTo(map)
 
-      // Atribución discreta
-      L.control
-        .attribution({ position: 'bottomright' })
-        .addAttribution('&copy; <a href="https://carto.com/">CARTO</a> &copy; OpenStreetMap')
-        .addTo(map)
-
+      tileLayerRef.current = baseLayer
       mapInstanceRef.current = map
     }
 
@@ -161,6 +179,14 @@ export default function MapaParcelas() {
     }
   }, [])
 
+  // Definición de color por estado y rendimiento
+  const getFeatureColor = (props: ParcelaProperties) => {
+    if (props.estado.toLowerCase().includes('puebla')) return '#10b981'
+    if (props.estado.toLowerCase().includes('hidalgo')) return '#f59e0b'
+    if (props.estado.toLowerCase().includes('tlaxcala')) return '#38bdf8'
+    return '#e2b957'
+  }
+
   // Actualizar capa GeoJSON cuando cambien las features filtradas
   useEffect(() => {
     const map = mapInstanceRef.current
@@ -170,17 +196,10 @@ export default function MapaParcelas() {
     if (geoJsonLayerRef.current) {
       map.removeLayer(geoJsonLayerRef.current)
       geoJsonLayerRef.current = null
+      selectedLayerRef.current = null
     }
 
     if (filteredFeatures.length === 0) return
-
-    // Definición de estilo por estado y rendimiento
-    const getFeatureColor = (props: ParcelaProperties) => {
-      if (props.estado.toLowerCase().includes('puebla')) return '#10b981'
-      if (props.estado.toLowerCase().includes('hidalgo')) return '#f59e0b'
-      if (props.estado.toLowerCase().includes('tlaxcala')) return '#38bdf8'
-      return '#e2b957'
-    }
 
     const geoJsonLayer = L.geoJSON(
       {
@@ -191,14 +210,14 @@ export default function MapaParcelas() {
         style: (feature) => {
           const props = (feature?.properties || {}) as ParcelaProperties
           const color = getFeatureColor(props)
-          const isSelected = selectedParcela?.id_poligono === props.id_poligono
+          const isSelected = selectedParcelaRef.current?.id_poligono === props.id_poligono
 
           return {
             color: isSelected ? '#ffffff' : color,
-            weight: isSelected ? 3 : 1.8,
-            opacity: 0.9,
+            weight: isSelected ? 3.5 : 2,
+            opacity: 0.95,
             fillColor: color,
-            fillOpacity: isSelected ? 0.65 : 0.35,
+            fillOpacity: isSelected ? 0.7 : 0.35,
           }
         },
         onEachFeature: (feature, layer) => {
@@ -221,22 +240,49 @@ export default function MapaParcelas() {
             </div>
           `
 
-          layer.bindPopup(popupContent, { maxWidth: 280 })
+          layer.bindPopup(popupContent, { maxWidth: 280, autoPan: false })
 
           layer.on({
             mouseover: (e) => {
-              const l = e.target
-              l.setStyle({ fillOpacity: 0.7, weight: 2.5 })
+              const l = e.target as L.Path
+              if (selectedParcelaRef.current?.id_poligono !== props.id_poligono) {
+                l.setStyle({ fillOpacity: 0.65, weight: 2.8 })
+              }
             },
             mouseout: (e) => {
-              const l = e.target
-              const isSelected = selectedParcela?.id_poligono === props.id_poligono
+              const l = e.target as L.Path
+              const isSelected = selectedParcelaRef.current?.id_poligono === props.id_poligono
               l.setStyle({
-                fillOpacity: isSelected ? 0.65 : 0.35,
-                weight: isSelected ? 3 : 1.8,
+                fillOpacity: isSelected ? 0.7 : 0.35,
+                weight: isSelected ? 3.5 : 2,
+                color: isSelected ? '#ffffff' : color,
               })
             },
-            click: () => {
+            click: (e) => {
+              const l = e.target as L.Path
+
+              // Restaurar estilo de la parcela previamente seleccionada
+              if (selectedLayerRef.current && selectedLayerRef.current !== l) {
+                const prevFeature = (selectedLayerRef.current as any).feature
+                const prevProps = prevFeature?.properties as ParcelaProperties
+                if (prevProps) {
+                  selectedLayerRef.current.setStyle({
+                    color: getFeatureColor(prevProps),
+                    weight: 2,
+                    fillOpacity: 0.35,
+                  })
+                }
+              }
+
+              // Resaltar la parcela actual sin modificar el zoom o posición del mapa
+              l.setStyle({
+                color: '#ffffff',
+                weight: 3.5,
+                fillOpacity: 0.75,
+              })
+
+              selectedLayerRef.current = l
+              selectedParcelaRef.current = props
               setSelectedParcela(props)
             },
           })
@@ -246,12 +292,12 @@ export default function MapaParcelas() {
 
     geoJsonLayerRef.current = geoJsonLayer
 
-    // Ajustar vista automáticamente a los polígonos
+    // Ajustar vista automáticamente solo cuando cambian las parcelas filtradas
     const bounds = geoJsonLayer.getBounds()
     if (bounds.isValid()) {
       map.fitBounds(bounds, { padding: [30, 30], maxZoom: 14 })
     }
-  }, [filteredFeatures, selectedParcela])
+  }, [filteredFeatures])
 
   // Descargar datos en CSV
   const descargarCSV = () => {
@@ -451,28 +497,102 @@ export default function MapaParcelas() {
         {/* Mapa Interactivo */}
         <div className="lg:col-span-2 bg-[#16392c]/40 border border-white/10 rounded-2xl overflow-hidden shadow-2xl relative flex flex-col min-h-[500px]">
           {/* Barra superior de controles del mapa */}
-          <div className="px-4 py-3 bg-[#10281f]/90 border-b border-white/10 flex items-center justify-between text-xs text-[#a8c3b4]">
+          <div className="px-4 py-2.5 bg-[#10281f]/95 border-b border-white/10 flex flex-wrap items-center justify-between gap-2 text-xs text-[#a8c3b4]">
             <div className="flex items-center gap-3">
-              <span className="flex items-center gap-1.5">
-                <span className="inline-block w-2.5 h-2.5 rounded-full bg-emerald-500"></span>
+              <span className="flex items-center gap-1.5 font-medium">
+                <span className="inline-block w-2.5 h-2.5 rounded-full bg-emerald-500 shadow-sm shadow-emerald-500/50"></span>
                 Puebla (100)
               </span>
-              <span className="flex items-center gap-1.5">
-                <span className="inline-block w-2.5 h-2.5 rounded-full bg-amber-500"></span>
+              <span className="flex items-center gap-1.5 font-medium">
+                <span className="inline-block w-2.5 h-2.5 rounded-full bg-amber-500 shadow-sm shadow-amber-500/50"></span>
                 Hidalgo (51)
               </span>
-              <span className="flex items-center gap-1.5">
-                <span className="inline-block w-2.5 h-2.5 rounded-full bg-sky-500"></span>
+              <span className="flex items-center gap-1.5 font-medium">
+                <span className="inline-block w-2.5 h-2.5 rounded-full bg-sky-500 shadow-sm shadow-sky-500/50"></span>
                 Tlaxcala (46)
               </span>
             </div>
-            <div className="text-[11px] text-white/60 hidden sm:block">
-              Haz clic en cualquier polígono para inspeccionar sus atributos
+
+            {/* Indicador de Satélite Esri y Controles de Zoom */}
+            <div className="flex items-center gap-2">
+              <span className="hidden sm:inline-flex items-center gap-1.5 text-[11px] text-[#a8c3b4] bg-white/5 px-2.5 py-1 rounded-xl border border-white/10">
+                <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+                🛰️ Satélite Esri
+              </span>
+
+              {/* Botones Acercar / Alejar / Reajustar */}
+              <div className="flex items-center bg-black/60 rounded-xl border border-white/10 p-0.5 shadow-lg">
+                <button
+                  type="button"
+                  onClick={handleZoomIn}
+                  className="p-1.5 hover:bg-white/20 active:bg-white/30 text-white rounded-lg transition"
+                  title="Acercar mapa (+)"
+                  aria-label="Acercar mapa"
+                >
+                  <Plus className="w-4 h-4" />
+                </button>
+                <div className="w-[1px] h-4 bg-white/10 my-auto" />
+                <button
+                  type="button"
+                  onClick={handleZoomOut}
+                  className="p-1.5 hover:bg-white/20 active:bg-white/30 text-white rounded-lg transition"
+                  title="Alejar mapa (-)"
+                  aria-label="Alejar mapa"
+                >
+                  <Minus className="w-4 h-4" />
+                </button>
+                <div className="w-[1px] h-4 bg-white/10 my-auto" />
+                <button
+                  type="button"
+                  onClick={handleResetView}
+                  className="p-1.5 hover:bg-white/20 active:bg-white/30 text-[#e2b957] rounded-lg transition"
+                  title="Reajustar vista a todas las parcelas"
+                  aria-label="Reajustar vista"
+                >
+                  <Maximize2 className="w-4 h-4" />
+                </button>
+              </div>
             </div>
           </div>
 
-          {/* Visor de mapa Leaflet */}
-          <div ref={mapContainerRef} className="w-full flex-1 z-0 min-h-[460px]" />
+          {/* Visor de mapa Leaflet con controles flotantes */}
+          <div className="relative w-full flex-1 z-0 min-h-[460px]">
+            <div
+              ref={mapContainerRef}
+              className="absolute inset-0 w-full h-full [&_.leaflet-control-zoom]:!hidden [&_.leaflet-control-attribution]:!hidden"
+            />
+
+            {/* Botones de zoom flotantes en el mapa */}
+            <div className="absolute top-4 right-4 z-10 flex flex-col gap-1.5 bg-[#10281f]/85 backdrop-blur-md p-1.5 rounded-2xl border border-white/15 shadow-2xl">
+              <button
+                type="button"
+                onClick={handleZoomIn}
+                className="w-8 h-8 flex items-center justify-center bg-white/10 hover:bg-white/20 active:scale-95 text-white rounded-xl transition"
+                title="Acercar (+)"
+                aria-label="Acercar"
+              >
+                <Plus className="w-4 h-4" />
+              </button>
+              <button
+                type="button"
+                onClick={handleZoomOut}
+                className="w-8 h-8 flex items-center justify-center bg-white/10 hover:bg-white/20 active:scale-95 text-white rounded-xl transition"
+                title="Alejar (-)"
+                aria-label="Alejar"
+              >
+                <Minus className="w-4 h-4" />
+              </button>
+              <button
+                type="button"
+                onClick={handleResetView}
+                className="w-8 h-8 flex items-center justify-center bg-[#e2b957]/20 hover:bg-[#e2b957]/30 text-[#e2b957] active:scale-95 rounded-xl transition border border-[#e2b957]/30"
+                title="Reajustar vista completa"
+                aria-label="Reajustar vista completa"
+              >
+                <Maximize2 className="w-4 h-4" />
+              </button>
+            </div>
+          </div>
 
           {/* Loader animado */}
           {loading && (

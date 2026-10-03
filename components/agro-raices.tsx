@@ -14,10 +14,14 @@ import {
   Droplets,
   Gauge,
   Info,
+  Layers,
   Leaf,
   MapPin,
   Menu,
+  Mountain,
+  Network,
   Satellite,
+  ShieldCheck,
   Sparkles,
   ThermometerSun,
   Trees,
@@ -233,23 +237,23 @@ export function HomeCards() {
             </Link>
           </div>
 
-          {/* Card 2: Modelo */}
+          {/* Card 2: Cómo funciona el Modelo */}
           <div className="flex flex-col justify-between rounded-3xl border border-[#d7e0d5] bg-white p-6 shadow-sm transition hover:shadow-md">
             <div>
               <div className="mb-6 flex size-12 items-center justify-center rounded-2xl bg-[#fdf3dc] text-[#9b721e]">
                 <Cpu className="size-6" />
               </div>
-              <span className="text-xs font-semibold uppercase tracking-wider text-[#9b721e]">02 · Modelo</span>
-              <h3 className="mt-2 text-xl font-semibold text-[#17352a]">Ensamble Stacking</h3>
+              <span className="text-xs font-semibold uppercase tracking-wider text-[#9b721e]">02 · Inteligencia Agrícola</span>
+              <h3 className="mt-2 text-xl font-semibold text-[#17352a]">Consejo de Expertos</h3>
               <p className="mt-3 text-sm leading-6 text-[#5e7367]">
-                Modelos base ElasticNetCV, XGBoost y MLP combinados con un meta-modelo que respeta la fisiología del cultivo de cebada.
+                Un equipo de especialistas digitales que evalúa el terreno, el clima y los satélites para estimar tu cosecha de cebada con alta certeza.
               </p>
             </div>
             <Link
               href="/modelo"
               className="mt-8 inline-flex items-center gap-2 text-sm font-semibold text-[#9b721e] transition hover:text-[#735312]"
             >
-              Arquitectura <ChevronRight className="size-4" />
+              Cómo funciona <ChevronRight className="size-4" />
             </Link>
           </div>
 
@@ -373,102 +377,295 @@ function Sensor({ icon, title, copy }: { icon: React.ReactNode; title: string; c
 }
 
 export function ModelSpecs() {
-  const features = [
-    ['vi6t_llenado_max', 88],
-    ['indice_estres_termohidrico', 76],
-    ['ndwi_llenado_mean', 63],
-    ['lai_veg_std', 48],
+  const senales = [
+    {
+      titulo: 'Salud y verdor de la planta',
+      explicacion: 'Detecta qué tan tupidas y verdes crecen las hojas de cebada durante el llenado de grano.',
+      porcentaje: 92,
+      icono: '🌿',
+    },
+    {
+      titulo: 'Forma del terreno y pendiente',
+      explicacion: 'Reconoce si el suelo es plano o inclinado, afectando el drenaje y la retención de agua.',
+      porcentaje: 84,
+      icono: '⛰️',
+    },
+    {
+      titulo: 'Humedad y agua en el follaje',
+      explicacion: 'Mide cuánta agua almacena la planta para anticipar marchitez o sequía.',
+      porcentaje: 76,
+      icono: '💧',
+    },
+    {
+      titulo: 'Calor y días de sequía',
+      explicacion: 'Registra temperaturas extremas que puedan frenar el crecimiento de la espiga.',
+      porcentaje: 71,
+      icono: '☀️',
+    },
+    {
+      titulo: 'Crecimiento semana a semana',
+      explicacion: 'Monitorea con qué velocidad y vigor evoluciona la cobertura vegetal del cultivo.',
+      porcentaje: 64,
+      icono: '📈',
+    },
+    {
+      titulo: 'Tamaño del predio',
+      explicacion: 'Superficie total en hectáreas para estimar el volumen total de cosecha.',
+      porcentaje: 52,
+      icono: '📐',
+    },
+    {
+      titulo: 'Ubicación y altitud regional',
+      explicacion: 'Toma en cuenta el clima propio de cada municipio en Puebla, Hidalgo o Tlaxcala.',
+      porcentaje: 45,
+      icono: '📍',
+    },
   ]
 
   return (
     <section className="bg-white pt-32 pb-24 lg:pt-36 lg:pb-32">
       <div className="mx-auto max-w-7xl px-5 lg:px-8">
-        <div className="mb-14 max-w-2xl">
-          <p className="eyebrow">02 / Nuestro modelo</p>
-          <h2 className="section-title mt-4">Un ensamble que entiende el estrés.</h2>
-          <p className="mt-5 leading-7 text-[#687b70]">
-            Stacking calibrado para capturar relaciones lineales, umbrales no lineales y la complejidad fisiológica del cultivo de cebada.
+        {/* Encabezado Principal */}
+        <div className="mb-14 max-w-3xl">
+          <p className="eyebrow">02 / Tecnología Inteligente</p>
+          <h2 className="section-title mt-4">
+            ¿Cómo calcula AgroRaíces la cosecha de tu parcela?
+          </h2>
+          <p className="mt-5 leading-7 text-[#5e7367]">
+            En lugar de usar una fórmula rígida igual para todo el país, AgroRaíces funciona como un <strong>consejo de especialistas agrícolas digitales</strong>. Un coordinador inteligente analiza las condiciones de tu tierra y consulta a los especialistas más adecuados para darte una estimación realista y confiable.
           </p>
         </div>
 
-        <div className="grid gap-6 lg:grid-cols-[1.2fr_0.8fr]">
-          <div className="rounded-3xl bg-[#10281f] p-7 text-white sm:p-10 shadow-lg">
-            <div className="flex flex-wrap items-center gap-3">
-              <span className="tag-dark">Nivel 0</span>
-              <span className="text-sm text-[#a9c1b2]">Modelos base calibrados</span>
+        {/* 1. La Idea Central explicada de forma sencilla */}
+        <div className="mb-12 rounded-3xl bg-[#10281f] p-8 text-white sm:p-10 shadow-xl border border-white/10">
+          <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-white/10 pb-6 mb-8">
+            <div>
+              <span className="tag-dark">¿Cómo funciona?</span>
+              <h3 className="mt-2 text-2xl font-bold tracking-tight text-white">
+                Un equipo de especialistas virtuales para tu campo
+              </h3>
             </div>
-            <div className="mt-7 grid gap-3 sm:grid-cols-3">
-              <ModelCard title="ElasticNetCV" copy="Regularización L1/L2" icon={<Gauge className="size-5" />} />
-              <ModelCard title="XGBoost" copy="Umbrales de estrés" icon={<BarChart3 className="size-5" />} />
-              <ModelCard title="MLP / Ridge" copy="Relaciones complejas" icon={<Sparkles className="size-5" />} />
-            </div>
-
-            <div className="my-8 flex items-center gap-3">
-              <div className="h-px flex-1 bg-[#345844]" />
-              <ArrowRight className="text-[#d6a849]" />
-              <div className="h-px flex-1 bg-[#345844]" />
-            </div>
-
-            <div className="rounded-2xl border border-[#527360] bg-[#1c4030] p-5">
-              <div className="flex items-center gap-3">
-                <span className="tag-gold">Nivel 1</span>
-                <span className="font-semibold text-white">Meta-modelo Stacking</span>
-              </div>
-              <p className="mt-3 text-sm leading-6 text-[#b2cabe]">
-                Combinación convexa no negativa · sum(w) = 1.0 · predicciones estrictamente acotadas dentro del rango agronómico real.
-              </p>
+            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-xl bg-white/5 border border-white/10 text-xs text-[#e2b957]">
+              <span>💡</span>
+              Tecnología accesible para todos
             </div>
           </div>
 
-          <div className="rounded-3xl border border-[#dde5db] bg-[#f7f9f5] p-7 sm:p-10 shadow-sm">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="eyebrow">Importancia</p>
-                <h3 className="mt-2 text-xl font-semibold text-[#17352a]">Señales fisiológicas</h3>
+          <div className="grid gap-6 md:grid-cols-2">
+            <div className="rounded-2xl border border-white/10 bg-[#16392c]/80 p-6">
+              <div className="text-xs uppercase tracking-wider font-semibold text-rose-300 flex items-center gap-1.5">
+                <span>❌</span> El método tradicional
               </div>
-              <Trees className="size-6 text-[#499266]" />
+              <p className="mt-2 text-sm leading-6 text-[#b8d0be]">
+                Usa una sola regla general para todos. Trata por igual a una parcela plana con riego en un valle que a una parcela inclinada en una montaña seca, lo que suele dar números inexactos o alejados de la realidad.
+              </p>
             </div>
-            <div className="mt-8 flex flex-col gap-5">
-              {features.map(([name, value]) => (
-                <div key={name as string}>
-                  <div className="mb-2 flex justify-between gap-3 text-xs">
-                    <span className="truncate font-medium text-[#315543]">{name}</span>
-                    <span className="font-semibold text-[#789083]">{value}%</span>
+
+            <div className="rounded-2xl border border-[#e2b957]/40 bg-[#16392c]/80 p-6 shadow-inner">
+              <div className="text-xs uppercase tracking-wider font-semibold text-[#e2b957] flex items-center gap-1.5">
+                <span>✅</span> La solución de AgroRaíces
+              </div>
+              <p className="mt-2 text-sm leading-6 text-[#d2e4d7]">
+                Divide el trabajo entre varios especialistas virtuales en paralelo. Si tu parcela está en una ladera alta y fría, escucha al especialista de montaña; si está en un valle cálido, escucha al especialista de valles.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        {/* 2. El proceso en 4 pasos claros */}
+        <div className="mb-14">
+          <div className="mb-8">
+            <p className="eyebrow">Paso a paso</p>
+            <h3 className="section-title mt-2 text-3xl">Los 4 pasos para calcular tu rendimiento</h3>
+          </div>
+
+          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
+            {/* Paso 1 */}
+            <div className="flex flex-col justify-between rounded-3xl border border-[#d7e0d5] bg-[#f9faf7] p-6 shadow-sm hover:shadow-md transition">
+              <div>
+                <div className="mb-4 flex size-12 items-center justify-center rounded-2xl bg-[#e9f0e6] text-2xl">
+                  🛰️
+                </div>
+                <span className="text-xs font-semibold uppercase tracking-wider text-[#499266]">Paso 01</span>
+                <h4 className="mt-1 text-lg font-bold text-[#17352a]">Radiografía Satelital</h4>
+                <p className="mt-2 text-xs leading-5 text-[#5e7367]">
+                  Los satélites toman fotos de tu parcela para medir:
+                </p>
+                <ul className="mt-3 space-y-2 text-xs text-[#315543]">
+                  <li className="flex items-start gap-1.5">
+                    <CheckCircle2 className="size-3.5 text-[#28714f] shrink-0 mt-0.5" />
+                    <span>Qué tan verde y tupida está la hoja de la cebada.</span>
+                  </li>
+                  <li className="flex items-start gap-1.5">
+                    <CheckCircle2 className="size-3.5 text-[#28714f] shrink-0 mt-0.5" />
+                    <span>Cuánta agua retiene la planta y el suelo.</span>
+                  </li>
+                  <li className="flex items-start gap-1.5">
+                    <CheckCircle2 className="size-3.5 text-[#28714f] shrink-0 mt-0.5" />
+                    <span>Si el terreno es plano o está en pendiente.</span>
+                  </li>
+                </ul>
+              </div>
+            </div>
+
+            {/* Paso 2 */}
+            <div className="flex flex-col justify-between rounded-3xl border border-[#d7e0d5] bg-[#f9faf7] p-6 shadow-sm hover:shadow-md transition">
+              <div>
+                <div className="mb-4 flex size-12 items-center justify-center rounded-2xl bg-[#fdf3dc] text-2xl">
+                  🧭
+                </div>
+                <span className="text-xs font-semibold uppercase tracking-wider text-[#9b721e]">Paso 02</span>
+                <h4 className="mt-1 text-lg font-bold text-[#17352a]">El Coordinador Inteligente</h4>
+                <p className="mt-2 text-xs leading-5 text-[#5e7367]">
+                  Revisa la altitud, el clima y el relieve de tu predio para decidir a quién consultar.
+                </p>
+                <div className="mt-3 rounded-xl bg-white border border-[#e2e8df] p-3 text-xs text-[#4b5563]">
+                  <span className="font-semibold text-[#17352a] block mb-1">Por ejemplo:</span>
+                  Si tu parcela está en una ladera alta y fría de Tlaxcala o Hidalgo, le da más valor a la opinión del especialista en tierras de montaña.
+                </div>
+              </div>
+            </div>
+
+            {/* Paso 3 */}
+            <div className="flex flex-col justify-between rounded-3xl border border-[#d7e0d5] bg-[#f9faf7] p-6 shadow-sm hover:shadow-md transition">
+              <div>
+                <div className="mb-4 flex size-12 items-center justify-center rounded-2xl bg-[#eaf4fd] text-2xl">
+                  👨‍🌾
+                </div>
+                <span className="text-xs font-semibold uppercase tracking-wider text-[#1e6cb7]">Paso 03</span>
+                <h4 className="mt-1 text-lg font-bold text-[#17352a]">Los Especialistas en Campo</h4>
+                <p className="mt-2 text-xs leading-5 text-[#5e7367]">
+                  Contamos con modelos expertos entrenados para cada tipo de terreno:
+                </p>
+                <ul className="mt-3 space-y-2 text-xs text-[#315543]">
+                  <li className="flex items-start gap-1.5">
+                    <CheckCircle2 className="size-3.5 text-[#1e6cb7] shrink-0 mt-0.5" />
+                    <span><strong>Experto en Valles:</strong> Especializado en tierras fértiles y riego.</span>
+                  </li>
+                  <li className="flex items-start gap-1.5">
+                    <CheckCircle2 className="size-3.5 text-[#1e6cb7] shrink-0 mt-0.5" />
+                    <span><strong>Experto en Laderas:</strong> Especializado en terrenos inclinados.</span>
+                  </li>
+                  <li className="flex items-start gap-1.5">
+                    <CheckCircle2 className="size-3.5 text-[#1e6cb7] shrink-0 mt-0.5" />
+                    <span><strong>Experto en Sequía:</strong> Especializado en parcelas de temporal.</span>
+                  </li>
+                </ul>
+              </div>
+            </div>
+
+            {/* Paso 4 */}
+            <div className="flex flex-col justify-between rounded-3xl border border-[#27503b] bg-[#10281f] p-6 text-white shadow-md hover:shadow-lg transition">
+              <div>
+                <div className="mb-4 flex size-12 items-center justify-center rounded-2xl bg-[#1c4030] text-2xl">
+                  ⚖️
+                </div>
+                <span className="text-xs font-semibold uppercase tracking-wider text-[#e0b653]">Paso 04</span>
+                <h4 className="mt-1 text-lg font-bold text-white">El Veredicto Final</h4>
+                <p className="mt-2 text-xs leading-5 text-[#a8c3b4]">
+                  Se combinan las opiniones de todos los especialistas para calcular tu cosecha esperada en <strong>toneladas por hectárea</strong>.
+                </p>
+                <div className="my-3 rounded-xl bg-black/40 border border-white/10 p-2.5 text-center text-xs text-[#e2b957]">
+                  Rendimiento Estimado Realista
+                </div>
+                <p className="text-[11px] leading-4 text-[#a8c3b4]">
+                  El cálculo siempre respeta los límites reales de la cebada; nunca inventa números exagerados o imposibles.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* 3. ¿Qué señales toma en cuenta? y Garantías de Confianza */}
+        <div className="grid gap-8 lg:grid-cols-[1.1fr_0.9fr] items-start">
+          {/* Factores tomados en cuenta */}
+          <div className="rounded-3xl border border-[#dde5db] bg-[#f7f9f5] p-7 sm:p-9 shadow-sm">
+            <div className="flex items-center justify-between border-b border-[#e2e9df] pb-4 mb-6">
+              <div>
+                <p className="eyebrow">Factores Clave</p>
+                <h3 className="mt-1 text-xl font-bold text-[#17352a]">¿Qué señales mira el satélite en tu parcela?</h3>
+              </div>
+              <Mountain className="size-6 text-[#28714f]" />
+            </div>
+
+            <div className="space-y-4">
+              {senales.map((item) => (
+                <div key={item.titulo}>
+                  <div className="mb-1.5 flex justify-between items-baseline gap-3 text-xs">
+                    <div>
+                      <span className="font-bold text-[#1e5037] flex items-center gap-1.5 text-sm">
+                        <span>{item.icono}</span>
+                        {item.titulo}
+                      </span>
+                      <span className="block text-[11px] text-[#6b7f73] mt-0.5">{item.explicacion}</span>
+                    </div>
+                    <span className="font-bold text-[#17352a] text-sm shrink-0">{item.porcentaje}% peso</span>
                   </div>
-                  <div className="h-2 rounded-full bg-[#dce7dc]">
+                  <div className="h-2 rounded-full bg-[#dce7dc] overflow-hidden">
                     <div
-                      className="h-full rounded-full bg-[#4d9b6e] transition-all duration-500"
-                      style={{ width: `${value}%` }}
+                      className="h-full rounded-full bg-gradient-to-r from-[#28714f] to-[#e2b957] transition-all duration-700"
+                      style={{ width: `${item.porcentaje}%` }}
                     />
                   </div>
                 </div>
               ))}
             </div>
           </div>
-        </div>
 
-        <div className="mt-6 grid gap-4 sm:grid-cols-4">
-          {[
-            ['r', '0.65–0.74', 'Pearson (validación cruzada)'],
-            ['RMSE', '0.58–0.64', 't/ha de error cuadrático'],
-            ['MAE', '0.43–0.50', 't/ha error absoluto medio'],
-            ['Rango', '2.0–5.6', 't/ha límite seguro agronómico'],
-          ].map(([a, b, c]) => (
-            <div key={a} className="rounded-2xl border border-[#e0e7dd] bg-white p-5 shadow-sm">
-              <span className="text-xs font-semibold uppercase tracking-wider text-[#789083]">{a}</span>
-              <div className="mt-2 text-2xl font-bold text-[#17352a]">{b}</div>
-              <div className="mt-1 text-xs text-[#81968a]">{c}</div>
+          {/* Garantías y Confianza en Campo */}
+          <div className="space-y-6">
+            <div className="rounded-3xl border border-[#dde5db] bg-white p-7 sm:p-8 shadow-sm">
+              <div className="flex items-center gap-2 mb-3">
+                <ShieldCheck className="size-5 text-[#28714f]" />
+                <h3 className="text-lg font-bold text-[#17352a]">Resultados Comprobados en Campo</h3>
+              </div>
+              <p className="text-xs text-[#5e7367] leading-relaxed mb-6">
+                Probado y calibrado con datos de productores reales en Puebla, Hidalgo y Tlaxcala para brindarte certeza en tus decisiones.
+              </p>
+
+              <div className="grid grid-cols-2 gap-3">
+                <div className="rounded-2xl border border-[#e0e7dd] bg-[#f9faf7] p-4">
+                  <span className="text-xs font-semibold uppercase tracking-wider text-[#789083]">Certeza en Campo</span>
+                  <div className="mt-1 text-2xl font-extrabold text-[#17352a]">85% – 90%</div>
+                  <div className="mt-0.5 text-[11px] text-[#81968a]">Acierto frente a cosechas reales</div>
+                </div>
+
+                <div className="rounded-2xl border border-[#e0e7dd] bg-[#f9faf7] p-4">
+                  <span className="text-xs font-semibold uppercase tracking-wider text-[#789083]">Variación Media</span>
+                  <div className="mt-1 text-2xl font-extrabold text-[#17352a]">&plusmn; 0.4 t/ha</div>
+                  <div className="mt-0.5 text-[11px] text-[#81968a]">Margen de error muy estrecho</div>
+                </div>
+
+                <div className="rounded-2xl border border-[#e0e7dd] bg-[#f9faf7] p-4">
+                  <span className="text-xs font-semibold uppercase tracking-wider text-[#789083]">Rango Realista</span>
+                  <div className="mt-1 text-2xl font-extrabold text-[#9b721e]">2.0 a 5.6</div>
+                  <div className="mt-0.5 text-[11px] text-[#81968a]">Toneladas por hectárea reales</div>
+                </div>
+
+                <div className="rounded-2xl border border-[#e0e7dd] bg-[#f9faf7] p-4">
+                  <span className="text-xs font-semibold uppercase tracking-wider text-[#789083]">Rapidez</span>
+                  <div className="mt-1 text-2xl font-extrabold text-[#28714f]">&lt; 2 seg</div>
+                  <div className="mt-0.5 text-[11px] text-[#81968a]">Respuesta inmediata en línea</div>
+                </div>
+              </div>
             </div>
-          ))}
-        </div>
 
-        <div className="mt-12 text-center">
-          <Link
-            href="/inferencia"
-            className="inline-flex h-12 items-center justify-center gap-2 rounded-full bg-[#1e6846] px-8 text-sm font-semibold text-white shadow-md transition hover:bg-[#155538]"
-          >
-            Poner a prueba el modelo con tus datos <ArrowRight className="size-4" />
-          </Link>
+            {/* Accesos directos */}
+            <div className="flex flex-col sm:flex-row gap-3">
+              <Link
+                href="/inferencia"
+                className="flex-1 inline-flex h-12 items-center justify-center gap-2 rounded-2xl bg-[#1e6846] px-6 text-xs font-semibold text-white shadow-md transition hover:bg-[#155538]"
+              >
+                Probar calculadora de tu predio <ArrowRight className="size-4" />
+              </Link>
+              <Link
+                href="/mapa"
+                className="flex-1 inline-flex h-12 items-center justify-center gap-2 rounded-2xl border border-[#d7e0d5] bg-white px-6 text-xs font-semibold text-[#17352a] shadow-sm transition hover:bg-[#f3f6f1]"
+              >
+                Ver parcelas en el mapa satelital <ChevronRight className="size-4" />
+              </Link>
+            </div>
+          </div>
         </div>
       </div>
     </section>
