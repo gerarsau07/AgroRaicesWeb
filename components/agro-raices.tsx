@@ -15,6 +15,7 @@ import {
   Gauge,
   Info,
   Leaf,
+  MapPin,
   Menu,
   Satellite,
   Sparkles,
@@ -54,6 +55,7 @@ export function Navbar() {
     { label: 'Nosotros', href: '/nosotros' },
     { label: 'Modelo', href: '/modelo' },
     { label: 'Inferencia', href: '/inferencia' },
+    { label: 'Mapa', href: '/mapa' },
   ]
 
   return (
@@ -210,15 +212,15 @@ export function HomeCards() {
           </p>
         </div>
 
-        <div className="grid gap-6 md:grid-cols-3">
+        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
           {/* Card 1: Nosotros */}
-          <div className="flex flex-col justify-between rounded-3xl border border-[#d7e0d5] bg-white p-8 shadow-sm transition hover:shadow-md">
+          <div className="flex flex-col justify-between rounded-3xl border border-[#d7e0d5] bg-white p-6 shadow-sm transition hover:shadow-md">
             <div>
               <div className="mb-6 flex size-12 items-center justify-center rounded-2xl bg-[#e9f0e6] text-[#28714f]">
                 <Satellite className="size-6" />
               </div>
               <span className="text-xs font-semibold uppercase tracking-wider text-[#499266]">01 · Nosotros</span>
-              <h3 className="mt-2 text-xl font-semibold text-[#17352a]">Quiénes somos y Sensores</h3>
+              <h3 className="mt-2 text-xl font-semibold text-[#17352a]">Quiénes somos</h3>
               <p className="mt-3 text-sm leading-6 text-[#5e7367]">
                 Integración de constelaciones satelitales PlanetScope, Sentinel-2 y Landsat para capturar el estado foliar y térmico de cada parcela.
               </p>
@@ -227,12 +229,12 @@ export function HomeCards() {
               href="/nosotros"
               className="mt-8 inline-flex items-center gap-2 text-sm font-semibold text-[#28714f] transition hover:text-[#184933]"
             >
-              Conocer más de nosotros <ChevronRight className="size-4" />
+              Conocer más <ChevronRight className="size-4" />
             </Link>
           </div>
 
           {/* Card 2: Modelo */}
-          <div className="flex flex-col justify-between rounded-3xl border border-[#d7e0d5] bg-white p-8 shadow-sm transition hover:shadow-md">
+          <div className="flex flex-col justify-between rounded-3xl border border-[#d7e0d5] bg-white p-6 shadow-sm transition hover:shadow-md">
             <div>
               <div className="mb-6 flex size-12 items-center justify-center rounded-2xl bg-[#fdf3dc] text-[#9b721e]">
                 <Cpu className="size-6" />
@@ -240,19 +242,19 @@ export function HomeCards() {
               <span className="text-xs font-semibold uppercase tracking-wider text-[#9b721e]">02 · Modelo</span>
               <h3 className="mt-2 text-xl font-semibold text-[#17352a]">Ensamble Stacking</h3>
               <p className="mt-3 text-sm leading-6 text-[#5e7367]">
-                Modelos base ElasticNetCV, XGBoost y MLP combinados con un meta-modelo de pesos restringidos que respeta la fisiología del cultivo.
+                Modelos base ElasticNetCV, XGBoost y MLP combinados con un meta-modelo que respeta la fisiología del cultivo de cebada.
               </p>
             </div>
             <Link
               href="/modelo"
               className="mt-8 inline-flex items-center gap-2 text-sm font-semibold text-[#9b721e] transition hover:text-[#735312]"
             >
-              Explorar arquitectura <ChevronRight className="size-4" />
+              Arquitectura <ChevronRight className="size-4" />
             </Link>
           </div>
 
           {/* Card 3: Inferencia */}
-          <div className="flex flex-col justify-between rounded-3xl border border-[#27503b] bg-[#10281f] p-8 text-white shadow-sm transition hover:shadow-md">
+          <div className="flex flex-col justify-between rounded-3xl border border-[#27503b] bg-[#10281f] p-6 text-white shadow-sm transition hover:shadow-md">
             <div>
               <div className="mb-6 flex size-12 items-center justify-center rounded-2xl bg-[#1c4030] text-[#e0b653]">
                 <Zap className="size-6" />
@@ -260,14 +262,34 @@ export function HomeCards() {
               <span className="text-xs font-semibold uppercase tracking-wider text-[#e0b653]">03 · Inferencia</span>
               <h3 className="mt-2 text-xl font-semibold text-white">Calculadora en Vivo</h3>
               <p className="mt-3 text-sm leading-6 text-[#a8c3b4]">
-                Ingresa los índices satelitales de tu predio y obtén de inmediato la predicción en toneladas y kilogramos por hectárea con reporte descargable.
+                Ingresa los índices satelitales de tu predio y obtén de inmediato la predicción en toneladas por hectárea con reporte descargable.
               </p>
             </div>
             <Link
               href="/inferencia"
               className="mt-8 inline-flex items-center gap-2 text-sm font-semibold text-[#e0b653] transition hover:text-[#ffd269]"
             >
-              Ir a la calculadora <ChevronRight className="size-4" />
+              Calculadora <ChevronRight className="size-4" />
+            </Link>
+          </div>
+
+          {/* Card 4: Mapa */}
+          <div className="flex flex-col justify-between rounded-3xl border border-[#d7e0d5] bg-white p-6 shadow-sm transition hover:shadow-md">
+            <div>
+              <div className="mb-6 flex size-12 items-center justify-center rounded-2xl bg-emerald-50 text-emerald-700">
+                <MapPin className="size-6" />
+              </div>
+              <span className="text-xs font-semibold uppercase tracking-wider text-emerald-700">04 · Georreferencia</span>
+              <h3 className="mt-2 text-xl font-semibold text-[#17352a]">Mapa de Parcelas</h3>
+              <p className="mt-3 text-sm leading-6 text-[#5e7367]">
+                Visualiza los polígonos de parcelas en Puebla, Hidalgo y Tlaxcala georreferenciados con métricas de rendimiento y elevación.
+              </p>
+            </div>
+            <Link
+              href="/mapa"
+              className="mt-8 inline-flex items-center gap-2 text-sm font-semibold text-emerald-700 transition hover:text-emerald-900"
+            >
+              Explorar mapa <ChevronRight className="size-4" />
             </Link>
           </div>
         </div>
@@ -690,6 +712,7 @@ export function Footer() {
           <Link href="/nosotros" className="hover:text-white transition">Nosotros</Link>
           <Link href="/modelo" className="hover:text-white transition">Modelo</Link>
           <Link href="/inferencia" className="hover:text-white transition">Inferencia</Link>
+          <Link href="/mapa" className="hover:text-white transition">Mapa</Link>
         </div>
         <span className="flex items-center gap-2 text-xs">
           <Leaf className="size-3.5 text-[#d6a849]" /> Ciencia  de datos para cultivar futuro.

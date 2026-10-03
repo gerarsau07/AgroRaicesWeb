@@ -1,15 +1,32 @@
-# v0 sandbox internal files
+# Entorno virtual y Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+
+# Archivos del sistema operativo y editores
+.DS_Store
+Thumbs.db
+.vscode/
+
+# Secretos y variables de entorno locales
+.env
+.env*.local
+*.key
+
+# Common Next.js / Node
+node_modules
+.next/
+.vercel/
+*.tsbuildinfo
+
+# Sandbox internal files
 __v0_runtime_loader.js
 __v0_devtools.tsx
 __v0_jsx-dev-runtime.ts
 .snowflake/
 .v0-trash/
-.vercel/
 
-# Environment variables
-.env*.local
-
-# Common ignores
-node_modules
-.next/
-.DS_Store
+# NOTA: NO agregues la carpeta 'data/' ni 'backend/data/' al ignore,
+# ya que tus CSVs (incluyendo parcelas.csv y los de 32 MB / 4 MB) deben subirse a Git
+# para que el backend pueda leerlos.
