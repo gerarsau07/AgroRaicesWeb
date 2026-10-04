@@ -11,8 +11,6 @@ import {
   Maximize2,
   Minus,
   Plus,
-  RefreshCw,
-  Download,
   Info,
   CheckCircle2,
   Sparkles,
@@ -299,30 +297,12 @@ export default function MapaParcelas() {
     }
   }, [filteredFeatures])
 
-  // Descargar datos en CSV
-  const descargarCSV = () => {
-    if (!filteredFeatures.length) return
-    const header = 'id_poligono,estado,municipio,area_ha,rendimiento_t_ha,produccion_t,elevacion_msnm,conjunto\n'
-    const rows = filteredFeatures.map((f) => {
-      const p = f.properties
-      return `${p.id_poligono},${p.estado},"${p.municipio}",${p.area_ha},${p.rendimiento_t_ha},${(p.rendimiento_t_ha * p.area_ha).toFixed(1)},${p.elevacion_msnm},${p.conjunto}`
-    }).join('\n')
-
-    const blob = new Blob([header + rows], { type: 'text/csv;charset=utf-8;' })
-    const url = URL.createObjectURL(blob)
-    const link = document.createElement('a')
-    link.href = url
-    link.download = `parcelas-${estado.toLowerCase()}-${filtroConjunto}.csv`
-    link.click()
-    URL.revokeObjectURL(url)
-  }
-
   const metricas = data?.metricas
 
   return (
     <div className="space-y-6 pt-24 pb-16 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
       {/* Encabezado */}
-      <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-4 border-b border-white/10 pb-6">
+      <div className="border-b border-white/10 pb-6">
         <div>
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-xs font-medium mb-3">
             <Sparkles className="w-3.5 h-3.5" />
@@ -334,26 +314,6 @@ export default function MapaParcelas() {
           <p className="mt-2 text-sm sm:text-base text-[#a8c3b4] max-w-2xl">
             Visualización georreferenciada de 197 parcelas de cebada maltera en Puebla, Hidalgo y Tlaxcala, integrando índices satelitales y estimación de rendimiento.
           </p>
-        </div>
-
-        <div className="flex items-center gap-3">
-          <button
-            onClick={() => fetchData(estado)}
-            disabled={loading}
-            className="inline-flex items-center gap-2 px-3.5 py-2 rounded-xl bg-white/5 hover:bg-white/10 text-white text-xs font-medium border border-white/10 transition disabled:opacity-50"
-            title="Recargar datos"
-          >
-            <RefreshCw className={`w-3.5 h-3.5 ${loading ? 'animate-spin text-[#e2b957]' : ''}`} />
-            Actualizar
-          </button>
-          <button
-            onClick={descargarCSV}
-            disabled={!filteredFeatures.length}
-            className="inline-flex items-center gap-2 px-3.5 py-2 rounded-xl bg-[#e2b957] hover:bg-[#d6a849] text-[#10281f] text-xs font-semibold shadow-md transition disabled:opacity-50"
-          >
-            <Download className="w-3.5 h-3.5" />
-            Exportar CSV
-          </button>
         </div>
       </div>
 

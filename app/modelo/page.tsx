@@ -1,16 +1,16 @@
 import type { Metadata } from 'next'
-import { ModelSpecs } from '@/components/agro-raices'
+import { PredictionForm } from '@/components/agro-raices'
 
 export const metadata: Metadata = {
-  title: 'Nuestro Modelo MoE · AgroRaíces',
+  title: 'Modelo de Estimación en Vivo · AgroRaíces',
   description:
-    'Arquitectura de Mezcla de Expertos (Mixture of Experts - MoE) con topografía integrada, red de compuertas Softmax y subredes MLP especializadas para la estimación de rendimiento de cebada maltera.',
+    'En esta ventana podrás usar el modelo en tiempo real para estimar el rendimiento de tu parcela de cebada con datos satelitales y descargar tu reporte.',
 }
 
 export default function ModeloPage() {
   return (
     <main>
-      <ModelSpecs />
+      <PredictionForm />
     </main>
   )
 }

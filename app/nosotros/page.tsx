@@ -1,16 +1,17 @@
 import type { Metadata } from 'next'
-import { About } from '@/components/agro-raices'
+import { About, ModelSpecs } from '@/components/agro-raices'
 
 export const metadata: Metadata = {
-  title: 'Nosotros · AgroRaíces',
+  title: 'Nosotros y Nuestra Tecnología · AgroRaíces',
   description:
-    'Conoce al equipo y la tecnología satelital detrás de AgroRaíces. PlanetScope, Sentinel-2 y Landsat para la optimización de la cebada maltera.',
+    'Conoce a AgroRaíces y cómo funciona nuestro consejo de especialistas digitales para la estimación de cosechas de cebada.',
 }
 
 export default function NosotrosPage() {
   return (
     <main>
       <About />
+      <ModelSpecs />
     </main>
   )
 }

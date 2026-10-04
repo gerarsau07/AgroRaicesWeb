@@ -58,7 +58,6 @@ export function Navbar() {
     { label: 'Inicio', href: '/' },
     { label: 'Nosotros', href: '/nosotros' },
     { label: 'Modelo', href: '/modelo' },
-    { label: 'Inferencia', href: '/inferencia' },
     { label: 'Mapa', href: '/mapa' },
   ]
 
@@ -174,16 +173,16 @@ export function Hero() {
           </p>
           <div className="mt-9 flex flex-col justify-center gap-4 sm:flex-row">
             <Link
-              href="/inferencia"
+              href="/modelo"
               className="inline-flex h-12 items-center justify-center gap-2 rounded-full bg-[#d6a849] px-7 text-sm font-semibold text-[#10281f] shadow-lg shadow-[#d6a849]/20 transition hover:bg-[#e7c26c]"
             >
-              Estimar rendimiento <ArrowRight className="size-4" />
+              Usar el modelo <ArrowRight className="size-4" />
             </Link>
             <Link
-              href="/modelo"
+              href="/nosotros"
               className="inline-flex h-12 items-center justify-center gap-2 rounded-full border border-[#557c68] bg-transparent px-7 text-sm font-semibold text-white transition hover:bg-white/10 hover:text-white"
             >
-              Conocer el modelo
+              Cómo funciona
             </Link>
           </div>
         </div>
@@ -216,77 +215,57 @@ export function HomeCards() {
           </p>
         </div>
 
-        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
+        <div className="grid gap-6 md:grid-cols-3">
           {/* Card 1: Nosotros */}
-          <div className="flex flex-col justify-between rounded-3xl border border-[#d7e0d5] bg-white p-6 shadow-sm transition hover:shadow-md">
+          <div className="flex flex-col justify-between rounded-3xl border border-[#d7e0d5] bg-white p-7 shadow-sm transition hover:shadow-md">
             <div>
               <div className="mb-6 flex size-12 items-center justify-center rounded-2xl bg-[#e9f0e6] text-[#28714f]">
                 <Satellite className="size-6" />
               </div>
               <span className="text-xs font-semibold uppercase tracking-wider text-[#499266]">01 · Nosotros</span>
-              <h3 className="mt-2 text-xl font-semibold text-[#17352a]">Quiénes somos</h3>
+              <h3 className="mt-2 text-xl font-semibold text-[#17352a]">Quiénes somos y Tecnología</h3>
               <p className="mt-3 text-sm leading-6 text-[#5e7367]">
-                Integración de constelaciones satelitales PlanetScope, Sentinel-2 y Landsat para capturar el estado foliar y térmico de cada parcela.
+                Conoce cómo nuestro consejo de especialistas digitales y las constelaciones satelitales analizan el terreno y el clima para entender tu predio.
               </p>
             </div>
             <Link
               href="/nosotros"
               className="mt-8 inline-flex items-center gap-2 text-sm font-semibold text-[#28714f] transition hover:text-[#184933]"
             >
-              Conocer más <ChevronRight className="size-4" />
-            </Link>
-          </div>
-
-          {/* Card 2: Cómo funciona el Modelo */}
-          <div className="flex flex-col justify-between rounded-3xl border border-[#d7e0d5] bg-white p-6 shadow-sm transition hover:shadow-md">
-            <div>
-              <div className="mb-6 flex size-12 items-center justify-center rounded-2xl bg-[#fdf3dc] text-[#9b721e]">
-                <Cpu className="size-6" />
-              </div>
-              <span className="text-xs font-semibold uppercase tracking-wider text-[#9b721e]">02 · Inteligencia Agrícola</span>
-              <h3 className="mt-2 text-xl font-semibold text-[#17352a]">Consejo de Expertos</h3>
-              <p className="mt-3 text-sm leading-6 text-[#5e7367]">
-                Un equipo de especialistas digitales que evalúa el terreno, el clima y los satélites para estimar tu cosecha de cebada con alta certeza.
-              </p>
-            </div>
-            <Link
-              href="/modelo"
-              className="mt-8 inline-flex items-center gap-2 text-sm font-semibold text-[#9b721e] transition hover:text-[#735312]"
-            >
               Cómo funciona <ChevronRight className="size-4" />
             </Link>
           </div>
 
-          {/* Card 3: Inferencia */}
-          <div className="flex flex-col justify-between rounded-3xl border border-[#27503b] bg-[#10281f] p-6 text-white shadow-sm transition hover:shadow-md">
+          {/* Card 2: Modelo */}
+          <div className="flex flex-col justify-between rounded-3xl border border-[#27503b] bg-[#10281f] p-7 text-white shadow-md transition hover:shadow-lg">
             <div>
               <div className="mb-6 flex size-12 items-center justify-center rounded-2xl bg-[#1c4030] text-[#e0b653]">
                 <Zap className="size-6" />
               </div>
-              <span className="text-xs font-semibold uppercase tracking-wider text-[#e0b653]">03 · Inferencia</span>
-              <h3 className="mt-2 text-xl font-semibold text-white">Calculadora en Vivo</h3>
+              <span className="text-xs font-semibold uppercase tracking-wider text-[#e0b653]">02 · Modelo en Vivo</span>
+              <h3 className="mt-2 text-xl font-semibold text-white">Usa el Modelo</h3>
               <p className="mt-3 text-sm leading-6 text-[#a8c3b4]">
-                Ingresa los índices satelitales de tu predio y obtén de inmediato la predicción en toneladas por hectárea con reporte descargable.
+                En esta ventana podrás usar el modelo: ingresa las señales de tu predio o carga un ejemplo para calcular el rendimiento en segundos con reporte descargable.
               </p>
             </div>
             <Link
-              href="/inferencia"
+              href="/modelo"
               className="mt-8 inline-flex items-center gap-2 text-sm font-semibold text-[#e0b653] transition hover:text-[#ffd269]"
             >
-              Calculadora <ChevronRight className="size-4" />
+              Usar el modelo <ChevronRight className="size-4" />
             </Link>
           </div>
 
-          {/* Card 4: Mapa */}
-          <div className="flex flex-col justify-between rounded-3xl border border-[#d7e0d5] bg-white p-6 shadow-sm transition hover:shadow-md">
+          {/* Card 3: Mapa */}
+          <div className="flex flex-col justify-between rounded-3xl border border-[#d7e0d5] bg-white p-7 shadow-sm transition hover:shadow-md">
             <div>
               <div className="mb-6 flex size-12 items-center justify-center rounded-2xl bg-emerald-50 text-emerald-700">
                 <MapPin className="size-6" />
               </div>
-              <span className="text-xs font-semibold uppercase tracking-wider text-emerald-700">04 · Georreferencia</span>
+              <span className="text-xs font-semibold uppercase tracking-wider text-emerald-700">03 · Georreferencia</span>
               <h3 className="mt-2 text-xl font-semibold text-[#17352a]">Mapa de Parcelas</h3>
               <p className="mt-3 text-sm leading-6 text-[#5e7367]">
-                Visualiza los polígonos de parcelas en Puebla, Hidalgo y Tlaxcala georreferenciados con métricas de rendimiento y elevación.
+                Visualiza los 197 polígonos del Altiplano Central (Puebla, Hidalgo y Tlaxcala) georreferenciados en un mapa satelital de alta resolución.
               </p>
             </div>
             <Link
@@ -315,16 +294,16 @@ export function About() {
             </p>
             <div className="mt-8 flex flex-wrap gap-4">
               <Link
-                href="/inferencia"
-                className="inline-flex items-center gap-2 rounded-full border border-[#b8cabe] bg-white px-5 py-2.5 text-sm font-medium text-[#17352a] shadow-sm transition hover:bg-[#e3ebdf]"
-              >
-                Explorar una parcela <ChevronRight className="size-4" />
-              </Link>
-              <Link
                 href="/modelo"
                 className="inline-flex items-center gap-2 rounded-full bg-[#1e6846] px-5 py-2.5 text-sm font-medium text-white shadow-sm transition hover:bg-[#155538]"
               >
-                Ver cómo funciona el modelo <ArrowRight className="size-4" />
+                Usar el modelo en vivo <ArrowRight className="size-4" />
+              </Link>
+              <Link
+                href="/mapa"
+                className="inline-flex items-center gap-2 rounded-full border border-[#b8cabe] bg-white px-5 py-2.5 text-sm font-medium text-[#17352a] shadow-sm transition hover:bg-[#e3ebdf]"
+              >
+                Ver parcelas en el mapa <ChevronRight className="size-4" />
               </Link>
             </div>
           </div>
@@ -758,12 +737,12 @@ export function PredictionForm() {
       <div className="mx-auto max-w-7xl px-5 lg:px-8">
         <div className="mb-12 flex flex-col justify-between gap-5 md:flex-row md:items-end">
           <div>
-            <p className="eyebrow">03 / Inferencia en vivo</p>
-            <h2 className="section-title mt-4">Conoce el potencial de tu parcela.</h2>
+            <p className="eyebrow">02 / Modelo en Vivo</p>
+            <h2 className="section-title mt-4">Usa el modelo y conoce el potencial de tu parcela.</h2>
           </div>
           <div className="flex flex-col items-start gap-2 md:items-end">
             <p className="max-w-sm text-sm leading-6 text-[#687b70]">
-              Ingresa las señales satelitales de tu cultivo. El ensamble estima el rendimiento en segundos.
+              En esta ventana podrás usar el modelo: ingresa los datos de tu predio o carga un ejemplo para calcular el rendimiento en segundos.
             </p>
             <button
               type="button"
@@ -908,7 +887,6 @@ export function Footer() {
           <Link href="/" className="hover:text-white transition">Inicio</Link>
           <Link href="/nosotros" className="hover:text-white transition">Nosotros</Link>
           <Link href="/modelo" className="hover:text-white transition">Modelo</Link>
-          <Link href="/inferencia" className="hover:text-white transition">Inferencia</Link>
           <Link href="/mapa" className="hover:text-white transition">Mapa</Link>
         </div>
         <span className="flex items-center gap-2 text-xs">
