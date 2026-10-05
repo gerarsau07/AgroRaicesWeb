@@ -111,7 +111,7 @@ def predict(req: PredictionRequest) -> PredictionResponse:
 @app.get("/parcelas")
 def get_parcelas(estado: Optional[str] = Query(None, description="Filtrar por estado (Puebla, Hidalgo, Tlaxcala)")):
     """
-    Carga parcelas.csv e ID_area_rendimiento...csv usando rutas relativas,
+    Carga parcelas.csv, ID_area_rendimiento...csv y topografia_inegi_cem4_parcelas.csv usando rutas relativas,
     unifica los registros por ID_POLIGONO y devuelve GeoJSON con métricas agregadas.
     """
     ruta_parcelas = resolver_ruta_datos("parcelas.csv")
@@ -124,10 +124,27 @@ def get_parcelas(estado: Optional[str] = Query(None, description="Filtrar por es
             if pid:
                 rend_map[pid] = r
 
+    topo_map: Dict[str, Dict[str, float]] = {}
+    try:
+        ruta_topo = resolver_ruta_datos("topografia_inegi_cem4_parcelas.csv")
+        with open(ruta_topo, encoding="utf-8-sig") as f:
+            for r in csv.DictReader(f):
+                pid = (r.get("ID_POLIGONO") or r.get("\ufeffID_POLIGONO") or "").strip()
+                if pid:
+                    try:
+                        elev = float(r.get("elevacion_msnm") or 2550.0)
+                        pend = float(r.get("pendiente_grados") or 2.0)
+                    except ValueError:
+                        elev, pend = 2550.0, 2.0
+                    topo_map[pid] = {"elevacion": elev, "pendiente": pend}
+    except Exception:
+        pass
+
     features: List[Dict[str, Any]] = []
     total_area_ha = 0.0
     rendimientos_conocidos: List[float] = []
     elevaciones: List[float] = []
+    pendientes: List[float] = []
 
     with open(ruta_parcelas, encoding="utf-8-sig") as f:
         reader = csv.DictReader(f)
@@ -148,7 +165,20 @@ def get_parcelas(estado: Optional[str] = Query(None, description="Filtrar por es
                 area_ha = 0.0
 
             muni = (r.get("Municipio") or "").strip()
-            elevacion_msnm = ELEVACIONES_MUNICIPIO.get(muni, 2450.0)
+            topo_info = topo_map.get(pid)
+            if topo_info:
+                elevacion_msnm = round(topo_info["elevacion"], 1)
+                pendiente_grados = round(topo_info["pendiente"], 2)
+            else:
+                elevacion_msnm = ELEVACIONES_MUNICIPIO.get(muni, 2450.0)
+                pendiente_grados = 2.0
+
+            if pendiente_grados > 4.5:
+                tipo_relieve = "Moderado (> 4.5°)"
+            elif pendiente_grados >= 2.0:
+                tipo_relieve = "Suave (2° - 4.5°)"
+            else:
+                tipo_relieve = "Plano (< 2°)"
 
             rend_info = rend_map.get(pid, {})
             rend_val_raw = rend_info.get("RENDIMIENTO_T_HA") or ""
@@ -169,6 +199,7 @@ def get_parcelas(estado: Optional[str] = Query(None, description="Filtrar por es
 
             total_area_ha += area_ha
             elevaciones.append(elevacion_msnm)
+            pendientes.append(pendiente_grados)
 
             # Clasificación cualitativa
             if rendimiento_t_ha < 3.2:
@@ -194,6 +225,8 @@ def get_parcelas(estado: Optional[str] = Query(None, description="Filtrar por es
                     "rendimiento_t_ha": rendimiento_t_ha,
                     "es_prediccion": es_prediccion,
                     "elevacion_msnm": elevacion_msnm,
+                    "pendiente_grados": pendiente_grados,
+                    "tipo_relieve": tipo_relieve,
                     "nivel_rendimiento": nivel_rendimiento,
                 },
             }
@@ -207,6 +240,9 @@ def get_parcelas(estado: Optional[str] = Query(None, description="Filtrar por es
     elevacion_promedio = (
         round(sum(elevaciones) / len(elevaciones), 1) if elevaciones else 0.0
     )
+    pendiente_promedio = (
+        round(sum(pendientes) / len(pendientes), 2) if pendientes else 0.0
+    )
 
     return {
         "filtro_estado": estado or "Todos",
@@ -215,6 +251,7 @@ def get_parcelas(estado: Optional[str] = Query(None, description="Filtrar por es
             "rendimiento_promedio_t_ha": rendimiento_promedio,
             "superficie_total_ha": round(total_area_ha, 2),
             "elevacion_promedio_msnm": elevacion_promedio,
+            "pendiente_promedio_grados": pendiente_promedio,
             "parcelas_con_rendimiento_real": len(rendimientos_conocidos),
             "parcelas_para_prediccion": len(features) - len(rendimientos_conocidos),
         },

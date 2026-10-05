@@ -27,6 +27,8 @@ export interface ParcelaProperties {
   rendimiento_t_ha: number
   es_prediccion: boolean
   elevacion_msnm: number
+  pendiente_grados: number
+  tipo_relieve: string
   nivel_rendimiento: string
 }
 
@@ -44,6 +46,7 @@ export interface MetricasResponse {
   rendimiento_promedio_t_ha: number
   superficie_total_ha: number
   elevacion_promedio_msnm: number
+  pendiente_promedio_grados?: number
   parcelas_con_rendimiento_real: number
   parcelas_para_prediccion: number
 }
@@ -232,8 +235,10 @@ export default function MapaParcelas() {
               <div style="border-top: 1px solid #e5e7eb; padding-top: 6px; display: grid; grid-template-columns: 1fr 1fr; gap: 4px;">
                 <div><span style="color:#6b7280;">Rendimiento:</span> <b>${props.rendimiento_t_ha} t/ha</b></div>
                 <div><span style="color:#6b7280;">Elevación:</span> <b>${props.elevacion_msnm} m</b></div>
+                <div><span style="color:#6b7280;">Pendiente:</span> <b>${props.pendiente_grados ?? '—'}°</b></div>
+                <div><span style="color:#6b7280;">Relieve:</span> <b>${props.tipo_relieve || 'Suave'}</b></div>
                 <div><span style="color:#6b7280;">Conjunto:</span> <b>${props.conjunto}</b></div>
-                <div><span style="color:#6b7280;">Producción est.:</span> <b>${(props.rendimiento_t_ha * props.area_ha).toFixed(1)} t</b></div>
+                <div><span style="color:#6b7280;">Producción:</span> <b>${(props.rendimiento_t_ha * props.area_ha).toFixed(1)} t</b></div>
               </div>
             </div>
           `
@@ -415,20 +420,24 @@ export default function MapaParcelas() {
           </div>
         </div>
 
-        {/* Elevación Promedio */}
+        {/* Elevación y Topografía Promedio */}
         <div className="bg-[#16392c]/50 border border-white/10 rounded-2xl p-4 sm:p-5 relative overflow-hidden group">
           <div className="absolute top-0 right-0 p-3 opacity-10 group-hover:opacity-20 transition text-sky-400">
             <Mountain className="w-16 h-16 -mr-4 -mt-4" />
           </div>
           <div className="text-xs uppercase tracking-wider text-[#a8c3b4] flex items-center gap-1.5">
             <Mountain className="w-3.5 h-3.5 text-sky-400" />
-            Elevación Promedio
+            Elevación & Relieve
           </div>
           <div className="mt-2 text-2xl sm:text-3xl font-extrabold text-white">
             {metricas ? `${metricas.elevacion_promedio_msnm} ` : '—'}
             <span className="text-sm font-semibold text-sky-400">m s.n.m.</span>
           </div>
-          <div className="mt-1 text-xs text-[#a8c3b4]">Altiplano central mexicano</div>
+          <div className="mt-1 text-xs text-[#a8c3b4]">
+            {metricas?.pendiente_promedio_grados !== undefined
+              ? `Pendiente media: ${metricas.pendiente_promedio_grados}° (INEGI CEM 4.0)`
+              : 'Altiplano central mexicano'}
+          </div>
         </div>
 
         {/* Total Parcelas & Desglose */}
@@ -609,8 +618,22 @@ export default function MapaParcelas() {
                   </div>
 
                   <div className="bg-[#10281f]/60 p-3 rounded-xl border border-white/5">
-                    <span className="text-[11px] text-[#a8c3b4] block">Elevación</span>
+                    <span className="text-[11px] text-[#a8c3b4] block">Elevación CEM 4.0</span>
                     <span className="text-base font-bold text-white">{selectedParcela.elevacion_msnm} m</span>
+                  </div>
+
+                  <div className="bg-[#10281f]/60 p-3 rounded-xl border border-white/5">
+                    <span className="text-[11px] text-[#a8c3b4] block">Pendiente del Terreno</span>
+                    <span className="text-base font-bold text-sky-400">
+                      {selectedParcela.pendiente_grados !== undefined ? `${selectedParcela.pendiente_grados}°` : '—'}
+                    </span>
+                  </div>
+
+                  <div className="bg-[#10281f]/60 p-3 rounded-xl border border-white/5">
+                    <span className="text-[11px] text-[#a8c3b4] block">Relieve Agronómico</span>
+                    <span className="text-sm font-bold text-emerald-400">
+                      {selectedParcela.tipo_relieve || 'Suave'}
+                    </span>
                   </div>
 
                   <div className="bg-[#10281f]/60 p-3 rounded-xl border border-white/5">
@@ -640,6 +663,10 @@ export default function MapaParcelas() {
                     <span className="font-semibold text-white">
                       {selectedParcela.es_prediccion ? 'Estimado (Reto)' : 'Rendimiento Verificado'}
                     </span>
+                  </div>
+                  <div className="flex items-center justify-between text-xs">
+                    <span className="text-[#a8c3b4]">Fuente Topográfica:</span>
+                    <span className="font-semibold text-sky-400">INEGI CEM v4 (5m)</span>
                   </div>
                 </div>
               </div>
