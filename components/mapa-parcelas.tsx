@@ -24,7 +24,7 @@ export interface ParcelaProperties {
   municipio: string
   estado: string
   conjunto: string
-  rendimiento_t_ha: number
+  rendimiento_t_ha: number | null
   es_prediccion: boolean
   elevacion_msnm: number
   pendiente_grados: number
@@ -212,18 +212,25 @@ export default function MapaParcelas() {
           const props = (feature?.properties || {}) as ParcelaProperties
           const color = getFeatureColor(props)
           const isSelected = selectedParcelaRef.current?.id_poligono === props.id_poligono
+          const sinRendimiento = props.rendimiento_t_ha === null
 
           return {
             color: isSelected ? '#ffffff' : color,
             weight: isSelected ? 3.5 : 2,
             opacity: 0.95,
             fillColor: color,
-            fillOpacity: isSelected ? 0.7 : 0.35,
+            fillOpacity: isSelected ? 0.7 : (sinRendimiento ? 0.22 : 0.4),
+            dashArray: sinRendimiento ? '4, 4' : undefined,
           }
         },
         onEachFeature: (feature, layer) => {
           const props = feature.properties as ParcelaProperties
           const color = getFeatureColor(props)
+          const sinRendimiento = props.rendimiento_t_ha === null
+
+          const rendText = props.rendimiento_t_ha !== null
+            ? `<b>${props.rendimiento_t_ha} t/ha</b>`
+            : `<span style="color:#d97706;font-style:italic;">Por calcular</span>`
 
           const popupContent = `
             <div style="font-family: inherit; font-size: 13px; color: #10281f; padding: 2px;">
@@ -233,12 +240,10 @@ export default function MapaParcelas() {
               </div>
               <div style="font-size: 12px; color: #4b5563; margin-bottom: 6px;">${props.municipio} · ${props.area_ha} ha</div>
               <div style="border-top: 1px solid #e5e7eb; padding-top: 6px; display: grid; grid-template-columns: 1fr 1fr; gap: 4px;">
-                <div><span style="color:#6b7280;">Rendimiento:</span> <b>${props.rendimiento_t_ha} t/ha</b></div>
+                <div><span style="color:#6b7280;">Rendimiento:</span> ${rendText}</div>
+                <div><span style="color:#6b7280;">Conjunto:</span> <b>${props.conjunto}</b></div>
                 <div><span style="color:#6b7280;">Elevación:</span> <b>${props.elevacion_msnm} m</b></div>
                 <div><span style="color:#6b7280;">Pendiente:</span> <b>${props.pendiente_grados ?? '—'}°</b></div>
-                <div><span style="color:#6b7280;">Relieve:</span> <b>${props.tipo_relieve || 'Suave'}</b></div>
-                <div><span style="color:#6b7280;">Conjunto:</span> <b>${props.conjunto}</b></div>
-                <div><span style="color:#6b7280;">Producción:</span> <b>${(props.rendimiento_t_ha * props.area_ha).toFixed(1)} t</b></div>
               </div>
             </div>
           `
@@ -256,9 +261,10 @@ export default function MapaParcelas() {
               const l = e.target as L.Path
               const isSelected = selectedParcelaRef.current?.id_poligono === props.id_poligono
               l.setStyle({
-                fillOpacity: isSelected ? 0.7 : 0.35,
+                fillOpacity: isSelected ? 0.7 : (sinRendimiento ? 0.22 : 0.4),
                 weight: isSelected ? 3.5 : 2,
                 color: isSelected ? '#ffffff' : color,
+                dashArray: sinRendimiento ? '4, 4' : undefined,
               })
             },
             click: (e) => {
@@ -269,10 +275,12 @@ export default function MapaParcelas() {
                 const prevFeature = (selectedLayerRef.current as any).feature
                 const prevProps = prevFeature?.properties as ParcelaProperties
                 if (prevProps) {
+                  const prevSinRend = prevProps.rendimiento_t_ha === null
                   selectedLayerRef.current.setStyle({
                     color: getFeatureColor(prevProps),
                     weight: 2,
-                    fillOpacity: 0.35,
+                    fillOpacity: prevSinRend ? 0.22 : 0.4,
+                    dashArray: prevSinRend ? '4, 4' : undefined,
                   })
                 }
               }
@@ -618,6 +626,15 @@ export default function MapaParcelas() {
                   </div>
 
                   <div className="bg-[#10281f]/60 p-3 rounded-xl border border-white/5">
+                    <span className="text-[11px] text-[#a8c3b4] block">Rendimiento</span>
+                    {selectedParcela.rendimiento_t_ha !== null ? (
+                      <span className="text-base font-bold text-[#e2b957]">{selectedParcela.rendimiento_t_ha} t/ha</span>
+                    ) : (
+                      <span className="text-sm font-semibold text-amber-300/90 italic">Por predecir (Reto)</span>
+                    )}
+                  </div>
+
+                  <div className="bg-[#10281f]/60 p-3 rounded-xl border border-white/5">
                     <span className="text-[11px] text-[#a8c3b4] block">Elevación CEM 4.0</span>
                     <span className="text-base font-bold text-white">{selectedParcela.elevacion_msnm} m</span>
                   </div>
@@ -628,28 +645,13 @@ export default function MapaParcelas() {
                       {selectedParcela.pendiente_grados !== undefined ? `${selectedParcela.pendiente_grados}°` : '—'}
                     </span>
                   </div>
-
-                  <div className="bg-[#10281f]/60 p-3 rounded-xl border border-white/5">
-                    <span className="text-[11px] text-[#a8c3b4] block">Relieve Agronómico</span>
-                    <span className="text-sm font-bold text-emerald-400">
-                      {selectedParcela.tipo_relieve || 'Suave'}
-                    </span>
-                  </div>
-
-                  <div className="bg-[#10281f]/60 p-3 rounded-xl border border-white/5">
-                    <span className="text-[11px] text-[#a8c3b4] block">Rendimiento</span>
-                    <span className="text-base font-bold text-[#e2b957]">{selectedParcela.rendimiento_t_ha} t/ha</span>
-                  </div>
-
-                  <div className="bg-[#10281f]/60 p-3 rounded-xl border border-white/5">
-                    <span className="text-[11px] text-[#a8c3b4] block">Producción Est.</span>
-                    <span className="text-base font-bold text-white">
-                      {(selectedParcela.rendimiento_t_ha * selectedParcela.area_ha).toFixed(1)} t
-                    </span>
-                  </div>
                 </div>
 
                 <div className="bg-[#10281f]/60 p-3 rounded-xl border border-white/5 space-y-2">
+                  <div className="flex items-center justify-between text-xs">
+                    <span className="text-[#a8c3b4]">Relieve agronómico:</span>
+                    <span className="font-semibold text-emerald-400">{selectedParcela.tipo_relieve || 'Suave'}</span>
+                  </div>
                   <div className="flex items-center justify-between text-xs">
                     <span className="text-[#a8c3b4]">Conjunto de datos:</span>
                     <span className="font-semibold text-white">{selectedParcela.conjunto}</span>
@@ -661,7 +663,7 @@ export default function MapaParcelas() {
                   <div className="flex items-center justify-between text-xs">
                     <span className="text-[#a8c3b4]">Tipo de dato:</span>
                     <span className="font-semibold text-white">
-                      {selectedParcela.es_prediccion ? 'Estimado (Reto)' : 'Rendimiento Verificado'}
+                      {selectedParcela.es_prediccion ? 'Conjunto de Predicción (Sin inferencia previa)' : 'Rendimiento Verificado'}
                     </span>
                   </div>
                   <div className="flex items-center justify-between text-xs">
@@ -675,7 +677,7 @@ export default function MapaParcelas() {
                 <Info className="w-10 h-10 text-white/20 mb-3" />
                 <p className="text-sm font-medium text-white/80">Ninguna parcela seleccionada</p>
                 <p className="text-xs text-white/50 mt-1 max-w-xs">
-                  Haz clic sobre un polígono en el mapa para consultar sus variables biofísicas, municipio y producción estimada.
+                  Haz clic sobre un polígono en el mapa para consultar sus variables biofísicas, municipio y rendimiento.
                 </p>
               </div>
             )}

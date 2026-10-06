@@ -177,18 +177,20 @@ export async function GET(request: Request) {
 
       const rendInfo = rendMap.get(pid)
       const tieneRendReal = rendInfo?.rendimiento !== undefined
-      const rendimiento = tieneRendReal ? rendInfo!.rendimiento! : 3.65
+      let rendimiento: number | null = null
+      let nivel = 'Pendiente de inferencia'
 
       if (tieneRendReal) {
+        rendimiento = rendInfo!.rendimiento!
         rendimientosReales.push(rendimiento)
+        if (rendimiento < 3.2) nivel = 'Bajo (< 3.2 t/ha)'
+        else if (rendimiento > 4.2) nivel = 'Alto (> 4.2 t/ha)'
+        else nivel = 'Promedio (3.2 - 4.2 t/ha)'
       }
+
       totalAreaHa += area
       elevaciones.push(elevacion)
       pendientes.push(pendiente)
-
-      let nivel = 'Promedio (3.2 - 4.2 t/ha)'
-      if (rendimiento < 3.2) nivel = 'Bajo (< 3.2 t/ha)'
-      else if (rendimiento > 4.2) nivel = 'Alto (> 4.2 t/ha)'
 
       features.push({
         type: 'Feature',
@@ -203,7 +205,7 @@ export async function GET(request: Request) {
           municipio,
           estado,
           conjunto: rendInfo?.conjunto || 'ENTRENAMIENTO',
-          rendimiento_t_ha: Math.round(rendimiento * 100) / 100,
+          rendimiento_t_ha: tieneRendReal && rendimiento !== null ? Math.round(rendimiento * 100) / 100 : null,
           es_prediccion: !tieneRendReal,
           elevacion_msnm: elevacion,
           pendiente_grados: pendiente,

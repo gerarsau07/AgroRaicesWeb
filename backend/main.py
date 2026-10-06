@@ -184,30 +184,29 @@ def get_parcelas(estado: Optional[str] = Query(None, description="Filtrar por es
             rend_val_raw = rend_info.get("RENDIMIENTO_T_HA") or ""
             conjunto = (rend_info.get("CONJUNTO") or r.get("CONJUNTO") or "").strip()
 
+            rendimiento_t_ha: Optional[float] = None
+            es_prediccion = True
+            nivel_rendimiento = "Pendiente de inferencia"
+
             if rend_val_raw:
                 try:
                     rendimiento_t_ha = round(float(rend_val_raw), 2)
                     es_prediccion = False
                     rendimientos_conocidos.append(rendimiento_t_ha)
+                    if rendimiento_t_ha < 3.2:
+                        nivel_rendimiento = "Bajo (< 3.2 t/ha)"
+                    elif rendimiento_t_ha <= 4.2:
+                        nivel_rendimiento = "Promedio (3.2 - 4.2 t/ha)"
+                    else:
+                        nivel_rendimiento = "Alto (> 4.2 t/ha)"
                 except ValueError:
-                    rendimiento_t_ha = 3.65
+                    rendimiento_t_ha = None
                     es_prediccion = True
-            else:
-                # Valor estimado referencial para parcelas del conjunto de predicción
-                rendimiento_t_ha = 3.65
-                es_prediccion = True
+                    nivel_rendimiento = "Pendiente de inferencia"
 
             total_area_ha += area_ha
             elevaciones.append(elevacion_msnm)
             pendientes.append(pendiente_grados)
-
-            # Clasificación cualitativa
-            if rendimiento_t_ha < 3.2:
-                nivel_rendimiento = "Bajo (< 3.2 t/ha)"
-            elif rendimiento_t_ha <= 4.2:
-                nivel_rendimiento = "Promedio (3.2 - 4.2 t/ha)"
-            else:
-                nivel_rendimiento = "Alto (> 4.2 t/ha)"
 
             feature = {
                 "type": "Feature",
