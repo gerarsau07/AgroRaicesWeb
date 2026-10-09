@@ -61,7 +61,7 @@ export interface ApiResponse {
 }
 
 const ESTADOS_CONFIG = [
-  { id: 'todos', label: 'Todos', color: '#d87a52', border: 'border-[#d87a52]' },
+  { id: 'todos', label: 'Todos', color: '#e2b957', border: 'border-[#e2b957]' },
   { id: 'Puebla', label: 'Puebla', color: '#10b981', border: 'border-emerald-500', emoji: '🟢' },
   { id: 'Hidalgo', label: 'Hidalgo', color: '#f59e0b', border: 'border-amber-500', emoji: '🟠' },
   { id: 'Tlaxcala', label: 'Tlaxcala', color: '#38bdf8', border: 'border-sky-500', emoji: '🔵' },
@@ -185,7 +185,7 @@ export default function MapaParcelas() {
     if (props.estado.toLowerCase().includes('puebla')) return '#10b981'
     if (props.estado.toLowerCase().includes('hidalgo')) return '#f59e0b'
     if (props.estado.toLowerCase().includes('tlaxcala')) return '#38bdf8'
-    return '#d87a52'
+    return '#e2b957'
   }
 
   // Actualizar capa GeoJSON cuando cambien las features filtradas
@@ -233,7 +233,7 @@ export default function MapaParcelas() {
             : `<span style="color:#d97706;font-style:italic;">Por calcular</span>`
 
           const popupContent = `
-            <div style="font-family: inherit; font-size: 13px; color: #27201b; padding: 2px;">
+            <div style="font-family: inherit; font-size: 13px; color: #10281f; padding: 2px;">
               <div style="font-weight: 700; font-size: 14px; margin-bottom: 4px; display: flex; align-items: center; justify-content: space-between;">
                 <span>${props.id_poligono}</span>
                 <span style="background: ${color}20; color: ${color}; padding: 2px 6px; border-radius: 4px; font-size: 11px;">${props.estado}</span>
@@ -322,20 +322,20 @@ export default function MapaParcelas() {
             Monitoreo Geoespacial Altiplano Central
           </div>
           <h1 className="text-3xl sm:text-4xl font-bold tracking-tight text-white">
-            Mapa Interactivo de <span className="text-[#d87a52]">Rendimiento</span>
+            Mapa Interactivo de <span className="text-[#e2b957]">Rendimiento</span>
           </h1>
-          <p className="mt-2 text-sm sm:text-base text-[#d4bead] max-w-2xl">
+          <p className="mt-2 text-sm sm:text-base text-[#a8c3b4] max-w-2xl">
             Visualización georreferenciada de 197 parcelas de cebada maltera en Puebla, Hidalgo y Tlaxcala, integrando índices satelitales y estimación de rendimiento.
           </p>
         </div>
       </div>
 
       {/* Panel de Control y Filtros de Estado */}
-      <div className="bg-[#382d25]/70 border border-white/10 rounded-2xl p-5 shadow-xl backdrop-blur-md">
+      <div className="bg-[#16392c]/70 border border-white/10 rounded-2xl p-5 shadow-xl backdrop-blur-md">
         <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
           {/* Botones de selección de estado */}
           <div className="flex flex-col sm:flex-row sm:items-center gap-2.5">
-            <span className="text-xs font-semibold uppercase tracking-wider text-[#d4bead] mr-2">
+            <span className="text-xs font-semibold uppercase tracking-wider text-[#a8c3b4] mr-2">
               Estado:
             </span>
             <div className="flex flex-wrap gap-2">
@@ -351,7 +351,7 @@ export default function MapaParcelas() {
                     className={`inline-flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-medium border transition-all duration-200 ${
                       isActive
                         ? `${cfg.border} bg-white/10 text-white shadow-lg shadow-black/20 ring-1 ring-white/30`
-                        : 'border-white/10 bg-white/5 text-[#d4bead] hover:bg-white/10 hover:text-white'
+                        : 'border-white/10 bg-white/5 text-[#a8c3b4] hover:bg-white/10 hover:text-white'
                     }`}
                   >
                     <span>{cfg.emoji || '🌐'}</span>
@@ -372,7 +372,7 @@ export default function MapaParcelas() {
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
                 placeholder="Buscar ID o municipio..."
-                className="pl-8 pr-3 py-1.5 bg-[#27201b]/80 border border-white/10 rounded-xl text-xs text-white placeholder-white/40 focus:outline-none focus:ring-1 focus:ring-[#d87a52] w-44"
+                className="pl-8 pr-3 py-1.5 bg-[#10281f]/80 border border-white/10 rounded-xl text-xs text-white placeholder-white/40 focus:outline-none focus:ring-1 focus:ring-[#e2b957] w-44"
               />
             </div>
 
@@ -380,7 +380,7 @@ export default function MapaParcelas() {
             <select
               value={filtroConjunto}
               onChange={(e) => setFiltroConjunto(e.target.value as any)}
-              className="bg-[#27201b]/80 border border-white/10 rounded-xl px-3 py-1.5 text-xs text-white focus:outline-none focus:ring-1 focus:ring-[#d87a52]"
+              className="bg-[#10281f]/80 border border-white/10 rounded-xl px-3 py-1.5 text-xs text-white focus:outline-none focus:ring-1 focus:ring-[#e2b957]"
             >
               <option value="todos">Todos los conjuntos</option>
               <option value="ENTRENAMIENTO">Entrenamiento (Rend. Real)</option>
@@ -393,29 +393,29 @@ export default function MapaParcelas() {
       {/* Panel de Métricas / Resultados del Modelo */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
         {/* Rendimiento Promedio */}
-        <div className="bg-[#382d25]/50 border border-white/10 rounded-2xl p-4 sm:p-5 relative overflow-hidden group">
-          <div className="absolute top-0 right-0 p-3 opacity-10 group-hover:opacity-20 transition text-[#d87a52]">
+        <div className="bg-[#16392c]/50 border border-white/10 rounded-2xl p-4 sm:p-5 relative overflow-hidden group">
+          <div className="absolute top-0 right-0 p-3 opacity-10 group-hover:opacity-20 transition text-[#e2b957]">
             <TrendingUp className="w-16 h-16 -mr-4 -mt-4" />
           </div>
-          <div className="text-xs uppercase tracking-wider text-[#d4bead] flex items-center gap-1.5">
-            <TrendingUp className="w-3.5 h-3.5 text-[#d87a52]" />
+          <div className="text-xs uppercase tracking-wider text-[#a8c3b4] flex items-center gap-1.5">
+            <TrendingUp className="w-3.5 h-3.5 text-[#e2b957]" />
             Rendimiento Promedio
           </div>
           <div className="mt-2 text-2xl sm:text-3xl font-extrabold text-white">
             {metricas ? `${metricas.rendimiento_promedio_t_ha} ` : '—'}
-            <span className="text-sm font-semibold text-[#d87a52]">t/ha</span>
+            <span className="text-sm font-semibold text-[#e2b957]">t/ha</span>
           </div>
-          <div className="mt-1 text-xs text-[#d4bead]">
+          <div className="mt-1 text-xs text-[#a8c3b4]">
             {metricas ? `${Math.round(metricas.rendimiento_promedio_t_ha * 1000)} kg/ha aprox.` : 'Calculando...'}
           </div>
         </div>
 
         {/* Superficie Total */}
-        <div className="bg-[#382d25]/50 border border-white/10 rounded-2xl p-4 sm:p-5 relative overflow-hidden group">
+        <div className="bg-[#16392c]/50 border border-white/10 rounded-2xl p-4 sm:p-5 relative overflow-hidden group">
           <div className="absolute top-0 right-0 p-3 opacity-10 group-hover:opacity-20 transition text-emerald-400">
             <Maximize2 className="w-16 h-16 -mr-4 -mt-4" />
           </div>
-          <div className="text-xs uppercase tracking-wider text-[#d4bead] flex items-center gap-1.5">
+          <div className="text-xs uppercase tracking-wider text-[#a8c3b4] flex items-center gap-1.5">
             <Maximize2 className="w-3.5 h-3.5 text-emerald-400" />
             Superficie Total
           </div>
@@ -423,17 +423,17 @@ export default function MapaParcelas() {
             {metricas ? `${metricas.superficie_total_ha} ` : '—'}
             <span className="text-sm font-semibold text-emerald-400">ha</span>
           </div>
-          <div className="mt-1 text-xs text-[#d4bead]">
+          <div className="mt-1 text-xs text-[#a8c3b4]">
             {filteredFeatures.length} parcelas registradas
           </div>
         </div>
 
         {/* Elevación y Topografía Promedio */}
-        <div className="bg-[#382d25]/50 border border-white/10 rounded-2xl p-4 sm:p-5 relative overflow-hidden group">
+        <div className="bg-[#16392c]/50 border border-white/10 rounded-2xl p-4 sm:p-5 relative overflow-hidden group">
           <div className="absolute top-0 right-0 p-3 opacity-10 group-hover:opacity-20 transition text-sky-400">
             <Mountain className="w-16 h-16 -mr-4 -mt-4" />
           </div>
-          <div className="text-xs uppercase tracking-wider text-[#d4bead] flex items-center gap-1.5">
+          <div className="text-xs uppercase tracking-wider text-[#a8c3b4] flex items-center gap-1.5">
             <Mountain className="w-3.5 h-3.5 text-sky-400" />
             Elevación & Relieve
           </div>
@@ -441,7 +441,7 @@ export default function MapaParcelas() {
             {metricas ? `${metricas.elevacion_promedio_msnm} ` : '—'}
             <span className="text-sm font-semibold text-sky-400">m s.n.m.</span>
           </div>
-          <div className="mt-1 text-xs text-[#d4bead]">
+          <div className="mt-1 text-xs text-[#a8c3b4]">
             {metricas?.pendiente_promedio_grados !== undefined
               ? `Pendiente media: ${metricas.pendiente_promedio_grados}° (INEGI CEM 4.0)`
               : 'Altiplano central mexicano'}
@@ -449,19 +449,19 @@ export default function MapaParcelas() {
         </div>
 
         {/* Total Parcelas & Desglose */}
-        <div className="bg-[#382d25]/50 border border-white/10 rounded-2xl p-4 sm:p-5 relative overflow-hidden group">
+        <div className="bg-[#16392c]/50 border border-white/10 rounded-2xl p-4 sm:p-5 relative overflow-hidden group">
           <div className="absolute top-0 right-0 p-3 opacity-10 group-hover:opacity-20 transition text-amber-400">
             <Layers className="w-16 h-16 -mr-4 -mt-4" />
           </div>
-          <div className="text-xs uppercase tracking-wider text-[#d4bead] flex items-center gap-1.5">
+          <div className="text-xs uppercase tracking-wider text-[#a8c3b4] flex items-center gap-1.5">
             <Layers className="w-3.5 h-3.5 text-amber-400" />
             Muestras & División
           </div>
           <div className="mt-2 text-2xl sm:text-3xl font-extrabold text-white">
             {metricas?.total_parcelas ?? 0}
-            <span className="text-xs font-normal text-[#d4bead] ml-2">polígonos</span>
+            <span className="text-xs font-normal text-[#a8c3b4] ml-2">polígonos</span>
           </div>
-          <div className="mt-1 text-xs text-[#d4bead]">
+          <div className="mt-1 text-xs text-[#a8c3b4]">
             {metricas
               ? `${metricas.parcelas_con_rendimiento_real} reales / ${metricas.parcelas_para_prediccion} predicción`
               : 'Analizando...'}
@@ -472,9 +472,9 @@ export default function MapaParcelas() {
       {/* Contenedor del Mapa Interactivo y Panel de Detalle */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Mapa Interactivo */}
-        <div className="lg:col-span-2 bg-[#382d25]/40 border border-white/10 rounded-2xl overflow-hidden shadow-2xl relative flex flex-col min-h-[500px]">
+        <div className="lg:col-span-2 bg-[#16392c]/40 border border-white/10 rounded-2xl overflow-hidden shadow-2xl relative flex flex-col min-h-[500px]">
           {/* Barra superior de controles del mapa */}
-          <div className="px-4 py-2.5 bg-[#27201b]/95 border-b border-white/10 flex flex-wrap items-center justify-between gap-2 text-xs text-[#d4bead]">
+          <div className="px-4 py-2.5 bg-[#10281f]/95 border-b border-white/10 flex flex-wrap items-center justify-between gap-2 text-xs text-[#a8c3b4]">
             <div className="flex items-center gap-3">
               <span className="flex items-center gap-1.5 font-medium">
                 <span className="inline-block w-2.5 h-2.5 rounded-full bg-emerald-500 shadow-sm shadow-emerald-500/50"></span>
@@ -492,7 +492,7 @@ export default function MapaParcelas() {
 
             {/* Indicador de Satélite Esri y Controles de Zoom */}
             <div className="flex items-center gap-2">
-              <span className="hidden sm:inline-flex items-center gap-1.5 text-[11px] text-[#d4bead] bg-white/5 px-2.5 py-1 rounded-xl border border-white/10">
+              <span className="hidden sm:inline-flex items-center gap-1.5 text-[11px] text-[#a8c3b4] bg-white/5 px-2.5 py-1 rounded-xl border border-white/10">
                 <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
                 🛰️ Satélite Esri
               </span>
@@ -522,7 +522,7 @@ export default function MapaParcelas() {
                 <button
                   type="button"
                   onClick={handleResetView}
-                  className="p-1.5 hover:bg-white/20 active:bg-white/30 text-[#d87a52] rounded-lg transition"
+                  className="p-1.5 hover:bg-white/20 active:bg-white/30 text-[#e2b957] rounded-lg transition"
                   title="Reajustar vista a todas las parcelas"
                   aria-label="Reajustar vista"
                 >
@@ -540,7 +540,7 @@ export default function MapaParcelas() {
             />
 
             {/* Botones de zoom flotantes en el mapa */}
-            <div className="absolute top-4 right-4 z-10 flex flex-col gap-1.5 bg-[#27201b]/85 backdrop-blur-md p-1.5 rounded-2xl border border-white/15 shadow-2xl">
+            <div className="absolute top-4 right-4 z-10 flex flex-col gap-1.5 bg-[#10281f]/85 backdrop-blur-md p-1.5 rounded-2xl border border-white/15 shadow-2xl">
               <button
                 type="button"
                 onClick={handleZoomIn}
@@ -562,7 +562,7 @@ export default function MapaParcelas() {
               <button
                 type="button"
                 onClick={handleResetView}
-                className="w-8 h-8 flex items-center justify-center bg-[#d87a52]/20 hover:bg-[#d87a52]/30 text-[#d87a52] active:scale-95 rounded-xl transition border border-[#d87a52]/30"
+                className="w-8 h-8 flex items-center justify-center bg-[#e2b957]/20 hover:bg-[#e2b957]/30 text-[#e2b957] active:scale-95 rounded-xl transition border border-[#e2b957]/30"
                 title="Reajustar vista completa"
                 aria-label="Reajustar vista completa"
               >
@@ -573,8 +573,8 @@ export default function MapaParcelas() {
 
           {/* Loader animado */}
           {loading && (
-            <div className="absolute inset-0 bg-[#27201b]/75 backdrop-blur-sm z-20 flex flex-col items-center justify-center gap-3">
-              <div className="w-10 h-10 border-3 border-[#d87a52] border-t-transparent rounded-full animate-spin"></div>
+            <div className="absolute inset-0 bg-[#10281f]/75 backdrop-blur-sm z-20 flex flex-col items-center justify-center gap-3">
+              <div className="w-10 h-10 border-3 border-[#e2b957] border-t-transparent rounded-full animate-spin"></div>
               <span className="text-sm font-medium text-white">Cargando geometrías satelitales...</span>
             </div>
           )}
@@ -587,11 +587,11 @@ export default function MapaParcelas() {
         </div>
 
         {/* Panel lateral: Detalle de la Parcela Seleccionada */}
-        <div className="bg-[#382d25]/50 border border-white/10 rounded-2xl p-5 flex flex-col justify-between shadow-xl">
+        <div className="bg-[#16392c]/50 border border-white/10 rounded-2xl p-5 flex flex-col justify-between shadow-xl">
           <div>
             <div className="flex items-center justify-between border-b border-white/10 pb-4 mb-4">
               <h3 className="text-lg font-bold text-white flex items-center gap-2">
-                <MapPin className="w-4 h-4 text-[#d87a52]" />
+                <MapPin className="w-4 h-4 text-[#e2b957]" />
                 Detalle de Parcela
               </h3>
               {selectedParcela ? (
@@ -613,67 +613,67 @@ export default function MapaParcelas() {
 
             {selectedParcela ? (
               <div className="space-y-4">
-                <div className="bg-[#27201b]/80 p-3.5 rounded-xl border border-white/5">
-                  <div className="text-[11px] text-[#d4bead] uppercase tracking-wider">Identificador</div>
+                <div className="bg-[#10281f]/80 p-3.5 rounded-xl border border-white/5">
+                  <div className="text-[11px] text-[#a8c3b4] uppercase tracking-wider">Identificador</div>
                   <div className="text-xl font-extrabold text-white mt-0.5">{selectedParcela.id_poligono}</div>
-                  <div className="text-xs text-[#d4bead] mt-1">{selectedParcela.municipio}, {selectedParcela.estado}</div>
+                  <div className="text-xs text-[#a8c3b4] mt-1">{selectedParcela.municipio}, {selectedParcela.estado}</div>
                 </div>
 
                 <div className="grid grid-cols-2 gap-3">
-                  <div className="bg-[#27201b]/60 p-3 rounded-xl border border-white/5">
-                    <span className="text-[11px] text-[#d4bead] block">Superficie</span>
+                  <div className="bg-[#10281f]/60 p-3 rounded-xl border border-white/5">
+                    <span className="text-[11px] text-[#a8c3b4] block">Superficie</span>
                     <span className="text-base font-bold text-white">{selectedParcela.area_ha} ha</span>
                   </div>
 
-                  <div className="bg-[#27201b]/60 p-3 rounded-xl border border-white/5">
-                    <span className="text-[11px] text-[#d4bead] block">Rendimiento</span>
+                  <div className="bg-[#10281f]/60 p-3 rounded-xl border border-white/5">
+                    <span className="text-[11px] text-[#a8c3b4] block">Rendimiento</span>
                     {selectedParcela.rendimiento_t_ha !== null ? (
-                      <span className="text-base font-bold text-[#d87a52]">{selectedParcela.rendimiento_t_ha} t/ha</span>
+                      <span className="text-base font-bold text-[#e2b957]">{selectedParcela.rendimiento_t_ha} t/ha</span>
                     ) : (
                       <span className="text-sm font-semibold text-amber-300/90 italic">Por predecir (Reto)</span>
                     )}
                   </div>
 
-                  <div className="bg-[#27201b]/60 p-3 rounded-xl border border-white/5">
-                    <span className="text-[11px] text-[#d4bead] block">Elevación CEM 4.0</span>
+                  <div className="bg-[#10281f]/60 p-3 rounded-xl border border-white/5">
+                    <span className="text-[11px] text-[#a8c3b4] block">Elevación CEM 4.0</span>
                     <span className="text-base font-bold text-white">{selectedParcela.elevacion_msnm} m</span>
                   </div>
 
-                  <div className="bg-[#27201b]/60 p-3 rounded-xl border border-white/5">
-                    <span className="text-[11px] text-[#d4bead] block">Pendiente del Terreno</span>
+                  <div className="bg-[#10281f]/60 p-3 rounded-xl border border-white/5">
+                    <span className="text-[11px] text-[#a8c3b4] block">Pendiente del Terreno</span>
                     <span className="text-base font-bold text-sky-400">
                       {selectedParcela.pendiente_grados !== undefined ? `${selectedParcela.pendiente_grados}°` : '—'}
                     </span>
                   </div>
                 </div>
 
-                <div className="bg-[#27201b]/60 p-3 rounded-xl border border-white/5 space-y-2">
+                <div className="bg-[#10281f]/60 p-3 rounded-xl border border-white/5 space-y-2">
                   <div className="flex items-center justify-between text-xs">
-                    <span className="text-[#d4bead]">Relieve agronómico:</span>
+                    <span className="text-[#a8c3b4]">Relieve agronómico:</span>
                     <span className="font-semibold text-emerald-400">{selectedParcela.tipo_relieve || 'Suave'}</span>
                   </div>
                   <div className="flex items-center justify-between text-xs">
-                    <span className="text-[#d4bead]">Conjunto de datos:</span>
+                    <span className="text-[#a8c3b4]">Conjunto de datos:</span>
                     <span className="font-semibold text-white">{selectedParcela.conjunto}</span>
                   </div>
                   <div className="flex items-center justify-between text-xs">
-                    <span className="text-[#d4bead]">Clasificación:</span>
-                    <span className="font-semibold text-[#d87a52]">{selectedParcela.nivel_rendimiento}</span>
+                    <span className="text-[#a8c3b4]">Clasificación:</span>
+                    <span className="font-semibold text-[#e2b957]">{selectedParcela.nivel_rendimiento}</span>
                   </div>
                   <div className="flex items-center justify-between text-xs">
-                    <span className="text-[#d4bead]">Tipo de dato:</span>
+                    <span className="text-[#a8c3b4]">Tipo de dato:</span>
                     <span className="font-semibold text-white">
                       {selectedParcela.es_prediccion ? 'Conjunto de Predicción (Sin inferencia previa)' : 'Rendimiento Verificado'}
                     </span>
                   </div>
                   <div className="flex items-center justify-between text-xs">
-                    <span className="text-[#d4bead]">Fuente Topográfica:</span>
+                    <span className="text-[#a8c3b4]">Fuente Topográfica:</span>
                     <span className="font-semibold text-sky-400">INEGI CEM v4 (5m)</span>
                   </div>
                 </div>
               </div>
             ) : (
-              <div className="py-12 px-4 text-center text-[#d4bead] flex flex-col items-center justify-center">
+              <div className="py-12 px-4 text-center text-[#a8c3b4] flex flex-col items-center justify-center">
                 <Info className="w-10 h-10 text-white/20 mb-3" />
                 <p className="text-sm font-medium text-white/80">Ninguna parcela seleccionada</p>
                 <p className="text-xs text-white/50 mt-1 max-w-xs">
@@ -683,7 +683,7 @@ export default function MapaParcelas() {
             )}
           </div>
 
-          <div className="mt-6 pt-4 border-t border-white/10 text-[11px] text-[#d4bead]/80 flex items-center gap-2">
+          <div className="mt-6 pt-4 border-t border-white/10 text-[11px] text-[#a8c3b4]/80 flex items-center gap-2">
             <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
             <span>Coordenadas proyectadas en EPSG:4326 (WGS 84).</span>
           </div>

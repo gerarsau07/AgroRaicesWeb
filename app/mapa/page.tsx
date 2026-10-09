@@ -9,7 +9,7 @@ export const metadata: Metadata = {
 
 export default function MapaPage() {
   return (
-    <main className="min-h-screen bg-[#27201b]">
+    <main className="min-h-screen bg-[#10281f]">
       <MapaView />
     </main>
   )
