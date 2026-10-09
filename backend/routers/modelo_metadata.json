@@ -1,0 +1,39 @@
+{
+  "model_name": "AgroRaices Modelo Maestro V6",
+  "version": "6.0.0",
+  "target": "RENDIMIENTO_T_HA",
+  "unit": "toneladas por hectárea (t/ha)",
+  "official_metrics_oof": {
+    "pearson_r_global": 0.8342,
+    "r2_global": 0.6951,
+    "mae_global_kg": 323.7,
+    "rmse_global_ton": 0.4682,
+    "acierto_comercial_500kg": 75.4
+  },
+  "supported_states": [
+    "Hidalgo",
+    "Puebla",
+    "Tlaxcala"
+  ],
+  "supported_municipalities": {
+    "Hidalgo": [
+      "Almoloya",
+      "Apan",
+      "Cuautepec de Hinojosa",
+      "Emiliano Zapata",
+      "Singuilucan",
+      "Tepeapulco"
+    ],
+    "Puebla": [
+      "Chignahuapan"
+    ],
+    "Tlaxcala": [
+      "Calpulalpan",
+      "Nanacamilpa de Mariano Arista"
+    ]
+  },
+  "clamping_range": [
+    1.5,
+    5.6
+  ]
+}

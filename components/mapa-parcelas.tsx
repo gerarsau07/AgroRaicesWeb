@@ -29,6 +29,13 @@ import {
   CloudRain,
   Sun,
   CloudSun,
+  Upload,
+  FileText,
+  FileArchive,
+  Table,
+  AlertCircle,
+  XCircle,
+  Satellite,
 } from 'lucide-react'
 
 export interface ParcelaProperties {
@@ -191,6 +198,49 @@ export const MUNICIPIOS_POR_ESTADO: Record<string, string[]> = {
   Tlaxcala: ['Calpulalpan', 'Nanacamilpa de Mariano Arista'],
 }
 
+export interface PrediccionItem {
+  plot: string
+  rendimiento_t_ha: number
+  rendimiento_kg_ha: number
+  produccion_estimada_t: number
+  estado: string
+  municipio?: string
+  nivel_potencial: string
+  diagnostico: string
+  confianza_r2: number
+}
+
+export interface BatchResultResponse {
+  total_parcelas: number
+  rendimiento_promedio_t_ha: number
+  produccion_total_t: number
+  conteo_alto: number
+  conteo_medio: number
+  conteo_bajo: number
+  predicciones: PrediccionItem[]
+}
+
+export interface ArchivoSlot {
+  file: File | null
+  nombre: string
+  cargado: boolean
+  tamanoKb?: string
+}
+
+export interface ArchivosRequeridosState {
+  parcelas: ArchivoSlot
+  basico: ArchivoSlot
+  pro: ArchivoSlot
+  topografia: ArchivoSlot
+}
+
+const initialArchivosState: ArchivosRequeridosState = {
+  parcelas: { file: null, nombre: '', cargado: false },
+  basico: { file: null, nombre: '', cargado: false },
+  pro: { file: null, nombre: '', cargado: false },
+  topografia: { file: null, nombre: '', cargado: false },
+}
+
 interface FormValuesAnalista {
   plot: string
   area: string
@@ -251,11 +301,22 @@ export default function MapaParcelas() {
   const [manualTipoTerreno, setManualTipoTerreno] = useState<'plano' | 'ladera_suave' | 'cerro'>('plano')
   const [manualRegimenAgua, setManualRegimenAgua] = useState<'temporal_bueno' | 'temporal_regular' | 'riego'>('temporal_bueno')
 
+  // Sub-pestaña del analista: 'parametros' (en vivo) | 'archivos' (batch .csv / .zip)
+  const [subPestanaAnalista, setSubPestanaAnalista] = useState<'parametros' | 'archivos'>('parametros')
+
   // Estado del Formulario de Analista
   const [analistaValues, setAnalistaValues] = useState<FormValuesAnalista>(initialAnalistaValues)
   const [analistaLoading, setAnalistaLoading] = useState(false)
   const [analistaResult, setAnalistaResult] = useState<number | null>(null)
+  const [analistaDiag, setAnalistaDiag] = useState<string>('')
+  const [analistaPotencial, setAnalistaPotencial] = useState<string>('')
   const [analistaError, setAnalistaError] = useState('')
+
+  // Estado de Inferencia por Lotes con Verificación Multi-Archivo (4 Fuentes Requeridas)
+  const [archivosState, setArchivosState] = useState<ArchivosRequeridosState>(initialArchivosState)
+  const [batchLoading, setBatchLoading] = useState(false)
+  const [batchResult, setBatchResult] = useState<BatchResultResponse | null>(null)
+  const [batchError, setBatchError] = useState('')
 
   // Zoom controls
   const handleZoomIn = () => {
@@ -767,7 +828,7 @@ export default function MapaParcelas() {
   }
 
   // --- LÓGICA DEL MODO ANALISTA ---
-  const handleCalcularAnalista = (e: React.FormEvent) => {
+  const handleCalcularAnalista = async (e: React.FormEvent) => {
     e.preventDefault()
     setAnalistaError('')
     const nums = [
@@ -786,12 +847,39 @@ export default function MapaParcelas() {
     setAnalistaLoading(true)
     setAnalistaResult(null)
 
-    setTimeout(() => {
+    try {
+      const res = await fetch('/api/predict', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          plot: analistaValues.plot || 'Parcela_Analista',
+          area: Number(analistaValues.area),
+          temp: Number(analistaValues.temp),
+          ndwi: Number(analistaValues.ndwi),
+          evi: Number(analistaValues.evi),
+          lai: Number(analistaValues.lai),
+          estado: selectedParcela?.estado || 'Puebla',
+          municipio: selectedParcela?.municipio || 'Chignahuapan',
+          elevacion: selectedParcela?.elevacion_msnm,
+          pendiente: selectedParcela?.pendiente_grados,
+        }),
+      })
+
+      if (!res.ok) {
+        throw new Error('Error al conectar con el motor de inferencia V6')
+      }
+
+      const json = await res.json()
+      setAnalistaResult(Number(json.rendimiento_t_ha))
+      setAnalistaDiag(json.diagnostico || '')
+      setAnalistaPotencial(json.nivel_potencial || '')
+    } catch {
+      // Fallback local en caso de error
       const [, temp, ndwi, evi, lai] = nums
-      const prediction = Math.min(
+      const predFallback = Math.min(
         5.6,
         Math.max(
-          2.0,
+          1.5,
           3.35 +
             (Number(evi) - 0.2) * 4 +
             (Number(lai) - 0.3) * 2.3 +
@@ -799,9 +887,12 @@ export default function MapaParcelas() {
             (Number(temp) + 0.6) * 1.8
         )
       )
-      setAnalistaResult(Number(prediction.toFixed(2)))
+      setAnalistaResult(Number(predFallback.toFixed(2)))
+      setAnalistaDiag('Inferencia local estimada.')
+      setAnalistaPotencial(predFallback >= 4.2 ? 'alto' : predFallback >= 3.2 ? 'medio' : 'bajo')
+    } finally {
       setAnalistaLoading(false)
-    }, 700)
+    }
   }
 
   const cargarTelemetriaSeleccionadaAnalista = () => {
@@ -816,6 +907,144 @@ export default function MapaParcelas() {
     })
     setAnalistaResult(null)
     setAnalistaError('')
+  }
+
+  // Clasificar y asignar archivos arrastrados o seleccionados a sus ranuras correspondientes
+  const clasificarYAsignarArchivos = async (archivosList: File[]) => {
+    setBatchError('')
+    const nuevoEstado = { ...archivosState }
+
+    for (const file of archivosList) {
+      try {
+        const text = await file.slice(0, 4096).text()
+        const firstLine = text.split(/\r?\n/)[0]?.toLowerCase() || ''
+        const fname = file.name.toLowerCase()
+
+        let slot: keyof ArchivosRequeridosState | null = null
+
+        if (firstLine.includes('elevacion') || firstLine.includes('pendiente') || fname.includes('topografia')) {
+          slot = 'topografia'
+        } else if (firstLine.includes('vi6t') || (firstLine.includes('sensor') && firstLine.includes('dswi')) || fname.includes('basico')) {
+          slot = 'basico'
+        } else if (firstLine.includes('msavi') || (firstLine.includes('lai') && !firstLine.includes('vi6t')) || fname.includes('pro')) {
+          slot = 'pro'
+        } else if (firstLine.includes('conjunto') || firstLine.includes('area_ha') || firstLine.includes('área_ha') || fname.includes('parcelas') || fname.includes('rendimiento')) {
+          slot = 'parcelas'
+        }
+
+        if (slot) {
+          nuevoEstado[slot] = {
+            file,
+            nombre: file.name,
+            cargado: true,
+            tamanoKb: (file.size / 1024).toFixed(1),
+          }
+        }
+      } catch {
+        continue
+      }
+    }
+
+    setArchivosState(nuevoEstado)
+  }
+
+  const asignarSlotIndividual = (slotKey: keyof ArchivosRequeridosState, file: File) => {
+    setBatchError('')
+    setArchivosState((prev) => ({
+      ...prev,
+      [slotKey]: {
+        file,
+        nombre: file.name,
+        cargado: true,
+        tamanoKb: (file.size / 1024).toFixed(1),
+      },
+    }))
+  }
+
+  const conteoCargados = Object.values(archivosState).filter((s) => s.cargado).length
+  const todosListos = conteoCargados === 4
+
+  // Inferencia por lotes con los 4 archivos verificados
+  const handleProcesarArchivoLote = async () => {
+    if (!todosListos) {
+      setBatchError('Debes subir los 4 archivos requeridos para que el modelo pueda ejecutar la inferencia.')
+      return
+    }
+
+    setBatchLoading(true)
+    setBatchError('')
+
+    try {
+      const formData = new FormData()
+      Object.entries(archivosState).forEach(([key, slot]) => {
+        if (slot.file) {
+          formData.append('files', slot.file, slot.nombre)
+        }
+      })
+
+      const res = await fetch('/api/predict', {
+        method: 'POST',
+        body: formData,
+      })
+
+      if (!res.ok) {
+        const errJson = await res.json().catch(() => ({}))
+        const errorMsg = errJson.error || errJson.detail?.error || 'Error procesando los archivos.'
+        throw new Error(errorMsg)
+      }
+
+      const json: BatchResultResponse = await res.json()
+      setBatchResult(json)
+    } catch (err: any) {
+      setBatchError(err.message || 'No se pudieron procesar los archivos.')
+    } finally {
+      setBatchLoading(false)
+    }
+  }
+
+  // Cargar dataset oficial de muestra (las 4 fuentes oficiales)
+  const handleCargarDemoDataset = async () => {
+    setBatchLoading(true)
+    setBatchError('')
+
+    setArchivosState({
+      parcelas: { file: null, nombre: 'ID_area_rendimiento_70_30_Reto_AgroCebada.csv', cargado: true, tamanoKb: '4.8' },
+      basico: { file: null, nombre: 'Conjunto_datos_BASICO_AgroCebada2026.csv', cargado: true, tamanoKb: '14,240' },
+      pro: { file: null, nombre: 'Conjunto_datos_PRO_AgroCebada.csv', cargado: true, tamanoKb: '5,620' },
+      topografia: { file: null, nombre: 'topografia_inegi_cem4_parcelas.csv', cargado: true, tamanoKb: '8.2' },
+    })
+
+    try {
+      const res = await fetch('/api/predict?demo=true')
+      if (!res.ok) {
+        throw new Error('No se pudo cargar el dataset oficial de muestra.')
+      }
+      const json: BatchResultResponse = await res.json()
+      setBatchResult(json)
+    } catch (err: any) {
+      setBatchError(err.message || 'Error cargando dataset demo.')
+    } finally {
+      setBatchLoading(false)
+    }
+  }
+
+  // Descargar CSV con columnas predichas por el modelo V6
+  const handleDescargarCsvLote = () => {
+    if (!batchResult) return
+    const lines = [
+      'ID_POLIGONO,Estado,Municipio,Rendimiento_Predicho_t_ha,Rendimiento_kg_ha,Produccion_Estimada_t,Nivel_Potencial,Diagnostico,Confianza_R2',
+      ...batchResult.predicciones.map(
+        (p) =>
+          `"${p.plot}","${p.estado}","${p.municipio || ''}",${p.rendimiento_t_ha},${p.rendimiento_kg_ha},${p.produccion_estimada_t},"${p.nivel_potencial}","${p.diagnostico}",${p.confianza_r2}`
+      ),
+    ]
+    const blob = new Blob([lines.join('\n')], { type: 'text/csv;charset=utf-8;' })
+    const url = URL.createObjectURL(blob)
+    const link = document.createElement('a')
+    link.href = url
+    link.download = `Predicciones_V6_Lote_${Date.now()}.csv`
+    link.click()
+    URL.revokeObjectURL(url)
   }
 
   const metricas = data?.metricas
@@ -1875,205 +2104,672 @@ export default function MapaParcelas() {
         {/* --- VISTA PERFIL ANALISTA --- */}
         {perfilActivo === 'analista' && (
           <div className="bg-[#16392c]/60 border border-white/15 rounded-3xl p-6 sm:p-8 shadow-2xl backdrop-blur-md">
+            {/* Cabecera y Sub-Pestañas del Analista */}
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-white/10 pb-5 mb-6">
               <div>
                 <div className="inline-flex items-center gap-2 px-2.5 py-0.5 rounded-md bg-sky-500/20 text-sky-300 text-xs font-medium mb-1">
-                  <Sliders className="w-3.5 h-3.5" /> Modo Técnico y Paramétrico
+                  <Sliders className="w-3.5 h-3.5" /> Modo Técnico y de Investigación
                 </div>
-                <h3 className="text-xl font-bold text-white">Laboratorio de Inferencia Espectral</h3>
+                <h3 className="text-xl sm:text-2xl font-bold text-white">Laboratorio de Modelado AgroCebada V6</h3>
                 <p className="text-xs text-[#a8c3b4] mt-0.5">
-                  Ajusta los índices espectrales y variables biofísicas o carga directamente los datos de cualquier polígono del mapa.
+                  Evalúa polígonos individuales con parámetros biofísicos o procesa datasets completos en formato .csv o .zip.
                 </p>
               </div>
 
-              {selectedParcela && (
+              {subPestanaAnalista === 'parametros' && selectedParcela && (
                 <button
                   type="button"
                   onClick={cargarTelemetriaSeleccionadaAnalista}
                   className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-sky-500/20 hover:bg-sky-500/30 border border-sky-500/40 text-sky-200 text-xs font-semibold transition cursor-pointer"
                 >
-                  <MapPin className="w-3.5 h-3.5" /> Cargar {selectedParcela.id_poligono}
+                  <MapPin className="w-3.5 h-3.5" /> Cargar telemetría de {selectedParcela.id_poligono}
                 </button>
               )}
             </div>
 
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-              <form onSubmit={handleCalcularAnalista} className="space-y-4">
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
-                  <label className="flex flex-col gap-1.5 text-xs font-medium text-[#a8c3b4]">
-                    ID de Polígono / Predio
-                    <input
-                      type="text"
-                      required
-                      placeholder="Ej. AGC_001"
-                      value={analistaValues.plot}
-                      onChange={(e) => setAnalistaValues({ ...analistaValues, plot: e.target.value })}
-                      className="h-10 rounded-xl border border-white/10 bg-[#10281f]/80 px-3 text-xs text-white outline-none focus:border-[#e2b957] focus:ring-1 focus:ring-[#e2b957]"
-                    />
-                  </label>
+            {/* Selector de Sub-Pestañas */}
+            <div className="flex border-b border-white/10 mb-6 gap-2">
+              <button
+                type="button"
+                onClick={() => setSubPestanaAnalista('parametros')}
+                className={`pb-3 px-4 text-xs sm:text-sm font-bold flex items-center gap-2 border-b-2 transition cursor-pointer ${
+                  subPestanaAnalista === 'parametros'
+                    ? 'border-sky-400 text-white'
+                    : 'border-transparent text-[#a8c3b4] hover:text-white'
+                }`}
+              >
+                <Sliders className="w-4 h-4 text-sky-400" />
+                <span>Inferencia Paramétrica (En vivo)</span>
+              </button>
 
-                  <label className="flex flex-col gap-1.5 text-xs font-medium text-[#a8c3b4]">
-                    Superficie (ha)
-                    <input
-                      type="number"
-                      step="any"
-                      min="0.01"
-                      required
-                      placeholder="Ej. 15.5"
-                      value={analistaValues.area}
-                      onChange={(e) => setAnalistaValues({ ...analistaValues, area: e.target.value })}
-                      className="h-10 rounded-xl border border-white/10 bg-[#10281f]/80 px-3 text-xs text-white outline-none focus:border-[#e2b957] focus:ring-1 focus:ring-[#e2b957]"
-                    />
-                  </label>
+              <button
+                type="button"
+                onClick={() => setSubPestanaAnalista('archivos')}
+                className={`pb-3 px-4 text-xs sm:text-sm font-bold flex items-center gap-2 border-b-2 transition cursor-pointer ${
+                  subPestanaAnalista === 'archivos'
+                    ? 'border-sky-400 text-white'
+                    : 'border-transparent text-[#a8c3b4] hover:text-white'
+                }`}
+              >
+                <Upload className="w-4 h-4 text-sky-400" />
+                <span>Procesar Archivos (.csv / .zip)</span>
+                <span className="px-1.5 py-0.2 rounded text-[9px] bg-sky-500/20 text-sky-300">Lote</span>
+              </button>
+            </div>
 
-                  <label className="flex flex-col gap-1.5 text-xs font-medium text-[#a8c3b4]">
-                    vi6t_max · Temperatura satelital
-                    <input
-                      type="number"
-                      step="any"
-                      required
-                      placeholder="-0.58"
-                      value={analistaValues.temp}
-                      onChange={(e) => setAnalistaValues({ ...analistaValues, temp: e.target.value })}
-                      className="h-10 rounded-xl border border-white/10 bg-[#10281f]/80 px-3 text-xs text-white outline-none focus:border-[#e2b957] focus:ring-1 focus:ring-[#e2b957]"
-                    />
-                  </label>
+            {/* PESTAÑA A: INFERENCIA PARAMÉTRICA INDIVIDUAL */}
+            {subPestanaAnalista === 'parametros' && (
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                <form onSubmit={handleCalcularAnalista} className="space-y-4">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+                    <label className="flex flex-col gap-1.5 text-xs font-medium text-[#a8c3b4]">
+                      ID de Polígono / Predio
+                      <input
+                        type="text"
+                        required
+                        placeholder="Ej. AGC_001"
+                        value={analistaValues.plot}
+                        onChange={(e) => setAnalistaValues({ ...analistaValues, plot: e.target.value })}
+                        className="h-10 rounded-xl border border-white/10 bg-[#10281f]/80 px-3 text-xs text-white outline-none focus:border-[#e2b957] focus:ring-1 focus:ring-[#e2b957]"
+                      />
+                    </label>
 
-                  <label className="flex flex-col gap-1.5 text-xs font-medium text-[#a8c3b4]">
-                    ndwi_mean · Estrés hídrico
-                    <input
-                      type="number"
-                      step="any"
-                      required
-                      placeholder="0.22"
-                      value={analistaValues.ndwi}
-                      onChange={(e) => setAnalistaValues({ ...analistaValues, ndwi: e.target.value })}
-                      className="h-10 rounded-xl border border-white/10 bg-[#10281f]/80 px-3 text-xs text-white outline-none focus:border-[#e2b957] focus:ring-1 focus:ring-[#e2b957]"
-                    />
-                  </label>
+                    <label className="flex flex-col gap-1.5 text-xs font-medium text-[#a8c3b4]">
+                      Superficie (ha)
+                      <input
+                        type="number"
+                        step="any"
+                        min="0.01"
+                        required
+                        placeholder="Ej. 15.5"
+                        value={analistaValues.area}
+                        onChange={(e) => setAnalistaValues({ ...analistaValues, area: e.target.value })}
+                        className="h-10 rounded-xl border border-white/10 bg-[#10281f]/80 px-3 text-xs text-white outline-none focus:border-[#e2b957] focus:ring-1 focus:ring-[#e2b957]"
+                      />
+                    </label>
 
-                  <label className="flex flex-col gap-1.5 text-xs font-medium text-[#a8c3b4]">
-                    evi_std · Variabilidad de verdor
-                    <input
-                      type="number"
-                      step="any"
-                      required
-                      placeholder="0.26"
-                      value={analistaValues.evi}
-                      onChange={(e) => setAnalistaValues({ ...analistaValues, evi: e.target.value })}
-                      className="h-10 rounded-xl border border-white/10 bg-[#10281f]/80 px-3 text-xs text-white outline-none focus:border-[#e2b957] focus:ring-1 focus:ring-[#e2b957]"
-                    />
-                  </label>
+                    <label className="flex flex-col gap-1.5 text-xs font-medium text-[#a8c3b4]">
+                      vi6t_max · Temperatura satelital
+                      <input
+                        type="number"
+                        step="any"
+                        required
+                        placeholder="-0.58"
+                        value={analistaValues.temp}
+                        onChange={(e) => setAnalistaValues({ ...analistaValues, temp: e.target.value })}
+                        className="h-10 rounded-xl border border-white/10 bg-[#10281f]/80 px-3 text-xs text-white outline-none focus:border-[#e2b957] focus:ring-1 focus:ring-[#e2b957]"
+                      />
+                    </label>
 
-                  <label className="flex flex-col gap-1.5 text-xs font-medium text-[#a8c3b4]">
-                    lai_std · Área foliar
-                    <input
-                      type="number"
-                      step="any"
-                      required
-                      placeholder="0.38"
-                      value={analistaValues.lai}
-                      onChange={(e) => setAnalistaValues({ ...analistaValues, lai: e.target.value })}
-                      className="h-10 rounded-xl border border-white/10 bg-[#10281f]/80 px-3 text-xs text-white outline-none focus:border-[#e2b957] focus:ring-1 focus:ring-[#e2b957]"
-                    />
-                  </label>
-                </div>
+                    <label className="flex flex-col gap-1.5 text-xs font-medium text-[#a8c3b4]">
+                      ndwi_mean · Estrés hídrico
+                      <input
+                        type="number"
+                        step="any"
+                        required
+                        placeholder="0.22"
+                        value={analistaValues.ndwi}
+                        onChange={(e) => setAnalistaValues({ ...analistaValues, ndwi: e.target.value })}
+                        className="h-10 rounded-xl border border-white/10 bg-[#10281f]/80 px-3 text-xs text-white outline-none focus:border-[#e2b957] focus:ring-1 focus:ring-[#e2b957]"
+                      />
+                    </label>
 
-                {analistaError && (
-                  <p className="text-xs text-rose-400">{analistaError}</p>
-                )}
+                    <label className="flex flex-col gap-1.5 text-xs font-medium text-[#a8c3b4]">
+                      evi_std · Variabilidad de verdor
+                      <input
+                        type="number"
+                        step="any"
+                        required
+                        placeholder="0.26"
+                        value={analistaValues.evi}
+                        onChange={(e) => setAnalistaValues({ ...analistaValues, evi: e.target.value })}
+                        className="h-10 rounded-xl border border-white/10 bg-[#10281f]/80 px-3 text-xs text-white outline-none focus:border-[#e2b957] focus:ring-1 focus:ring-[#e2b957]"
+                      />
+                    </label>
 
-                <div className="pt-2 flex items-center gap-3">
-                  <button
-                    type="submit"
-                    disabled={analistaLoading}
-                    className="flex-1 py-3 px-4 rounded-xl bg-sky-600 hover:bg-sky-500 text-white font-semibold text-xs transition cursor-pointer shadow-lg disabled:opacity-50 flex items-center justify-center gap-2"
-                  >
-                    {analistaLoading ? 'Calculando ensamble...' : 'Ejecutar Inferencia del Modelo'}
-                    {!analistaLoading && <ArrowRight className="w-4 h-4" />}
-                  </button>
-
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setAnalistaValues(initialAnalistaValues)
-                      setAnalistaResult(null)
-                    }}
-                    className="py-3 px-3 rounded-xl bg-white/5 hover:bg-white/10 text-[#a8c3b4] text-xs transition cursor-pointer"
-                    title="Reiniciar valores"
-                  >
-                    <RefreshCw className="w-4 h-4" />
-                  </button>
-                </div>
-              </form>
-
-              <div className="bg-[#10281f] border border-white/10 rounded-2xl p-6 flex flex-col justify-between shadow-xl min-h-[300px]">
-                <div>
-                  <div className="flex items-center justify-between border-b border-white/10 pb-3">
-                    <span className="text-xs uppercase tracking-wider text-sky-400 font-bold">
-                      Salida del Ensamble
-                    </span>
-                    <span className="text-[10px] px-2 py-0.5 rounded bg-sky-500/20 text-sky-300">
-                      Random Forest + Gradient Boost
-                    </span>
+                    <label className="flex flex-col gap-1.5 text-xs font-medium text-[#a8c3b4]">
+                      lai_std · Área foliar
+                      <input
+                        type="number"
+                        step="any"
+                        required
+                        placeholder="0.38"
+                        value={analistaValues.lai}
+                        onChange={(e) => setAnalistaValues({ ...analistaValues, lai: e.target.value })}
+                        className="h-10 rounded-xl border border-white/10 bg-[#10281f]/80 px-3 text-xs text-white outline-none focus:border-[#e2b957] focus:ring-1 focus:ring-[#e2b957]"
+                      />
+                    </label>
                   </div>
 
-                  {analistaResult === null ? (
-                    <div className="py-12 text-center text-[#a8c3b4] flex flex-col items-center">
-                      <BarChart3 className="w-10 h-10 text-white/20 mb-3" />
-                      <p className="text-sm font-semibold text-white">Parámetros listos para inferencia</p>
-                      <p className="text-xs text-white/50 max-w-xs mt-1">
-                        Presiona «Ejecutar Inferencia del Modelo» para obtener el rendimiento estimado en tiempo real.
-                      </p>
-                    </div>
-                  ) : (
-                    <div className="py-4 space-y-4">
-                      <div>
-                        <span className="text-xs text-[#a8c3b4]">Rendimiento Predicho:</span>
-                        <div className="text-4xl font-black text-[#e2b957] mt-1">
-                          {analistaResult.toFixed(2)} <span className="text-lg font-normal text-white">t/ha</span>
-                        </div>
-                        <div className="text-xs text-[#a8c3b4] mt-0.5">
-                          ≈ {Math.round(analistaResult * 1000).toLocaleString('es-MX')} kg/ha
-                        </div>
-                      </div>
-
-                      <div className="p-3 rounded-xl bg-white/5 border border-white/5 grid grid-cols-2 gap-2 text-xs">
-                        <div>
-                          <span className="text-[#a8c3b4] block">Producción Total:</span>
-                          <b className="text-white">
-                            {(analistaResult * Number(analistaValues.area)).toFixed(1)} t
-                          </b>
-                        </div>
-                        <div>
-                          <span className="text-[#a8c3b4] block">Diagnóstico:</span>
-                          <b className={analistaResult >= 4.2 ? 'text-emerald-400' : analistaResult >= 3.2 ? 'text-amber-400' : 'text-rose-400'}>
-                            {analistaResult >= 4.2 ? 'Vigor Óptimo' : analistaResult >= 3.2 ? 'Promedio' : 'Estrés'}
-                          </b>
-                        </div>
-                      </div>
-
-                      {selectedParcela && selectedParcela.rendimiento_t_ha !== null && (
-                        <div className="p-3 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-xs">
-                          <span className="text-emerald-300 font-semibold block">Validación Cruzada (Residuo):</span>
-                          <div className="text-white mt-1">
-                            Real: <b>{selectedParcela.rendimiento_t_ha} t/ha</b> · Predicho: <b>{analistaResult} t/ha</b>
-                          </div>
-                          <div className="text-[#a8c3b4] mt-0.5">
-                            Error residual absoluto: <b>{Math.abs(selectedParcela.rendimiento_t_ha - analistaResult).toFixed(2)} t/ha</b>
-                          </div>
-                        </div>
-                      )}
-                    </div>
+                  {analistaError && (
+                    <p className="text-xs text-rose-400">{analistaError}</p>
                   )}
-                </div>
 
-                <div className="pt-3 border-t border-white/10 text-[11px] text-[#a8c3b4] flex items-center justify-between">
-                  <span>Inferencia local en cliente Next.js</span>
-                  <span>AgroCebada 2026</span>
+                  <div className="pt-2 flex items-center gap-3">
+                    <button
+                      type="submit"
+                      disabled={analistaLoading}
+                      className="flex-1 py-3 px-4 rounded-xl bg-sky-600 hover:bg-sky-500 text-white font-semibold text-xs transition cursor-pointer shadow-lg disabled:opacity-50 flex items-center justify-center gap-2"
+                    >
+                      {analistaLoading ? 'Calculando ensamble V6...' : 'Ejecutar Inferencia del Modelo'}
+                      {!analistaLoading && <ArrowRight className="w-4 h-4" />}
+                    </button>
+
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setAnalistaValues(initialAnalistaValues)
+                        setAnalistaResult(null)
+                      }}
+                      className="py-3 px-3 rounded-xl bg-white/5 hover:bg-white/10 text-[#a8c3b4] text-xs transition cursor-pointer"
+                      title="Reiniciar valores"
+                    >
+                      <RefreshCw className="w-4 h-4" />
+                    </button>
+                  </div>
+                </form>
+
+                {/* Panel de Salida del Ensamble V6 */}
+                <div className="bg-[#10281f] border border-white/10 rounded-2xl p-6 flex flex-col justify-between shadow-xl min-h-[300px]">
+                  <div>
+                    <div className="flex items-center justify-between border-b border-white/10 pb-3">
+                      <span className="text-xs uppercase tracking-wider text-sky-400 font-bold">
+                        Salida Oficial Modelo V6
+                      </span>
+                      <span className="text-[10px] px-2 py-0.5 rounded bg-sky-500/20 text-sky-300">
+                        ExtraTrees + SVR + Huber
+                      </span>
+                    </div>
+
+                    {analistaResult === null ? (
+                      <div className="py-12 text-center text-[#a8c3b4] flex flex-col items-center">
+                        <BarChart3 className="w-10 h-10 text-white/20 mb-3" />
+                        <p className="text-sm font-semibold text-white">Parámetros listos para inferencia</p>
+                        <p className="text-xs text-white/50 max-w-xs mt-1">
+                          Presiona «Ejecutar Inferencia del Modelo» para obtener el rendimiento oficial y métricas de error.
+                        </p>
+                      </div>
+                    ) : (
+                      <div className="py-4 space-y-4">
+                        <div>
+                          <span className="text-xs text-[#a8c3b4]">Rendimiento Predicho:</span>
+                          <div className="text-4xl font-black text-[#e2b957] mt-1">
+                            {analistaResult.toFixed(2)} <span className="text-lg font-normal text-white">t/ha</span>
+                          </div>
+                          <div className="text-xs text-[#a8c3b4] mt-0.5">
+                            ≈ {Math.round(analistaResult * 1000).toLocaleString('es-MX')} kg/ha
+                          </div>
+                        </div>
+
+                        <div className="p-3 rounded-xl bg-white/5 border border-white/5 grid grid-cols-2 gap-2 text-xs">
+                          <div>
+                            <span className="text-[#a8c3b4] block">Producción Total:</span>
+                            <b className="text-white">
+                              {(analistaResult * Number(analistaValues.area)).toFixed(1)} t
+                            </b>
+                          </div>
+                          <div>
+                            <span className="text-[#a8c3b4] block">Nivel Potencial:</span>
+                            <b className={analistaPotencial === 'alto' ? 'text-emerald-400' : analistaPotencial === 'medio' ? 'text-amber-400' : 'text-rose-400'}>
+                              {analistaPotencial ? analistaPotencial.toUpperCase() : 'MEDIO'}
+                            </b>
+                          </div>
+                        </div>
+
+                        {analistaDiag && (
+                          <div className="p-3 rounded-xl bg-white/5 border border-white/5 text-xs text-[#a8c3b4]">
+                            <b className="text-white block mb-0.5">Diagnóstico Agroecológico:</b>
+                            {analistaDiag}
+                          </div>
+                        )}
+
+                        {selectedParcela && selectedParcela.rendimiento_t_ha !== null && (
+                          <div className="p-3 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-xs">
+                            <span className="text-emerald-300 font-semibold block">Validación Cruzada (Residuo OOF):</span>
+                            <div className="text-white mt-1">
+                              Real: <b>{selectedParcela.rendimiento_t_ha} t/ha</b> · Predicho: <b>{analistaResult} t/ha</b>
+                            </div>
+                            <div className="text-[#a8c3b4] mt-0.5">
+                              Error residual absoluto: <b>{Math.abs(selectedParcela.rendimiento_t_ha - analistaResult).toFixed(2)} t/ha</b>
+                            </div>
+                          </div>
+                        )}
+                      </div>
+                    )}
+                  </div>
+
+                  <div className="pt-3 border-t border-white/10 text-[11px] text-[#a8c3b4] flex items-center justify-between">
+                    <span>Métricas Oficiales OOF: R² = 0.695 · Pearson r = 0.834</span>
+                    <span>AgroCebada 2026</span>
+                  </div>
                 </div>
               </div>
-            </div>
+            )}
+
+            {/* PESTAÑA B: PROCESAMIENTO MULTI-ARCHIVO (.CSV Y .ZIP) CON VALIDACIÓN ESTRICTA */}
+            {subPestanaAnalista === 'archivos' && (
+              <div className="space-y-6">
+                {/* Cabecera del Checklist y Estado de Ingesta */}
+                <div className="p-5 rounded-2xl bg-[#10281f]/90 border border-white/10 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                  <div>
+                    <div className="flex items-center gap-2">
+                      <Layers className="w-4 h-4 text-sky-400" />
+                      <h4 className="font-bold text-white text-base">
+                        Matriz de Ingesta Obligatoria (4 Fuentes Requeridas)
+                      </h4>
+                    </div>
+                    <p className="text-xs text-[#a8c3b4] mt-1 leading-relaxed max-w-2xl">
+                      El Modelo Maestro V6 requiere estrictamente las 4 fuentes de datos para ejecutar la inferencia. Puedes subir los archivos juntos, seleccionarlos uno a uno o usar el dataset oficial.
+                    </p>
+                  </div>
+
+                  <div className="flex items-center gap-2 self-start sm:self-auto">
+                    <span
+                      className={`px-3 py-1.5 rounded-xl text-xs font-bold border flex items-center gap-1.5 ${
+                        todosListos
+                          ? 'bg-emerald-500/20 text-emerald-300 border-emerald-500/40'
+                          : 'bg-amber-500/20 text-amber-300 border-amber-500/40'
+                      }`}
+                    >
+                      {todosListos ? <CheckCircle2 className="w-3.5 h-3.5" /> : <AlertCircle className="w-3.5 h-3.5" />}
+                      <span>{conteoCargados} de 4 Fuentes Listas</span>
+                    </span>
+                  </div>
+                </div>
+
+                {/* Grid con las 4 Ranuras de Archivos Requeridos */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3.5">
+                  {/* Slot 1: Parcelas */}
+                  <div
+                    className={`p-4 rounded-2xl border transition-all flex flex-col justify-between ${
+                      archivosState.parcelas.cargado
+                        ? 'bg-[#10281f] border-emerald-500/40 ring-1 ring-emerald-500/30'
+                        : 'bg-[#10281f]/60 border-white/10 hover:border-white/20'
+                    }`}
+                  >
+                    <div>
+                      <div className="flex items-center justify-between">
+                        <FileText className="w-5 h-5 text-amber-400" />
+                        <span
+                          className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${
+                            archivosState.parcelas.cargado
+                              ? 'bg-emerald-500/20 text-emerald-300'
+                              : 'bg-rose-500/20 text-rose-300'
+                          }`}
+                        >
+                          {archivosState.parcelas.cargado ? '✓ Listo' : 'Pendiente'}
+                        </span>
+                      </div>
+                      <h5 className="font-bold text-white text-xs mt-2.5">1. Parcelas y Superficie</h5>
+                      <p className="text-[11px] text-[#a8c3b4] mt-1 leading-snug">
+                        ID_area_rendimiento...csv o parcelas.csv (Superficie, Estado y Municipio)
+                      </p>
+                    </div>
+
+                    <div className="mt-3 pt-2.5 border-t border-white/5">
+                      <input
+                        type="file"
+                        id="slot-parcelas"
+                        accept=".csv"
+                        onChange={(e) => {
+                          const f = e.target.files?.[0]
+                          if (f) asignarSlotIndividual('parcelas', f)
+                        }}
+                        className="hidden"
+                      />
+                      <label
+                        htmlFor="slot-parcelas"
+                        className="w-full py-1.5 px-2.5 rounded-lg bg-white/5 hover:bg-white/10 text-[11px] text-[#e2b957] font-semibold text-center block cursor-pointer transition truncate"
+                      >
+                        {archivosState.parcelas.cargado ? archivosState.parcelas.nombre : '+ Subir Parcelas'}
+                      </label>
+                    </div>
+                  </div>
+
+                  {/* Slot 2: Satélite BÁSICO */}
+                  <div
+                    className={`p-4 rounded-2xl border transition-all flex flex-col justify-between ${
+                      archivosState.basico.cargado
+                        ? 'bg-[#10281f] border-emerald-500/40 ring-1 ring-emerald-500/30'
+                        : 'bg-[#10281f]/60 border-white/10 hover:border-white/20'
+                    }`}
+                  >
+                    <div>
+                      <div className="flex items-center justify-between">
+                        <Satellite className="w-5 h-5 text-emerald-400" />
+                        <span
+                          className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${
+                            archivosState.basico.cargado
+                              ? 'bg-emerald-500/20 text-emerald-300'
+                              : 'bg-rose-500/20 text-rose-300'
+                          }`}
+                        >
+                          {archivosState.basico.cargado ? '✓ Listo' : 'Pendiente'}
+                        </span>
+                      </div>
+                      <h5 className="font-bold text-white text-xs mt-2.5">2. Satélite BÁSICO</h5>
+                      <p className="text-[11px] text-[#a8c3b4] mt-1 leading-snug">
+                        Conjunto_datos_BASICO...csv (Sentinel-2 y Landsat: vi6t, ndwi, dswi2)
+                      </p>
+                    </div>
+
+                    <div className="mt-3 pt-2.5 border-t border-white/5">
+                      <input
+                        type="file"
+                        id="slot-basico"
+                        accept=".csv"
+                        onChange={(e) => {
+                          const f = e.target.files?.[0]
+                          if (f) asignarSlotIndividual('basico', f)
+                        }}
+                        className="hidden"
+                      />
+                      <label
+                        htmlFor="slot-basico"
+                        className="w-full py-1.5 px-2.5 rounded-lg bg-white/5 hover:bg-white/10 text-[11px] text-emerald-300 font-semibold text-center block cursor-pointer transition truncate"
+                      >
+                        {archivosState.basico.cargado ? archivosState.basico.nombre : '+ Subir BÁSICO'}
+                      </label>
+                    </div>
+                  </div>
+
+                  {/* Slot 3: Satélite PRO */}
+                  <div
+                    className={`p-4 rounded-2xl border transition-all flex flex-col justify-between ${
+                      archivosState.pro.cargado
+                        ? 'bg-[#10281f] border-emerald-500/40 ring-1 ring-emerald-500/30'
+                        : 'bg-[#10281f]/60 border-white/10 hover:border-white/20'
+                    }`}
+                  >
+                    <div>
+                      <div className="flex items-center justify-between">
+                        <Satellite className="w-5 h-5 text-sky-400" />
+                        <span
+                          className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${
+                            archivosState.pro.cargado
+                              ? 'bg-emerald-500/20 text-emerald-300'
+                              : 'bg-rose-500/20 text-rose-300'
+                          }`}
+                        >
+                          {archivosState.pro.cargado ? '✓ Listo' : 'Pendiente'}
+                        </span>
+                      </div>
+                      <h5 className="font-bold text-white text-xs mt-2.5">3. Satélite PRO</h5>
+                      <p className="text-[11px] text-[#a8c3b4] mt-1 leading-snug">
+                        Conjunto_datos_PRO...csv (PlanetScope: lai_mean, lai_std, msavi)
+                      </p>
+                    </div>
+
+                    <div className="mt-3 pt-2.5 border-t border-white/5">
+                      <input
+                        type="file"
+                        id="slot-pro"
+                        accept=".csv"
+                        onChange={(e) => {
+                          const f = e.target.files?.[0]
+                          if (f) asignarSlotIndividual('pro', f)
+                        }}
+                        className="hidden"
+                      />
+                      <label
+                        htmlFor="slot-pro"
+                        className="w-full py-1.5 px-2.5 rounded-lg bg-white/5 hover:bg-white/10 text-[11px] text-sky-300 font-semibold text-center block cursor-pointer transition truncate"
+                      >
+                        {archivosState.pro.cargado ? archivosState.pro.nombre : '+ Subir PRO'}
+                      </label>
+                    </div>
+                  </div>
+
+                  {/* Slot 4: Topografía INEGI */}
+                  <div
+                    className={`p-4 rounded-2xl border transition-all flex flex-col justify-between ${
+                      archivosState.topografia.cargado
+                        ? 'bg-[#10281f] border-emerald-500/40 ring-1 ring-emerald-500/30'
+                        : 'bg-[#10281f]/60 border-white/10 hover:border-white/20'
+                    }`}
+                  >
+                    <div>
+                      <div className="flex items-center justify-between">
+                        <Mountain className="w-5 h-5 text-indigo-400" />
+                        <span
+                          className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${
+                            archivosState.topografia.cargado
+                              ? 'bg-emerald-500/20 text-emerald-300'
+                              : 'bg-rose-500/20 text-rose-300'
+                          }`}
+                        >
+                          {archivosState.topografia.cargado ? '✓ Listo' : 'Pendiente'}
+                        </span>
+                      </div>
+                      <h5 className="font-bold text-white text-xs mt-2.5">4. Topografía INEGI CEM 4.0</h5>
+                      <p className="text-[11px] text-[#a8c3b4] mt-1 leading-snug">
+                        Reto_...Topografia_INEGI_CEM4.zip (Archivos .tif de 120m) o .csv
+                      </p>
+                    </div>
+
+                    <div className="mt-3 pt-2.5 border-t border-white/5">
+                      <input
+                        type="file"
+                        id="slot-topografia"
+                        accept=".zip,.tif,.tiff,.csv"
+                        onChange={(e) => {
+                          const f = e.target.files?.[0]
+                          if (f) asignarSlotIndividual('topografia', f)
+                        }}
+                        className="hidden"
+                      />
+                      <label
+                        htmlFor="slot-topografia"
+                        className="w-full py-1.5 px-2.5 rounded-lg bg-white/5 hover:bg-white/10 text-[11px] text-indigo-300 font-semibold text-center block cursor-pointer transition truncate"
+                      >
+                        {archivosState.topografia.cargado ? archivosState.topografia.nombre : '+ Subir .zip o .tif INEGI'}
+                      </label>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Zona de Carga Rápida Múltiple y Botón Demo */}
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  {/* Zona de Drag & Drop de Archivos Múltiples */}
+                  <div className="md:col-span-2 p-5 rounded-2xl border-2 border-dashed border-white/20 hover:border-sky-400/60 transition bg-[#10281f]/70 flex flex-col items-center justify-center text-center">
+                    <input
+                      type="file"
+                      id="multi-upload-analista"
+                      multiple
+                      accept=".csv,.zip,.tif,.tiff"
+                      onChange={(e) => {
+                        const files = Array.from(e.target.files || [])
+                        if (files.length > 0) clasificarYAsignarArchivos(files)
+                      }}
+                      className="hidden"
+                    />
+                    <label
+                      htmlFor="multi-upload-analista"
+                      className="cursor-pointer flex flex-col items-center gap-2"
+                    >
+                      <div className="w-12 h-12 rounded-2xl bg-sky-500/20 text-sky-300 flex items-center justify-center">
+                        <Upload className="w-6 h-6" />
+                      </div>
+                      <div className="font-semibold text-white text-sm">
+                        Arrastra o selecciona tus 4 archivos a la vez
+                      </div>
+                      <div className="text-xs text-[#a8c3b4] max-w-md">
+                        El clasificador inteligente detectará automáticamente qué archivo corresponde a cada una de las 4 fuentes requeridas.
+                      </div>
+                    </label>
+
+                    {/* Botón de Inferencia sobre los 4 archivos */}
+                    <button
+                      type="button"
+                      onClick={handleProcesarArchivoLote}
+                      disabled={!todosListos || batchLoading}
+                      className={`mt-4 py-2.5 px-6 rounded-xl font-bold text-xs transition flex items-center gap-2 ${
+                        todosListos && !batchLoading
+                          ? 'bg-sky-600 hover:bg-sky-500 text-white cursor-pointer shadow-lg'
+                          : 'bg-white/10 text-white/40 cursor-not-allowed border border-white/5'
+                      }`}
+                    >
+                      {batchLoading
+                        ? 'Procesando con Modelo V6...'
+                        : todosListos
+                        ? 'Ejecutar Inferencia V6 sobre los 4 Archivos'
+                        : `Sube los 4 archivos para habilitar (${conteoCargados}/4 listos)`}
+                      {todosListos && !batchLoading && <ArrowRight className="w-4 h-4" />}
+                    </button>
+                  </div>
+
+                  {/* Tarjeta de Carga Rápida Oficial (Las 4 fuentes juntas) */}
+                  <div className="p-5 rounded-2xl bg-[#10281f] border border-white/10 flex flex-col justify-between">
+                    <div>
+                      <div className="flex items-center gap-2 text-xs font-bold text-[#e2b957] uppercase tracking-wider">
+                        <Sparkles className="w-4 h-4" /> Reto Oficial AgroCebada
+                      </div>
+                      <h4 className="text-base font-bold text-white mt-1">
+                        Cargar las 4 fuentes oficiales
+                      </h4>
+                      <p className="text-xs text-[#a8c3b4] mt-1.5 leading-relaxed">
+                        Carga automáticamente los 4 archivos del proyecto (<code className="text-[#e2b957]">ID_area_rendimiento</code>, <code className="text-emerald-400">BASICO</code>, <code className="text-sky-400">PRO</code> y <code className="text-indigo-400">Topografía</code>) y predice las <b>59 parcelas sin rendimiento</b>.
+                      </p>
+                    </div>
+
+                    <button
+                      type="button"
+                      onClick={handleCargarDemoDataset}
+                      disabled={batchLoading}
+                      className="mt-4 py-2.5 px-4 rounded-xl bg-gradient-to-r from-[#1e6846] to-[#155538] hover:from-[#258257] hover:to-[#1c6443] text-white font-bold text-xs transition cursor-pointer shadow-md disabled:opacity-50 flex items-center justify-center gap-2"
+                    >
+                      {batchLoading ? 'Calculando 59 parcelas...' : '⚡ Cargar 4 Fuentes Oficiales (59 Predios)'}
+                    </button>
+                  </div>
+                </div>
+
+                {/* Spinner de Carga */}
+                {batchLoading && (
+                  <div className="p-8 rounded-2xl bg-[#10281f]/80 border border-white/10 flex flex-col items-center justify-center gap-3">
+                    <div className="w-10 h-10 border-3 border-sky-400 border-t-transparent rounded-full animate-spin" />
+                    <span className="text-sm font-semibold text-white">
+                      Validando y cruzando las 4 fuentes de datos con el Modelo Maestro V6...
+                    </span>
+                  </div>
+                )}
+
+                {/* Error de lote */}
+                {batchError && (
+                  <div className="p-4 rounded-2xl bg-rose-950/80 border border-rose-500/40 text-rose-200 text-xs flex items-center gap-2">
+                    <XCircle className="w-4 h-4 shrink-0 text-rose-400" />
+                    <div>
+                      <b>Validación de archivos:</b> {batchError}
+                    </div>
+                  </div>
+                )}
+
+                {/* Resultados del Lote */}
+                {batchResult && !batchLoading && (
+                  <div className="space-y-4 pt-2">
+                    {/* Resumen Global */}
+                    <div className="grid grid-cols-2 sm:grid-cols-4 gap-3.5">
+                      <div className="bg-[#10281f] p-4 rounded-2xl border border-white/10">
+                        <span className="text-xs text-[#a8c3b4] uppercase tracking-wider block">Parcelas Evaluadas</span>
+                        <div className="text-2xl font-black text-white mt-1">{batchResult.total_parcelas}</div>
+                        <span className="text-[10px] text-white/50">Predios sin rendimiento previo</span>
+                      </div>
+
+                      <div className="bg-[#10281f] p-4 rounded-2xl border border-white/10">
+                        <span className="text-xs text-[#a8c3b4] uppercase tracking-wider block">Rendimiento Medio</span>
+                        <div className="text-2xl font-black text-[#e2b957] mt-1">
+                          {batchResult.rendimiento_promedio_t_ha} <span className="text-sm font-normal text-white">t/ha</span>
+                        </div>
+                        <span className="text-[10px] text-[#a8c3b4]">
+                          ≈ {Math.round(batchResult.rendimiento_promedio_t_ha * 1000)} kg/ha
+                        </span>
+                      </div>
+
+                      <div className="bg-[#10281f] p-4 rounded-2xl border border-white/10">
+                        <span className="text-xs text-[#a8c3b4] uppercase tracking-wider block">Producción Total</span>
+                        <div className="text-2xl font-black text-emerald-400 mt-1">
+                          {batchResult.produccion_total_t} <span className="text-sm font-normal text-white">t</span>
+                        </div>
+                        <span className="text-[10px] text-white/50">Estimación en tolva</span>
+                      </div>
+
+                      <div className="bg-[#10281f] p-4 rounded-2xl border border-white/10">
+                        <span className="text-xs text-[#a8c3b4] uppercase tracking-wider block">Distribución</span>
+                        <div className="flex items-center gap-2 mt-2 text-xs font-bold">
+                          <span className="text-emerald-400">{batchResult.conteo_alto} Alto</span>
+                          <span className="text-white/30">·</span>
+                          <span className="text-amber-400">{batchResult.conteo_medio} Medio</span>
+                          <span className="text-white/30">·</span>
+                          <span className="text-rose-400">{batchResult.conteo_bajo} Bajo</span>
+                        </div>
+                        <span className="text-[10px] text-white/50">Por potencial agroecológico</span>
+                      </div>
+                    </div>
+
+                    {/* Tabla de Predicciones */}
+                    <div className="bg-[#10281f] rounded-2xl border border-white/10 overflow-hidden shadow-xl">
+                      <div className="p-4 border-b border-white/10 flex flex-wrap items-center justify-between gap-3">
+                        <div className="flex items-center gap-2">
+                          <Table className="w-4 h-4 text-sky-400" />
+                          <h4 className="font-bold text-white text-sm">
+                            Predicciones Oficiales del Reto ({batchResult.total_parcelas} Parcelas)
+                          </h4>
+                        </div>
+
+                        <button
+                          type="button"
+                          onClick={handleDescargarCsvLote}
+                          className="py-2 px-4 rounded-xl bg-[#1e6846] hover:bg-[#155538] text-white font-bold text-xs transition cursor-pointer flex items-center gap-2 shadow-md"
+                        >
+                          <Download className="w-4 h-4" />
+                          <span>Descargar Resultados en CSV (Formato Oficial)</span>
+                        </button>
+                      </div>
+
+                      <div className="max-h-80 overflow-y-auto">
+                        <table className="w-full text-left text-xs text-[#a8c3b4]">
+                          <thead className="bg-black/30 text-[11px] uppercase tracking-wider text-white/70 sticky top-0">
+                            <tr>
+                              <th className="py-2.5 px-4">ID Predio</th>
+                              <th className="py-2.5 px-4">Estado / Municipio</th>
+                              <th className="py-2.5 px-4">Rendimiento (t/ha)</th>
+                              <th className="py-2.5 px-4">Rendimiento (kg/ha)</th>
+                              <th className="py-2.5 px-4">Producción (t)</th>
+                              <th className="py-2.5 px-4">Nivel Potencial</th>
+                            </tr>
+                          </thead>
+                          <tbody className="divide-y divide-white/5">
+                            {batchResult.predicciones.map((p, idx) => (
+                              <tr key={idx} className="hover:bg-white/5 transition">
+                                <td className="py-2.5 px-4 font-mono font-bold text-white">{p.plot}</td>
+                                <td className="py-2.5 px-4">
+                                  {p.estado} {p.municipio ? `· ${p.municipio}` : ''}
+                                </td>
+                                <td className="py-2.5 px-4 font-bold text-[#e2b957]">{p.rendimiento_t_ha}</td>
+                                <td className="py-2.5 px-4">{p.rendimiento_kg_ha.toLocaleString('es-MX')}</td>
+                                <td className="py-2.5 px-4">{p.produccion_estimada_t}</td>
+                                <td className="py-2.5 px-4">
+                                  <span
+                                    className={`px-2 py-0.5 rounded text-[10px] font-bold ${
+                                      p.nivel_potencial === 'alto'
+                                        ? 'bg-emerald-500/20 text-emerald-300'
+                                        : p.nivel_potencial === 'medio'
+                                        ? 'bg-amber-500/20 text-amber-300'
+                                        : 'bg-rose-500/20 text-rose-300'
+                                    }`}
+                                  >
+                                    {p.nivel_potencial.toUpperCase()}
+                                  </span>
+                                </td>
+                              </tr>
+                            ))}
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+                  </div>
+                )}
+              </div>
+            )}
           </div>
         )}
       </div>
