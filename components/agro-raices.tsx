@@ -57,9 +57,23 @@ export function Navbar() {
   const links = [
     { label: 'Inicio', href: '/' },
     { label: 'Nosotros', href: '/nosotros' },
-    { label: 'Modelo', href: '/modelo' },
+    { label: 'Modelo', href: '/mapa#asistente-modelo' },
     { label: 'Mapa', href: '/mapa' },
   ]
+
+  const handleIrAlModelo = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
+    if (href.includes('#asistente-modelo')) {
+      if (pathname === '/mapa') {
+        e.preventDefault()
+        const el = document.getElementById('asistente-modelo')
+        if (el) {
+          el.scrollIntoView({ behavior: 'smooth' })
+        }
+        window.history.pushState(null, '', '/mapa#asistente-modelo')
+      }
+      setOpen(false)
+    }
+  }
 
   return (
     <header className="fixed inset-x-0 top-0 z-50 border-b border-white/10 bg-[#10281f]/90 backdrop-blur-xl">
@@ -85,11 +99,14 @@ export function Navbar() {
         {/* Desktop Navigation */}
         <nav className="hidden items-center gap-8 md:flex" aria-label="Navegación principal">
           {links.map(({ label, href }) => {
-            const isActive = pathname === href
+            const isActive = href === '/mapa#asistente-modelo'
+              ? false
+              : pathname === href
             return (
               <Link
                 key={href}
                 href={href}
+                onClick={(e) => handleIrAlModelo(e, href)}
                 className={`relative py-1 text-sm font-medium transition-colors ${
                   isActive ? 'text-[#e2b957]' : 'text-[#c0d2c8] hover:text-white'
                 }`}
@@ -104,8 +121,9 @@ export function Navbar() {
         </nav>
 
         <Link
-          href="/inferencia"
-          className="hidden h-10 items-center gap-2 rounded-full bg-[#d6a849] px-5 text-sm font-semibold text-[#10281f] shadow-sm transition hover:bg-[#e7c26c] sm:inline-flex"
+          href="/mapa#asistente-modelo"
+          onClick={(e) => handleIrAlModelo(e, '/mapa#asistente-modelo')}
+          className="hidden h-10 items-center gap-2 rounded-full bg-[#d6a849] px-5 text-sm font-semibold text-[#10281f] shadow-sm transition hover:bg-[#e7c26c] sm:inline-flex cursor-pointer"
         >
           Probar el modelo <ArrowRight className="size-4" />
         </Link>
@@ -124,12 +142,14 @@ export function Navbar() {
       {open && (
         <nav className="flex flex-col gap-3 border-t border-white/10 bg-[#10281f] px-5 py-6 md:hidden">
           {links.map(({ label, href }) => {
-            const isActive = pathname === href
+            const isActive = href === '/mapa#asistente-modelo'
+              ? false
+              : pathname === href
             return (
               <Link
                 key={href}
                 href={href}
-                onClick={() => setOpen(false)}
+                onClick={(e) => handleIrAlModelo(e, href)}
                 className={`rounded-lg px-3 py-2 text-base font-medium transition ${
                   isActive
                     ? 'bg-[#1e4432] text-[#e2b957]'
@@ -141,9 +161,9 @@ export function Navbar() {
             )
           })}
           <Link
-            href="/inferencia"
-            onClick={() => setOpen(false)}
-            className="mt-2 flex h-11 items-center justify-center gap-2 rounded-xl bg-[#d6a849] text-sm font-semibold text-[#10281f] hover:bg-[#e7c26c]"
+            href="/mapa#asistente-modelo"
+            onClick={(e) => handleIrAlModelo(e, '/mapa#asistente-modelo')}
+            className="mt-2 flex h-11 items-center justify-center gap-2 rounded-xl bg-[#d6a849] text-sm font-semibold text-[#10281f] hover:bg-[#e7c26c] cursor-pointer"
           >
             Probar el modelo <ArrowRight className="size-4" />
           </Link>
@@ -173,7 +193,7 @@ export function Hero() {
           </p>
           <div className="mt-9 flex flex-col justify-center gap-4 sm:flex-row">
             <Link
-              href="/modelo"
+              href="/mapa#asistente-modelo"
               className="inline-flex h-12 items-center justify-center gap-2 rounded-full bg-[#d6a849] px-7 text-sm font-semibold text-[#10281f] shadow-lg shadow-[#d6a849]/20 transition hover:bg-[#e7c26c]"
             >
               Usar el modelo <ArrowRight className="size-4" />
@@ -249,7 +269,7 @@ export function HomeCards() {
               </p>
             </div>
             <Link
-              href="/modelo"
+              href="/mapa#asistente-modelo"
               className="mt-8 inline-flex items-center gap-2 text-sm font-semibold text-[#e0b653] transition hover:text-[#ffd269]"
             >
               Usar el modelo <ChevronRight className="size-4" />
@@ -294,7 +314,7 @@ export function About() {
             </p>
             <div className="mt-8 flex flex-wrap gap-4">
               <Link
-                href="/modelo"
+                href="/mapa#asistente-modelo"
                 className="inline-flex items-center gap-2 rounded-full bg-[#1e6846] px-5 py-2.5 text-sm font-medium text-white shadow-sm transition hover:bg-[#155538]"
               >
                 Usar el modelo en vivo <ArrowRight className="size-4" />
@@ -632,7 +652,7 @@ export function ModelSpecs() {
             {/* Accesos directos */}
             <div className="flex flex-col sm:flex-row gap-3">
               <Link
-                href="/inferencia"
+                href="/mapa#asistente-modelo"
                 className="flex-1 inline-flex h-12 items-center justify-center gap-2 rounded-2xl bg-[#1e6846] px-6 text-xs font-semibold text-white shadow-md transition hover:bg-[#155538]"
               >
                 Probar calculadora de tu predio <ArrowRight className="size-4" />
@@ -886,7 +906,7 @@ export function Footer() {
         <div className="flex items-center gap-6 text-xs text-[#8aa895]">
           <Link href="/" className="hover:text-white transition">Inicio</Link>
           <Link href="/nosotros" className="hover:text-white transition">Nosotros</Link>
-          <Link href="/modelo" className="hover:text-white transition">Modelo</Link>
+          <Link href="/mapa#asistente-modelo" className="hover:text-white transition">Modelo</Link>
           <Link href="/mapa" className="hover:text-white transition">Mapa</Link>
         </div>
         <span className="flex items-center gap-2 text-xs">
