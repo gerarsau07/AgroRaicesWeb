@@ -30,8 +30,8 @@ export const metadata: Metadata = {
 export const viewport: Viewport = {
   colorScheme: 'light dark',
   themeColor: [
-    { media: '(prefers-color-scheme: light)', color: '#10281f' },
-    { media: '(prefers-color-scheme: dark)', color: '#10281f' },
+    { media: '(prefers-color-scheme: light)', color: '#27201b' },
+    { media: '(prefers-color-scheme: dark)', color: '#27201b' },
   ],
 }
 
@@ -42,7 +42,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="es">
-      <body className="flex min-h-screen flex-col bg-[#10281f] text-foreground antialiased selection:bg-[#d6a849] selection:text-[#10281f]">
+      <body className="flex min-h-screen flex-col bg-[#27201b] text-foreground antialiased selection:bg-[#c2673f] selection:text-[#f8f5ef]">
         <Navbar />
         <div className="flex-1">{children}</div>
         <Footer />
