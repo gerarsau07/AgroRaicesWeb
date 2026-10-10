@@ -175,32 +175,32 @@ export function Navbar() {
 
 export function Hero() {
   return (
-    <section className="relative overflow-hidden bg-[#10281f] pt-32 pb-20 text-white lg:pt-36 lg:pb-28">
-      <div className="absolute -right-32 top-20 size-96 rounded-full bg-[#36735b]/25 blur-3xl" />
-      <div className="absolute -left-40 bottom-0 size-80 rounded-full bg-[#d6a849]/10 blur-3xl" />
+    <section className="relative overflow-hidden bg-[#382d25] pt-32 pb-20 text-white lg:pt-36 lg:pb-28">
+      <div className="absolute -right-32 top-20 size-96 rounded-full bg-[#b85c38]/15 blur-3xl" />
+      <div className="absolute -left-40 bottom-0 size-80 rounded-full bg-[#d87a52]/10 blur-3xl" />
 
       <div className="relative mx-auto max-w-7xl px-5 lg:px-8">
         <div className="mx-auto max-w-4xl text-center">
-          <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-[#69977e]/40 bg-[#1b3c2d] px-4 py-2 text-xs font-medium text-[#b9d9c4]">
-            <span className="size-2 rounded-full bg-[#71c48b] animate-pulse" /> Modelo Maestro V6 · AgroCebada 2026
+          <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-[#b85c38]/30 bg-[#2b211a] px-4 py-2 text-xs font-medium text-[#f0ded3]">
+            <span className="size-2 rounded-full bg-[#d87a52] animate-pulse" /> Modelo Maestro V6 · AgroCebada 2026
           </div>
           <h1 className="text-balance text-5xl font-semibold leading-[1.04] tracking-[-0.04em] sm:text-6xl lg:text-8xl">
             Lee el campo.<br />
-            <span className="text-[#e0b653]">Anticipa la cosecha.</span>
+            <span className="text-[#d87a52]">Anticipa la cosecha.</span>
           </h1>
-          <p className="mx-auto mt-7 max-w-2xl text-pretty text-base leading-7 text-[#b4c9bc] sm:text-lg">
+          <p className="mx-auto mt-7 max-w-2xl text-pretty text-base leading-7 text-[#dcd2c9] sm:text-lg">
             Estimamos el rendimiento de cebada maltera con telemetría de Sentinel-2, Landsat, PlanetScope y topografía INEGI CEM 4.0. Del satélite a la decisión agronómica.
           </p>
           <div className="mt-9 flex flex-col justify-center gap-4 sm:flex-row">
             <Link
               href="/mapa#asistente-modelo"
-              className="inline-flex h-12 items-center justify-center gap-2 rounded-full bg-[#d6a849] px-7 text-sm font-semibold text-[#10281f] shadow-lg shadow-[#d6a849]/20 transition hover:bg-[#e7c26c]"
+              className="inline-flex h-12 items-center justify-center gap-2 rounded-full bg-[#b85c38] px-7 text-sm font-semibold text-white shadow-lg shadow-[#b85c38]/25 transition hover:bg-[#c96a45]"
             >
               Usar el modelo <ArrowRight className="size-4" />
             </Link>
             <Link
               href="/nosotros"
-              className="inline-flex h-12 items-center justify-center gap-2 rounded-full border border-[#557c68] bg-transparent px-7 text-sm font-semibold text-white transition hover:bg-white/10 hover:text-white"
+              className="inline-flex h-12 items-center justify-center gap-2 rounded-full border border-white/20 bg-transparent px-7 text-sm font-semibold text-white transition hover:bg-white/10 hover:text-white"
             >
               Arquitectura y Tecnología
             </Link>
@@ -214,8 +214,8 @@ export function Hero() {
 export function Metric({ value, label }: { value: string; label: string }) {
   return (
     <div className="rounded-2xl border border-white/10 bg-white/[0.06] p-6 text-center backdrop-blur-sm transition hover:bg-white/[0.09]">
-      <div className="text-3xl font-semibold text-[#e5bd5f]">{value}</div>
-      <div className="mt-2 text-xs uppercase tracking-[0.14em] text-[#9bb7a7]">{label}</div>
+      <div className="text-3xl font-semibold text-[#d87a52]">{value}</div>
+      <div className="mt-2 text-xs uppercase tracking-[0.14em] text-[#d4bead]">{label}</div>
     </div>
   )
 }
@@ -223,72 +223,72 @@ export function Metric({ value, label }: { value: string; label: string }) {
 
 export function HomeCards() {
   return (
-    <section className="bg-[#f6f5ef] py-20 text-[#17352a] lg:py-24">
+    <section className="bg-[#f9f7f2] py-20 text-[#302620] lg:py-24">
       <div className="mx-auto max-w-7xl px-5 lg:px-8">
         <div className="mb-12 text-center">
           <p className="eyebrow">Explora la plataforma</p>
           <h2 className="section-title mt-3">Tecnología de punta para el cultivo de cebada</h2>
-          <p className="mx-auto mt-4 max-w-2xl text-[#5e7367]">
+          <p className="mx-auto mt-4 max-w-2xl text-[#6e5d53]">
             Descubre cada módulo de AgroRaíces diseñado para transformar señales satelitales en rentabilidad agronómica.
           </p>
         </div>
 
         <div className="grid gap-6 md:grid-cols-3">
           {/* Card 1: Nosotros */}
-          <div className="flex flex-col justify-between rounded-3xl border border-[#d7e0d5] bg-white p-7 shadow-sm transition hover:shadow-md">
+          <div className="flex flex-col justify-between rounded-3xl border border-[#ded5cb] bg-white p-7 shadow-sm transition hover:shadow-md">
             <div>
-              <div className="mb-6 flex size-12 items-center justify-center rounded-2xl bg-[#e9f0e6] text-[#28714f]">
+              <div className="mb-6 flex size-12 items-center justify-center rounded-2xl bg-[#f5ede6] text-[#b85c38]">
                 <Satellite className="size-6" />
               </div>
-              <span className="text-xs font-semibold uppercase tracking-wider text-[#499266]">01 · Arquitectura V6</span>
-              <h3 className="mt-2 text-xl font-semibold text-[#17352a]">Quiénes somos y Modelo V6</h3>
-              <p className="mt-3 text-sm leading-6 text-[#5e7367]">
+              <span className="text-xs font-semibold uppercase tracking-wider text-[#b85c38]">01 · Arquitectura V6</span>
+              <h3 className="mt-2 text-xl font-semibold text-[#302620]">Quiénes somos y Modelo V6</h3>
+              <p className="mt-3 text-sm leading-6 text-[#6e5d53]">
                 Conoce la arquitectura multicomponente por estado: modelos especializados de ExtraTrees, SVR y clasificadores ordinales calibrados para Puebla, Hidalgo y Tlaxcala.
               </p>
             </div>
             <Link
               href="/nosotros"
-              className="mt-8 inline-flex items-center gap-2 text-sm font-semibold text-[#28714f] transition hover:text-[#184933]"
+              className="mt-8 inline-flex items-center gap-2 text-sm font-semibold text-[#b85c38] transition hover:text-[#914324]"
             >
               Ver arquitectura <ChevronRight className="size-4" />
             </Link>
           </div>
 
           {/* Card 2: Modelo */}
-          <div className="flex flex-col justify-between rounded-3xl border border-[#27503b] bg-[#10281f] p-7 text-white shadow-md transition hover:shadow-lg">
+          <div className="flex flex-col justify-between rounded-3xl border border-[#4a3b30] bg-[#27201b] p-7 text-white shadow-md transition hover:shadow-lg">
             <div>
-              <div className="mb-6 flex size-12 items-center justify-center rounded-2xl bg-[#1c4030] text-[#e0b653]">
+              <div className="mb-6 flex size-12 items-center justify-center rounded-2xl bg-[#382d25] text-[#d87a52]">
                 <Zap className="size-6" />
               </div>
-              <span className="text-xs font-semibold uppercase tracking-wider text-[#e0b653]">02 · Modelo en Vivo</span>
+              <span className="text-xs font-semibold uppercase tracking-wider text-[#d87a52]">02 · Modelo en Vivo</span>
               <h3 className="mt-2 text-xl font-semibold text-white">Usa el Modelo V6</h3>
-              <p className="mt-3 text-sm leading-6 text-[#a8c3b4]">
+              <p className="mt-3 text-sm leading-6 text-[#d4bead]">
                 Estima el rendimiento con el asistente para agricultores guiado paso a paso o mediante el laboratorio técnico de analista con soporte de archivos CSV y ZIP.
               </p>
             </div>
             <Link
               href="/mapa#asistente-modelo"
-              className="mt-8 inline-flex items-center gap-2 text-sm font-semibold text-[#e0b653] transition hover:text-[#ffd269]"
+              className="mt-8 inline-flex items-center gap-2 text-sm font-semibold text-[#d87a52] transition hover:text-[#f09c78]"
             >
               Usar el modelo <ChevronRight className="size-4" />
             </Link>
           </div>
 
           {/* Card 3: Mapa */}
-          <div className="flex flex-col justify-between rounded-3xl border border-[#d7e0d5] bg-white p-7 shadow-sm transition hover:shadow-md">
+          <div className="flex flex-col justify-between rounded-3xl border border-[#ded5cb] bg-white p-7 shadow-sm transition hover:shadow-md">
             <div>
-              <div className="mb-6 flex size-12 items-center justify-center rounded-2xl bg-emerald-50 text-emerald-700">
+              <div className="mb-6 flex size-12 items-center justify-center rounded-2xl bg-[#f5ede6] text-[#b85c38]">
                 <MapPin className="size-6" />
               </div>
-              <span className="text-xs font-semibold uppercase tracking-wider text-emerald-700">03 · Georreferencia</span>
-              <h3 className="mt-2 text-xl font-semibold text-[#17352a]">Mapa de Parcelas e INEGI</h3>
-              <p className="mt-3 text-sm leading-6 text-[#5e7367]">
+              <span className="text-xs font-semibold uppercase tracking-wider text-[#b85c38]">03 · Georreferencia</span>
+              <h3 className="mt-2 text-xl font-semibold text-[#302620]">Mapa de Parcelas e INEGI</h3>
+              <p className="mt-3 text-sm leading-6 text-[#6e5d53]">
                 Visualiza los 197 polígonos del Altiplano Central georreferenciados en mapa satelital Esri con datos altimétricos nativos INEGI CEM 4.0.
               </p>
             </div>
             <Link
               href="/mapa"
-              className="mt-8 inline-flex items-center gap-2 text-sm font-semibold text-emerald-700 transition hover:text-emerald-900"
+              className="mt-8 inline-flex items-center gap-2 text-sm font-semibold text-[#b85c38] transition hover:text-[#914324]"
             >
               Explorar mapa <ChevronRight className="size-4" />
             </Link>
