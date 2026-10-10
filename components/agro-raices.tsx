@@ -182,14 +182,14 @@ export function Hero() {
       <div className="relative mx-auto max-w-7xl px-5 lg:px-8">
         <div className="mx-auto max-w-4xl text-center">
           <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-[#69977e]/40 bg-[#1b3c2d] px-4 py-2 text-xs font-medium text-[#b9d9c4]">
-            <span className="size-2 rounded-full bg-[#71c48b] animate-pulse" /> Plataforma de agricultura de precisión
+            <span className="size-2 rounded-full bg-[#71c48b] animate-pulse" /> Modelo Maestro V6 · AgroCebada 2026
           </div>
           <h1 className="text-balance text-5xl font-semibold leading-[1.04] tracking-[-0.04em] sm:text-6xl lg:text-8xl">
             Lee el campo.<br />
             <span className="text-[#e0b653]">Anticipa la cosecha.</span>
           </h1>
           <p className="mx-auto mt-7 max-w-2xl text-pretty text-base leading-7 text-[#b4c9bc] sm:text-lg">
-            Estimamos el rendimiento de cebada maltera con datos multiespectrales e inteligencia artificial. Del satélite a la decisión agronómica.
+            Estimamos el rendimiento de cebada maltera con telemetría de Sentinel-2, Landsat, PlanetScope y topografía INEGI CEM 4.0. Del satélite a la decisión agronómica.
           </p>
           <div className="mt-9 flex flex-col justify-center gap-4 sm:flex-row">
             <Link
@@ -202,12 +202,10 @@ export function Hero() {
               href="/nosotros"
               className="inline-flex h-12 items-center justify-center gap-2 rounded-full border border-[#557c68] bg-transparent px-7 text-sm font-semibold text-white transition hover:bg-white/10 hover:text-white"
             >
-              Cómo funciona
+              Arquitectura y Tecnología
             </Link>
           </div>
         </div>
-
-
       </div>
     </section>
   )
@@ -242,17 +240,17 @@ export function HomeCards() {
               <div className="mb-6 flex size-12 items-center justify-center rounded-2xl bg-[#e9f0e6] text-[#28714f]">
                 <Satellite className="size-6" />
               </div>
-              <span className="text-xs font-semibold uppercase tracking-wider text-[#499266]">01 · Nosotros</span>
-              <h3 className="mt-2 text-xl font-semibold text-[#17352a]">Quiénes somos y Tecnología</h3>
+              <span className="text-xs font-semibold uppercase tracking-wider text-[#499266]">01 · Arquitectura V6</span>
+              <h3 className="mt-2 text-xl font-semibold text-[#17352a]">Quiénes somos y Modelo V6</h3>
               <p className="mt-3 text-sm leading-6 text-[#5e7367]">
-                Conoce cómo nuestro consejo de especialistas digitales y las constelaciones satelitales analizan el terreno y el clima para entender tu predio.
+                Conoce la arquitectura multicomponente por estado: modelos especializados de ExtraTrees, SVR y clasificadores ordinales calibrados para Puebla, Hidalgo y Tlaxcala.
               </p>
             </div>
             <Link
               href="/nosotros"
               className="mt-8 inline-flex items-center gap-2 text-sm font-semibold text-[#28714f] transition hover:text-[#184933]"
             >
-              Cómo funciona <ChevronRight className="size-4" />
+              Ver arquitectura <ChevronRight className="size-4" />
             </Link>
           </div>
 
@@ -263,9 +261,9 @@ export function HomeCards() {
                 <Zap className="size-6" />
               </div>
               <span className="text-xs font-semibold uppercase tracking-wider text-[#e0b653]">02 · Modelo en Vivo</span>
-              <h3 className="mt-2 text-xl font-semibold text-white">Usa el Modelo</h3>
+              <h3 className="mt-2 text-xl font-semibold text-white">Usa el Modelo V6</h3>
               <p className="mt-3 text-sm leading-6 text-[#a8c3b4]">
-                En esta ventana podrás usar el modelo: ingresa las señales de tu predio o carga un ejemplo para calcular el rendimiento en segundos con reporte descargable.
+                Estima el rendimiento con el asistente para agricultores guiado paso a paso o mediante el laboratorio técnico de analista con soporte de archivos CSV y ZIP.
               </p>
             </div>
             <Link
@@ -283,9 +281,9 @@ export function HomeCards() {
                 <MapPin className="size-6" />
               </div>
               <span className="text-xs font-semibold uppercase tracking-wider text-emerald-700">03 · Georreferencia</span>
-              <h3 className="mt-2 text-xl font-semibold text-[#17352a]">Mapa de Parcelas</h3>
+              <h3 className="mt-2 text-xl font-semibold text-[#17352a]">Mapa de Parcelas e INEGI</h3>
               <p className="mt-3 text-sm leading-6 text-[#5e7367]">
-                Visualiza los 197 polígonos del Altiplano Central (Puebla, Hidalgo y Tlaxcala) georreferenciados en un mapa satelital de alta resolución.
+                Visualiza los 197 polígonos del Altiplano Central georreferenciados en mapa satelital Esri con datos altimétricos nativos INEGI CEM 4.0.
               </p>
             </div>
             <Link
@@ -307,10 +305,10 @@ export function About() {
       <div className="mx-auto max-w-7xl px-5 lg:px-8">
         <div className="grid gap-14 lg:grid-cols-[0.9fr_1.1fr] lg:items-end">
           <div>
-            <p className="eyebrow">01 / Quiénes somos</p>
-            <h2 className="section-title mt-4">Datos que echan raíces en el territorio.</h2>
+            <p className="eyebrow">01 / Quiénes somos y Metodología</p>
+            <h2 className="section-title mt-4">Ciencia de datos y satélites con raíces en el territorio.</h2>
             <p className="mt-6 max-w-lg text-base leading-7 text-[#5e7367]">
-              Nacimos para optimizar la cadena agroindustrial de la cebada maltera. Convertimos señales invisibles del campo en información clara y accionable para productores y acopiadores.
+              Nacimos para transformar la cadena agroindustrial de la cebada maltera. Integramos señales satelitales multiespectrales (PlanetScope, Sentinel-2, Landsat) con topografía de alta precisión INEGI CEM 4.0 para predecir con certeza el rendimiento antes de la cosecha.
             </p>
             <div className="mt-8 flex flex-wrap gap-4">
               <Link
@@ -330,18 +328,18 @@ export function About() {
           <div className="grid gap-4 sm:grid-cols-3">
             <Sensor
               icon={<Satellite className="size-5" />}
-              title="PlanetScope"
-              copy="Textura foliar en fase vegetativa, a 3 m."
+              title="PlanetScope (3 m)"
+              copy="Textura foliar de alta resolución, área foliar (LAI) y verdor persistente en maduración."
             />
             <Sensor
               icon={<Droplets className="size-5" />}
-              title="Sentinel-2"
-              copy="Agua y suelo multiespectral, a 10–20 m."
+              title="Sentinel-2 (10-20 m)"
+              copy="Estrés hídrico (NDWI), absorción de agua en suelo (DSWI) y vigor multiespectral."
             />
             <Sensor
               icon={<ThermometerSun className="size-5" />}
-              title="Landsat"
-              copy="Temperatura superficial y choque térmico."
+              title="Landsat Térmico"
+              copy="Temperatura superficial del suelo (VI6T), choque calórico y riesgo térmico."
             />
           </div>
         </div>
@@ -354,7 +352,7 @@ export function About() {
               Cerrando la brecha entre la telemetría espacial y el rendimiento en tolva.
             </h3>
             <p className="mt-4 text-sm leading-7 text-[#b4c9bc] sm:text-base">
-              Nuestra metodología combina calibración agronómica en campo con series de tiempo multiespectrales. Así logramos predecir rendimientos antes del secado del grano, permitiendo planificar logística de acopio, liquidación de cosechas y decisiones de manejo intrapredial.
+              Nuestra metodología combina calibración agronómica en campo con series de tiempo multiespectrales. Mediante el Modelo Maestro V6, predecimos el rendimiento antes de la cosecha, permitiendo planificar la logística de acopio, liquidación y decisiones de manejo intrapredial.
             </p>
           </div>
         </div>
@@ -378,46 +376,40 @@ function Sensor({ icon, title, copy }: { icon: React.ReactNode; title: string; c
 export function ModelSpecs() {
   const senales = [
     {
-      titulo: 'Salud y verdor de la planta',
-      explicacion: 'Detecta qué tan tupidas y verdes crecen las hojas de cebada durante el llenado de grano.',
-      porcentaje: 92,
+      titulo: 'Vigor foliar y biomasa (LAI & NDVI)',
+      explicacion: 'Mide el área foliar activa y persistencia verde en maduración con PlanetScope (3m).',
+      porcentaje: 94,
       icono: '🌿',
     },
     {
-      titulo: 'Forma del terreno y pendiente',
-      explicacion: 'Reconoce si el suelo es plano o inclinado, afectando el drenaje y la retención de agua.',
-      porcentaje: 84,
-      icono: '⛰️',
-    },
-    {
-      titulo: 'Humedad y agua en el follaje',
-      explicacion: 'Mide cuánta agua almacena la planta para anticipar marchitez o sequía.',
-      porcentaje: 76,
-      icono: '💧',
-    },
-    {
-      titulo: 'Calor y días de sequía',
-      explicacion: 'Registra temperaturas extremas que puedan frenar el crecimiento de la espiga.',
-      porcentaje: 71,
+      titulo: 'Estrés térmico de superficie (VI6T)',
+      explicacion: 'Detecta choque térmico e inversión de temperatura con banda térmica Landsat.',
+      porcentaje: 89,
       icono: '☀️',
     },
     {
-      titulo: 'Crecimiento semana a semana',
-      explicacion: 'Monitorea con qué velocidad y vigor evoluciona la cobertura vegetal del cultivo.',
-      porcentaje: 64,
-      icono: '📈',
+      titulo: 'Estrés hídrico y humedad (NDWI & DSWI2)',
+      explicacion: 'Evalúa el contenido de agua en follaje y absorción del suelo con Sentinel-2.',
+      porcentaje: 86,
+      icono: '💧',
     },
     {
-      titulo: 'Tamaño del predio',
-      explicacion: 'Superficie total en hectáreas para estimar el volumen total de cosecha.',
-      porcentaje: 52,
-      icono: '📐',
+      titulo: 'Topografía INEGI CEM 4.0',
+      explicacion: 'Malla nativa de 120m para altitud (msnm) y pendiente del terreno (grados).',
+      porcentaje: 82,
+      icono: '⛰️',
     },
     {
-      titulo: 'Ubicación y altitud regional',
-      explicacion: 'Toma en cuenta el clima propio de cada municipio en Puebla, Hidalgo o Tlaxcala.',
-      porcentaje: 45,
+      titulo: 'Prior territorial municipal',
+      explicacion: 'Calibración bayesiana con la media histórica de cada municipio en Hidalgo, Puebla y Tlaxcala.',
+      porcentaje: 76,
       icono: '📍',
+    },
+    {
+      titulo: 'Escala y superficie del predio (log-área)',
+      explicacion: 'Superficie en hectáreas para balancear rendimientos por efecto de escala.',
+      porcentaje: 68,
+      icono: '📐',
     },
   ]
 
@@ -426,27 +418,27 @@ export function ModelSpecs() {
       <div className="mx-auto max-w-7xl px-5 lg:px-8">
         {/* Encabezado Principal */}
         <div className="mb-14 max-w-3xl">
-          <p className="eyebrow">02 / Tecnología Inteligente</p>
+          <p className="eyebrow">02 / Arquitectura de Machine Learning</p>
           <h2 className="section-title mt-4">
-            ¿Cómo calcula AgroRaíces la cosecha de tu parcela?
+            ¿Cómo predice el Modelo Maestro V6 la cosecha de tu parcela?
           </h2>
           <p className="mt-5 leading-7 text-[#5e7367]">
-            En lugar de usar una fórmula rígida igual para todo el país, AgroRaíces funciona como un <strong>consejo de especialistas agrícolas digitales</strong>. Un coordinador inteligente analiza las condiciones de tu tierra y consulta a los especialistas más adecuados para darte una estimación realista y confiable.
+            En lugar de usar una fórmula rígida para todo el país, AgroRaíces implementa una <strong>arquitectura multi-modelo por estado</strong>. Un coordinador territorial identifica la cuenca geográfica de tu predio y consulta a ensambles de algoritmos calibrados específicamente para esa entidad.
           </p>
         </div>
 
-        {/* 1. La Idea Central explicada de forma sencilla */}
+        {/* 1. La Idea Central */}
         <div className="mb-12 rounded-3xl bg-[#10281f] p-8 text-white sm:p-10 shadow-xl border border-white/10">
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-white/10 pb-6 mb-8">
             <div>
-              <span className="tag-dark">¿Cómo funciona?</span>
+              <span className="tag-dark">Arquitectura V6</span>
               <h3 className="mt-2 text-2xl font-bold tracking-tight text-white">
-                Un equipo de especialistas virtuales para tu campo
+                Ensambles regionales de Machine Learning de alta precisión
               </h3>
             </div>
             <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-xl bg-white/5 border border-white/10 text-xs text-[#e2b957]">
               <span>💡</span>
-              Tecnología accesible para todos
+              Tecnología validada en campo
             </div>
           </div>
 
@@ -456,16 +448,16 @@ export function ModelSpecs() {
                 <span>❌</span> El método tradicional
               </div>
               <p className="mt-2 text-sm leading-6 text-[#b8d0be]">
-                Usa una sola regla general para todos. Trata por igual a una parcela plana con riego en un valle que a una parcela inclinada en una montaña seca, lo que suele dar números inexactos o alejados de la realidad.
+                Usa una sola regresión lineal global. Trata por igual a una parcela plana con riego en el Valle de Apan que a una parcela en ladera volcánica en Chignahuapan o temporal en Calpulalpan, provocando sesgos críticos de estimación.
               </p>
             </div>
 
             <div className="rounded-2xl border border-[#e2b957]/40 bg-[#16392c]/80 p-6 shadow-inner">
               <div className="text-xs uppercase tracking-wider font-semibold text-[#e2b957] flex items-center gap-1.5">
-                <span>✅</span> La solución de AgroRaíces
+                <span>✅</span> La arquitectura AgroRaíces V6
               </div>
               <p className="mt-2 text-sm leading-6 text-[#d2e4d7]">
-                Divide el trabajo entre varios especialistas virtuales en paralelo. Si tu parcela está en una ladera alta y fría, escucha al especialista de montaña; si está en un valle cálido, escucha al especialista de valles.
+                Divide la inferencia entre tres motores especializados: ExtraTrees + SVR con prior bayesiano en Hidalgo, ensamble tri-modal en Puebla y clasificador ordinal con mediana robusta en Tlaxcala, adaptándose con precisión a las condiciones de cada predio.
               </p>
             </div>
           </div>
@@ -474,8 +466,8 @@ export function ModelSpecs() {
         {/* 2. El proceso en 4 pasos claros */}
         <div className="mb-14">
           <div className="mb-8">
-            <p className="eyebrow">Paso a paso</p>
-            <h3 className="section-title mt-2 text-3xl">Los 4 pasos para calcular tu rendimiento</h3>
+            <p className="eyebrow">Pipeline Técnico</p>
+            <h3 className="section-title mt-2 text-3xl">Los 4 pasos de la inferencia en producción</h3>
           </div>
 
           <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
@@ -486,22 +478,22 @@ export function ModelSpecs() {
                   🛰️
                 </div>
                 <span className="text-xs font-semibold uppercase tracking-wider text-[#499266]">Paso 01</span>
-                <h4 className="mt-1 text-lg font-bold text-[#17352a]">Radiografía Satelital</h4>
+                <h4 className="mt-1 text-lg font-bold text-[#17352a]">Ingesta Multiespectral</h4>
                 <p className="mt-2 text-xs leading-5 text-[#5e7367]">
-                  Los satélites toman fotos de tu parcela para medir:
+                  Fusión de 3 constelaciones satelitales y topografía nativa de 120m:
                 </p>
                 <ul className="mt-3 space-y-2 text-xs text-[#315543]">
                   <li className="flex items-start gap-1.5">
                     <CheckCircle2 className="size-3.5 text-[#28714f] shrink-0 mt-0.5" />
-                    <span>Qué tan verde y tupida está la hoja de la cebada.</span>
+                    <span><strong>PlanetScope (3m):</strong> Área foliar (LAI) y textura foliar.</span>
                   </li>
                   <li className="flex items-start gap-1.5">
                     <CheckCircle2 className="size-3.5 text-[#28714f] shrink-0 mt-0.5" />
-                    <span>Cuánta agua retiene la planta y el suelo.</span>
+                    <span><strong>Sentinel-2:</strong> Humedad y estrés hídrico (NDWI, DSWI2).</span>
                   </li>
                   <li className="flex items-start gap-1.5">
                     <CheckCircle2 className="size-3.5 text-[#28714f] shrink-0 mt-0.5" />
-                    <span>Si el terreno es plano o está en pendiente.</span>
+                    <span><strong>Landsat & INEGI:</strong> Térmico VI6T y relieve CEM 4.0 (120m).</span>
                   </li>
                 </ul>
               </div>
@@ -514,13 +506,13 @@ export function ModelSpecs() {
                   🧭
                 </div>
                 <span className="text-xs font-semibold uppercase tracking-wider text-[#9b721e]">Paso 02</span>
-                <h4 className="mt-1 text-lg font-bold text-[#17352a]">El Coordinador Inteligente</h4>
+                <h4 className="mt-1 text-lg font-bold text-[#17352a]">Enrutador Territorial</h4>
                 <p className="mt-2 text-xs leading-5 text-[#5e7367]">
-                  Revisa la altitud, el clima y el relieve de tu predio para decidir a quién consultar.
+                  Identifica la cuenca territorial y el estado (Puebla, Hidalgo o Tlaxcala) de tu predio.
                 </p>
                 <div className="mt-3 rounded-xl bg-white border border-[#e2e8df] p-3 text-xs text-[#4b5563]">
-                  <span className="font-semibold text-[#17352a] block mb-1">Por ejemplo:</span>
-                  Si tu parcela está en una ladera alta y fría de Tlaxcala o Hidalgo, le da más valor a la opinión del especialista en tierras de montaña.
+                  <span className="font-semibold text-[#17352a] block mb-1">Calibración Territorial:</span>
+                  Aplica prior bayesiano municipal y selecciona los modelos de Machine Learning calibrados específicamente para esa entidad.
                 </div>
               </div>
             </div>
@@ -529,25 +521,25 @@ export function ModelSpecs() {
             <div className="flex flex-col justify-between rounded-3xl border border-[#d7e0d5] bg-[#f9faf7] p-6 shadow-sm hover:shadow-md transition">
               <div>
                 <div className="mb-4 flex size-12 items-center justify-center rounded-2xl bg-[#eaf4fd] text-2xl">
-                  👨‍🌾
+                  🤖
                 </div>
                 <span className="text-xs font-semibold uppercase tracking-wider text-[#1e6cb7]">Paso 03</span>
-                <h4 className="mt-1 text-lg font-bold text-[#17352a]">Los Especialistas en Campo</h4>
+                <h4 className="mt-1 text-lg font-bold text-[#17352a]">Especialistas V6 por Estado</h4>
                 <p className="mt-2 text-xs leading-5 text-[#5e7367]">
-                  Contamos con modelos expertos entrenados para cada tipo de terreno:
+                  Ensambles optimizados para cada realidad productiva:
                 </p>
                 <ul className="mt-3 space-y-2 text-xs text-[#315543]">
                   <li className="flex items-start gap-1.5">
                     <CheckCircle2 className="size-3.5 text-[#1e6cb7] shrink-0 mt-0.5" />
-                    <span><strong>Experto en Valles:</strong> Especializado en tierras fértiles y riego.</span>
+                    <span><strong>Hidalgo:</strong> ExtraTrees (75%) + SVR (25%) bio-espacial.</span>
                   </li>
                   <li className="flex items-start gap-1.5">
                     <CheckCircle2 className="size-3.5 text-[#1e6cb7] shrink-0 mt-0.5" />
-                    <span><strong>Experto en Laderas:</strong> Especializado en terrenos inclinados.</span>
+                    <span><strong>Puebla:</strong> Tri-modal: ExtraTrees + SVR + Huber.</span>
                   </li>
                   <li className="flex items-start gap-1.5">
                     <CheckCircle2 className="size-3.5 text-[#1e6cb7] shrink-0 mt-0.5" />
-                    <span><strong>Experto en Sequía:</strong> Especializado en parcelas de temporal.</span>
+                    <span><strong>Tlaxcala:</strong> SVC ordinal calibrado + mediana regional.</span>
                   </li>
                 </ul>
               </div>
@@ -560,15 +552,15 @@ export function ModelSpecs() {
                   ⚖️
                 </div>
                 <span className="text-xs font-semibold uppercase tracking-wider text-[#e0b653]">Paso 04</span>
-                <h4 className="mt-1 text-lg font-bold text-white">El Veredicto Final</h4>
+                <h4 className="mt-1 text-lg font-bold text-white">Veredicto y Acotamiento V6</h4>
                 <p className="mt-2 text-xs leading-5 text-[#a8c3b4]">
-                  Se combinan las opiniones de todos los especialistas para calcular tu cosecha esperada en <strong>toneladas por hectárea</strong>.
+                  Combina el ensamble y acota biológicamente el rendimiento entre <strong>1.50 y 5.60 t/ha</strong>.
                 </p>
-                <div className="my-3 rounded-xl bg-black/40 border border-white/10 p-2.5 text-center text-xs text-[#e2b957]">
-                  Rendimiento Estimado Realista
+                <div className="my-3 rounded-xl bg-black/40 border border-white/10 p-2.5 text-center text-xs text-[#e2b957] font-semibold">
+                  Rendimiento Calibrado para Campo
                 </div>
                 <p className="text-[11px] leading-4 text-[#a8c3b4]">
-                  El cálculo siempre respeta los límites reales de la cebada; nunca inventa números exagerados o imposibles.
+                  Garantiza estimaciones fidedignas para tolva, liquidaciones y conteo de bultos de 50 kg.
                 </p>
               </div>
             </div>
@@ -581,8 +573,8 @@ export function ModelSpecs() {
           <div className="rounded-3xl border border-[#dde5db] bg-[#f7f9f5] p-7 sm:p-9 shadow-sm">
             <div className="flex items-center justify-between border-b border-[#e2e9df] pb-4 mb-6">
               <div>
-                <p className="eyebrow">Factores Clave</p>
-                <h3 className="mt-1 text-xl font-bold text-[#17352a]">¿Qué señales mira el satélite en tu parcela?</h3>
+                <p className="eyebrow">Factores Biofísicos</p>
+                <h3 className="mt-1 text-xl font-bold text-[#17352a]">¿Qué señales procesa el Modelo Maestro V6?</h3>
               </div>
               <Mountain className="size-6 text-[#28714f]" />
             </div>
@@ -616,36 +608,41 @@ export function ModelSpecs() {
             <div className="rounded-3xl border border-[#dde5db] bg-white p-7 sm:p-8 shadow-sm">
               <div className="flex items-center gap-2 mb-3">
                 <ShieldCheck className="size-5 text-[#28714f]" />
-                <h3 className="text-lg font-bold text-[#17352a]">Resultados Comprobados en Campo</h3>
+                <h3 className="text-lg font-bold text-[#17352a]">Certeza y Calibración en Campo</h3>
               </div>
               <p className="text-xs text-[#5e7367] leading-relaxed mb-6">
-                Probado y calibrado con datos de productores reales en Puebla, Hidalgo y Tlaxcala para brindarte certeza en tus decisiones.
+                Diseñado y contrastado con cosechas reales de productores en Puebla, Hidalgo y Tlaxcala para brindarte respaldo confiable en tus decisiones agrícolas.
               </p>
 
               <div className="grid grid-cols-2 gap-3">
                 <div className="rounded-2xl border border-[#e0e7dd] bg-[#f9faf7] p-4">
-                  <span className="text-xs font-semibold uppercase tracking-wider text-[#789083]">Certeza en Campo</span>
-                  <div className="mt-1 text-2xl font-extrabold text-[#17352a]">85% – 90%</div>
-                  <div className="mt-0.5 text-[11px] text-[#81968a]">Acierto frente a cosechas reales</div>
+                  <span className="text-xs font-semibold uppercase tracking-wider text-[#789083]">Calibración Local</span>
+                  <div className="mt-1 text-lg font-bold text-[#17352a]">Altiplano Central</div>
+                  <div className="mt-0.5 text-[11px] text-[#81968a]">Puebla, Hidalgo y Tlaxcala</div>
                 </div>
 
                 <div className="rounded-2xl border border-[#e0e7dd] bg-[#f9faf7] p-4">
-                  <span className="text-xs font-semibold uppercase tracking-wider text-[#789083]">Variación Media</span>
-                  <div className="mt-1 text-2xl font-extrabold text-[#17352a]">&plusmn; 0.4 t/ha</div>
-                  <div className="mt-0.5 text-[11px] text-[#81968a]">Margen de error muy estrecho</div>
+                  <span className="text-xs font-semibold uppercase tracking-wider text-[#789083]">Enfoque Productivo</span>
+                  <div className="mt-1 text-lg font-bold text-[#17352a]">Cebada Maltera</div>
+                  <div className="mt-0.5 text-[11px] text-[#81968a]">Acorde al estándar industrial</div>
                 </div>
 
                 <div className="rounded-2xl border border-[#e0e7dd] bg-[#f9faf7] p-4">
-                  <span className="text-xs font-semibold uppercase tracking-wider text-[#789083]">Rango Realista</span>
-                  <div className="mt-1 text-2xl font-extrabold text-[#9b721e]">2.0 a 5.6</div>
-                  <div className="mt-0.5 text-[11px] text-[#81968a]">Toneladas por hectárea reales</div>
+                  <span className="text-xs font-semibold uppercase tracking-wider text-[#789083]">Rango Productivo</span>
+                  <div className="mt-1 text-lg font-bold text-[#9b721e]">Biológicamente Realista</div>
+                  <div className="mt-0.5 text-[11px] text-[#81968a]">Sin cifras exageradas o irreales</div>
                 </div>
 
                 <div className="rounded-2xl border border-[#e0e7dd] bg-[#f9faf7] p-4">
-                  <span className="text-xs font-semibold uppercase tracking-wider text-[#789083]">Rapidez</span>
-                  <div className="mt-1 text-2xl font-extrabold text-[#28714f]">&lt; 2 seg</div>
-                  <div className="mt-0.5 text-[11px] text-[#81968a]">Respuesta inmediata en línea</div>
+                  <span className="text-xs font-semibold uppercase tracking-wider text-[#789083]">Respuesta</span>
+                  <div className="mt-1 text-lg font-bold text-[#28714f]">Tiempo Real</div>
+                  <div className="mt-0.5 text-[11px] text-[#81968a]">Inferencia y reporte al instante</div>
                 </div>
+              </div>
+
+              <div className="mt-6 pt-5 border-t border-[#e2e9df] flex items-center justify-between text-xs text-[#5e7367]">
+                <span>Adaptado a temporal y riego</span>
+                <span className="font-semibold text-[#1e5037]">Versión 6.0.0 Oficial</span>
               </div>
             </div>
 
@@ -655,13 +652,13 @@ export function ModelSpecs() {
                 href="/mapa#asistente-modelo"
                 className="flex-1 inline-flex h-12 items-center justify-center gap-2 rounded-2xl bg-[#1e6846] px-6 text-xs font-semibold text-white shadow-md transition hover:bg-[#155538]"
               >
-                Probar calculadora de tu predio <ArrowRight className="size-4" />
+                Probar el Modelo V6 <ArrowRight className="size-4" />
               </Link>
               <Link
                 href="/mapa"
                 className="flex-1 inline-flex h-12 items-center justify-center gap-2 rounded-2xl border border-[#d7e0d5] bg-white px-6 text-xs font-semibold text-[#17352a] shadow-sm transition hover:bg-[#f3f6f1]"
               >
-                Ver parcelas en el mapa satelital <ChevronRight className="size-4" />
+                Ver parcelas en el mapa <ChevronRight className="size-4" />
               </Link>
             </div>
           </div>

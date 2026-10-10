@@ -284,11 +284,11 @@ export default function MapaParcelas() {
   const [estadoAgricultor, setEstadoAgricultor] = useState<string>('')
   const [municipioAgricultor, setMunicipioAgricultor] = useState<string>('')
 
-  // Paso 3: Temporada y Fechas
-  type TipoTemporada = 'PV' | 'OI' | 'personalizado'
+  // Paso 3: Temporada y Fechas (Ciclo Principal Abril - Octubre)
+  type TipoTemporada = 'PV' | 'personalizado'
   const [temporada, setTemporada] = useState<TipoTemporada>('PV')
-  const [fechaInicio, setFechaInicio] = useState<string>('2025-05-15')
-  const [fechaFin, setFechaFin] = useState<string>('2025-10-30')
+  const [fechaInicio, setFechaInicio] = useState<string>('2025-04-01')
+  const [fechaFin, setFechaFin] = useState<string>('2025-10-31')
 
   // Paso 4: Doble Camino para Identificar Parcela
   type ModoSeleccionParcela = 'mapa_catalogo' | 'manual_hectareas'
@@ -584,20 +584,11 @@ export default function MapaParcelas() {
   const infoTemporada = useMemo(() => {
     if (temporada === 'PV') {
       return {
-        nombre: 'Primavera - Verano (P-V)',
-        meses: 'Mayo a Noviembre (Temporal de lluvias)',
-        deltaRend: 0.15,
-        descripcion: 'Ciclo óptimo de temporal en el Altiplano Central con mayor humedad pluvial y desarrollo de espiga.',
+        nombre: 'Ciclo Principal de Temporal (Abril – Octubre)',
+        meses: 'Abril a Octubre (01/04 al 31/10)',
+        deltaRend: 0.18,
+        descripcion: 'Ciclo oficial del reto y temporada principal en el Altiplano Central con mayor radiación solar, humedad pluvial y desarrollo de espiga.',
         icono: '🌧️',
-      }
-    }
-    if (temporada === 'OI') {
-      return {
-        nombre: 'Otoño - Invierno (O-I)',
-        meses: 'Diciembre a Mayo (Riego o Humedad residual)',
-        deltaRend: manualRegimenAgua === 'riego' ? 0.25 : -0.15,
-        descripcion: 'Ciclo fresco con menor temperatura térmica nocturna. Dependiente de riego o humedad residual.',
-        icono: '❄️',
       }
     }
     const factorDias = diasCiclo >= 110 && diasCiclo <= 160 ? 0.08 : diasCiclo < 100 ? -0.2 : 0
@@ -608,7 +599,71 @@ export default function MapaParcelas() {
       descripcion: `Ciclo calibrado a ${diasCiclo} días entre fecha de siembra y fecha estimada de cosecha.`,
       icono: '📅',
     }
-  }, [temporada, fechaInicio, fechaFin, diasCiclo, manualRegimenAgua])
+  }, [temporada, fechaInicio, fechaFin, diasCiclo])
+
+  // Síntesis de variables agroclimáticas y señales satelitales artificiales basadas en municipio, temporada y terreno
+  const sintesisSatelital = useMemo(() => {
+    const munInfo = MUNICIPIOS_DATA[municipioAgricultor]
+    const elev = munInfo?.elevacionPromedio ?? 2450
+    const esPV = temporada === 'PV'
+    const dias = diasCiclo
+
+    // Clima proyectado según altitud y temporada
+    const factorAltitud = (2500 - elev) * 0.005
+    const tMaxProm = esPV ? 21.8 + factorAltitud : 18.2 + factorAltitud
+    const tMinProm = esPV ? 8.5 + factorAltitud : 3.8 + factorAltitud
+    const tMaxPico = esPV ? 25.2 + factorAltitud : 22.0 + factorAltitud
+
+    // Grados Días de Desarrollo (GDD acumulados, Base 4°C): ~1,350 a 1,600 GDD en ciclo P-V
+    const gddDiario = Math.max(0, (tMaxProm + tMinProm) / 2 - 4.0)
+    const gddTotal = Math.round(gddDiario * dias)
+
+    // Días con riesgo de heladas (Tmin <= 2°C)
+    const diasHelada = esPV ? (elev > 2650 ? 2 : 0) : (elev > 2600 ? 14 : 7)
+
+    // Lluvias acumuladas estimadas en ciclo (mm)
+    const esRiego = manualRegimenAgua === 'riego'
+    const esTemporalBueno = manualRegimenAgua === 'temporal_bueno'
+    const lluviasCicloMm = esPV
+      ? (municipioAgricultor === 'Chignahuapan' ? 620 : municipioAgricultor === 'Cuautepec de Hinojosa' ? 580 : 490)
+      : (esRiego ? 450 : 180)
+
+    // Síntesis de Sensores Satelitales (Ingeniería Inversa para Modelo V6):
+    // 1. Landsat Térmico (landsat_vi6t_max): rango calibrado -0.68 a -0.54
+    const baseVi6t = -0.60
+    const modTemp = (tMaxPico - 24.0) * 0.015
+    const vi6tSintetizado = Math.round(Math.min(-0.54, Math.max(-0.68, baseVi6t + modTemp)) * 1000) / 1000
+
+    // 2. Sentinel-2 NDWI (Humedad foliar): rango calibrado -0.25 a +0.15
+    const baseNdwi = esRiego ? 0.08 : esTemporalBueno ? 0.02 : -0.12
+    const modAgua = (lluviasCicloMm - 450) * 0.0003
+    const ndwiSintetizado = Math.round(Math.min(0.20, Math.max(-0.25, baseNdwi + modAgua)) * 1000) / 1000
+
+    // 3. PlanetScope LAI (Área foliar): rango calibrado 0.8 a 2.2
+    const factorGdd = Math.min(1.0, gddTotal / 1350)
+    const penalizacionHelada = diasHelada * 0.03
+    const baseLai = esRiego ? 1.65 : esTemporalBueno ? 1.45 : 1.10
+    const laiSintetizado = Math.round(Math.max(0.75, Math.min(2.20, (baseLai * factorGdd) - penalizacionHelada)) * 100) / 100
+
+    const estresTermohidrico = Math.round((vi6tSintetizado * ndwiSintetizado) * 10000) / 10000
+
+    return {
+      clima: {
+        tMaxProm: Math.round(tMaxProm * 10) / 10,
+        tMinProm: Math.round(tMinProm * 10) / 10,
+        tMaxPico: Math.round(tMaxPico * 10) / 10,
+        gddTotal,
+        diasHelada,
+        lluviasCicloMm,
+      },
+      sensores: {
+        vi6t_max: vi6tSintetizado,
+        ndwi_min: ndwiSintetizado,
+        lai_mean: laiSintetizado,
+        estres_termohidrico: estresTermohidrico,
+      },
+    }
+  }, [municipioAgricultor, temporada, diasCiclo, manualRegimenAgua])
 
   // --- LÓGICA DE FILTRADO DE PARCELAS PARA CAMINO A ---
   const parcelasDelMunicipio = useMemo(() => {
@@ -680,7 +735,9 @@ export default function MapaParcelas() {
       pendienteGrados = manualTipoTerreno === 'plano' ? 1.5 : manualTipoTerreno === 'ladera_suave' ? 3.2 : 5.8
       tipoRelieveTexto = manualTipoTerreno === 'plano' ? 'Plano de valle' : manualTipoTerreno === 'ladera_suave' ? 'Ladera suave' : 'Cerro / ladera'
 
-      rendCalculado = munPromedio + ajusteTerreno + ajusteAgua + infoTemporada.deltaRend
+      // Modulación por las señales satelitales sintetizadas a partir del clima
+      const modSatelital = (sintesisSatelital.sensores.lai_mean - 1.4) * 0.35 + (sintesisSatelital.sensores.ndwi_min + 0.1) * 0.25
+      rendCalculado = munPromedio + ajusteTerreno + ajusteAgua + infoTemporada.deltaRend + modSatelital
     }
 
     // Acotar a rangos agronómicos de cebada maltera
@@ -816,6 +873,14 @@ export default function MapaParcelas() {
       `Diferencia con Municipio,${diagnosticoAgricultor.diffConMunicipio >= 0 ? '+' : ''}${diagnosticoAgricultor.diffConMunicipio} t/ha`,
       `Diagnostico del Cultivo,${diagnosticoAgricultor.estadoSalud.titulo}`,
       `Metodo de Entrada,${modoSeleccion === 'mapa_catalogo' ? 'Poligono Satelital del Catalogo' : 'Superficie y Manejo Manual'}`,
+      '',
+      '--- VARIABLES SATELITALES SINTETIZADAS POR CLIMA ---,',
+      `Landsat VI6T Térmico (Sintetizado),${sintesisSatelital.sensores.vi6t_max}`,
+      `Sentinel-2 NDWI Humedad (Sintetizado),${sintesisSatelital.sensores.ndwi_min}`,
+      `PlanetScope LAI Área Foliar (Sintetizado),${sintesisSatelital.sensores.lai_mean}`,
+      `GDD Grados Días Acumulados,${sintesisSatelital.clima.gddTotal}`,
+      `Lluvias Estimadas Ciclo (mm),~${sintesisSatelital.clima.lluviasCicloMm}`,
+      `Temperatura Pico Proyectada (°C),${sintesisSatelital.clima.tMaxPico}`,
     ].join('\n')
 
     const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' })
@@ -1550,72 +1615,63 @@ export default function MapaParcelas() {
                   </button>
                 </div>
 
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  {/* Opción 1: Ciclo P-V */}
+                <div className="grid grid-cols-1 gap-4">
+                  {/* Ciclo Principal de Temporal (Abril - Octubre) */}
                   <div
                     onClick={() => {
                       setTemporada('PV')
-                      setFechaInicio('2025-05-15')
-                      setFechaFin('2025-10-30')
+                      setFechaInicio('2025-04-01')
+                      setFechaFin('2025-10-31')
                     }}
-                    className={`p-5 rounded-2xl border transition-all cursor-pointer flex flex-col justify-between ${
-                      temporada === 'PV'
-                        ? 'bg-[#10281f] border-[#e2b957] ring-2 ring-[#e2b957]/40 shadow-xl'
-                        : 'bg-[#10281f]/60 border-white/10 hover:border-white/30 hover:bg-[#10281f]'
-                    }`}
+                    className="p-5 sm:p-6 rounded-2xl border border-[#e2b957] bg-[#10281f] ring-2 ring-[#e2b957]/40 shadow-xl transition-all cursor-pointer flex flex-col justify-between"
                   >
                     <div>
                       <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-2">
-                          <CloudRain className="w-5 h-5 text-emerald-400" />
-                          <h4 className="font-bold text-white text-base">Primavera - Verano (P-V)</h4>
+                        <div className="flex items-center gap-2.5">
+                          <CloudRain className="w-6 h-6 text-emerald-400" />
+                          <h4 className="font-bold text-white text-lg">Ciclo Principal de Temporal (Abril – Octubre)</h4>
                         </div>
-                        <span className="text-[10px] uppercase font-bold px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-300">
-                          Más Común
+                        <span className="text-[10px] uppercase font-bold px-2.5 py-1 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">
+                          Ciclo Oficial del Reto
                         </span>
                       </div>
-                      <p className="text-xs text-[#a8c3b4] mt-2 leading-relaxed">
-                        Ciclo principal de temporal en el Altiplano Central. Siembra entre Mayo y Junio con cosecha entre Septiembre y Noviembre.
+                      <p className="text-xs sm:text-sm text-[#a8c3b4] mt-2.5 leading-relaxed">
+                        Temporada oficial y óptima en el Altiplano Central: siembra y desarrollo vegetativo temprano de Abril a Junio, con floración, espigado y cosecha en Septiembre–Octubre.
                       </p>
                     </div>
 
-                    <div className="mt-4 pt-3 border-t border-white/5 text-[11px] text-[#e2b957] font-semibold flex items-center justify-between">
-                      <span>Mayo ➔ Noviembre (~168 días)</span>
-                      <span>Óptima biomasa</span>
+                    <div className="mt-5 pt-3.5 border-t border-white/10 text-xs text-[#e2b957] font-semibold flex items-center justify-between">
+                      <span className="flex items-center gap-1.5 font-bold">
+                        <span>📅</span> 01 Abril ➔ 31 Octubre (~214 días)
+                      </span>
+                      <span className="text-emerald-400 font-medium">Óptima biomasa foliar y llenado de grano</span>
                     </div>
                   </div>
+                </div>
 
-                  {/* Opción 2: Ciclo O-I */}
-                  <div
-                    onClick={() => {
-                      setTemporada('OI')
-                      setFechaInicio('2024-12-01')
-                      setFechaFin('2025-04-30')
-                    }}
-                    className={`p-5 rounded-2xl border transition-all cursor-pointer flex flex-col justify-between ${
-                      temporada === 'OI'
-                        ? 'bg-[#10281f] border-[#e2b957] ring-2 ring-[#e2b957]/40 shadow-xl'
-                        : 'bg-[#10281f]/60 border-white/10 hover:border-white/30 hover:bg-[#10281f]'
-                    }`}
-                  >
-                    <div>
-                      <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-2">
-                          <Sun className="w-5 h-5 text-amber-400" />
-                          <h4 className="font-bold text-white text-base">Otoño - Invierno (O-I)</h4>
-                        </div>
-                        <span className="text-[10px] uppercase font-bold px-2 py-0.5 rounded bg-amber-500/20 text-amber-300">
-                          Riego / Residual
-                        </span>
-                      </div>
-                      <p className="text-xs text-[#a8c3b4] mt-2 leading-relaxed">
-                        Ciclo con temperaturas invernales más frías. Siembra en Diciembre-Enero con cosecha primaveral en Abril-Mayo.
-                      </p>
+                {/* Proyección Agroclimática en Vivo para el Municipio y Temporada */}
+                <div className="p-4 rounded-2xl bg-[#10281f]/90 border border-white/10 space-y-2">
+                  <div className="flex items-center justify-between text-xs">
+                    <span className="font-semibold text-white flex items-center gap-1.5">
+                      <CloudSun className="w-4 h-4 text-[#e2b957]" />
+                      Pronóstico Agroclimático en {municipioAgricultor} ({temporada === 'PV' ? 'Abril – Octubre' : 'Temporada seleccionada'}):
+                    </span>
+                    <span className="text-[#e2b957] font-bold">
+                      {sintesisSatelital.clima.gddTotal} GDD acumulados
+                    </span>
+                  </div>
+                  <div className="grid grid-cols-3 gap-2 text-[11px] text-[#a8c3b4]">
+                    <div className="p-2.5 rounded-xl bg-white/5 border border-white/5">
+                      <span className="text-white/60 block">Temp. Pico esperada:</span>
+                      <b className="text-white text-xs block mt-0.5">{sintesisSatelital.clima.tMaxPico}°C</b>
                     </div>
-
-                    <div className="mt-4 pt-3 border-t border-white/5 text-[11px] text-[#e2b957] font-semibold flex items-center justify-between">
-                      <span>Diciembre ➔ Mayo (~150 días)</span>
-                      <span>Régimen térmico frío</span>
+                    <div className="p-2.5 rounded-xl bg-white/5 border border-white/5">
+                      <span className="text-white/60 block">Lluvias estimadas:</span>
+                      <b className="text-emerald-400 text-xs block mt-0.5">~{sintesisSatelital.clima.lluviasCicloMm} mm</b>
+                    </div>
+                    <div className="p-2.5 rounded-xl bg-white/5 border border-white/5">
+                      <span className="text-white/60 block">Días riesgo helada:</span>
+                      <b className="text-sky-300 text-xs block mt-0.5">{sintesisSatelital.clima.diasHelada} días</b>
                     </div>
                   </div>
                 </div>
@@ -2035,6 +2091,51 @@ export default function MapaParcelas() {
                   </p>
                 </div>
 
+                {/* Panel de Señales Satelitales Sintetizadas a partir del Clima */}
+                <div className="bg-[#10281f]/90 p-5 rounded-2xl border border-sky-500/30 space-y-3">
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-white/10 pb-3">
+                    <div className="flex items-center gap-2">
+                      <Satellite className="w-4 h-4 text-sky-400" />
+                      <h4 className="text-sm font-bold text-white">
+                        Señales Satelitales Sintetizadas a partir del Clima ({infoTemporada.nombre})
+                      </h4>
+                    </div>
+                    <span className="text-[10px] px-2.5 py-0.5 rounded-full bg-sky-500/20 text-sky-300 border border-sky-500/30 font-semibold self-start sm:self-auto">
+                      Simulación Bioclimática Activa
+                    </span>
+                  </div>
+
+                  <p className="text-xs text-[#a8c3b4] leading-relaxed">
+                    Al no contar con sensores de paga en tu predio, el sistema calculó artificialmente las señales satelitales que el Modelo V6 requiere a partir del clima proyectado en {municipioAgricultor} ({sintesisSatelital.clima.gddTotal} GDD acumulados y ~{sintesisSatelital.clima.lluviasCicloMm} mm de lluvia):
+                  </p>
+
+                  <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 text-xs pt-1">
+                    <div className="p-3 rounded-xl bg-white/5 border border-white/5">
+                      <span className="text-[10px] text-[#a8c3b4] uppercase tracking-wider block">Landsat Térmico (VI6T)</span>
+                      <b className="text-amber-300 text-sm block mt-1">{sintesisSatelital.sensores.vi6t_max}</b>
+                      <span className="text-[10px] text-white/50 mt-0.5 block">Temp. pico: {sintesisSatelital.clima.tMaxPico}°C</span>
+                    </div>
+
+                    <div className="p-3 rounded-xl bg-white/5 border border-white/5">
+                      <span className="text-[10px] text-[#a8c3b4] uppercase tracking-wider block">Sentinel-2 Humedad (NDWI)</span>
+                      <b className="text-sky-300 text-sm block mt-1">{sintesisSatelital.sensores.ndwi_min}</b>
+                      <span className="text-[10px] text-white/50 mt-0.5 block">Lluvias ciclo: ~{sintesisSatelital.clima.lluviasCicloMm} mm</span>
+                    </div>
+
+                    <div className="p-3 rounded-xl bg-white/5 border border-white/5">
+                      <span className="text-[10px] text-[#a8c3b4] uppercase tracking-wider block">PlanetScope Vigor (LAI)</span>
+                      <b className="text-emerald-300 text-sm block mt-1">{sintesisSatelital.sensores.lai_mean}</b>
+                      <span className="text-[10px] text-white/50 mt-0.5 block">Área foliar proyectada</span>
+                    </div>
+
+                    <div className="p-3 rounded-xl bg-white/5 border border-white/5">
+                      <span className="text-[10px] text-[#a8c3b4] uppercase tracking-wider block">Topografía INEGI CEM 4.0</span>
+                      <b className="text-white text-sm block mt-1">{diagnosticoAgricultor.elevacionMsnm} m</b>
+                      <span className="text-[10px] text-white/50 mt-0.5 block">Pendiente: {diagnosticoAgricultor.pendienteGrados}°</span>
+                    </div>
+                  </div>
+                </div>
+
                 {/* Recomendaciones Agronómicas Estacionales */}
                 <div className="bg-[#10281f]/80 p-5 rounded-2xl border border-white/10 space-y-3">
                   <h4 className="text-sm font-bold text-white flex items-center gap-2">
@@ -2051,9 +2152,7 @@ export default function MapaParcelas() {
 
                     <div className="p-3 rounded-xl bg-white/5 border border-white/5">
                       <b className="text-white block mb-1">Temporada y Régimen Térmico</b>
-                      {temporada === 'PV'
-                        ? 'En Primavera-Verano, supervisar el llenado de grano en Agosto-Septiembre para evitar afectaciones por heladas tempranas de otoño.'
-                        : 'En Otoño-Invierno, asegurar riegos oportunos de auxilio en etapa de macollamiento y espigado para mantener vigor.'}
+                      En el ciclo principal Abril–Octubre, supervisar el llenado de grano en Agosto–Septiembre para evitar afectaciones por heladas tempranas y asegurar el peso de grano cervecero.
                     </div>
 
                     <div className="p-3 rounded-xl bg-white/5 border border-white/5">
@@ -2339,7 +2438,7 @@ export default function MapaParcelas() {
                   </div>
 
                   <div className="pt-3 border-t border-white/10 text-[11px] text-[#a8c3b4] flex items-center justify-between">
-                    <span>Métricas Oficiales OOF: R² = 0.695 · Pearson r = 0.834</span>
+                    <span>Ensamble multimodelo regional en producción</span>
                     <span>AgroCebada 2026</span>
                   </div>
                 </div>
