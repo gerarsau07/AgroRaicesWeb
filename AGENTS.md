@@ -17,7 +17,7 @@
 - Rutas: `/` (`app/page.tsx`), `/inferencia`, `/modelo`, `/nosotros`, `/mapa`, `/mapa-rendimiento`. La mayoría de la home vive en `components/agro-raices.tsx` (componente grande, ~30KB; Navbar/Footer se importan de ahí en `app/layout.tsx`).
 - `PredictionForm` está conectado al backend (`POST /api/predict` / API externa o fallback local).
 - `components/agro-raices.tsx` concentra todas las vistas de la home.
-- `backend/` contiene la API FastAPI (`main.py`, modelo V6 `modelo_agroraices_v6.joblib`, `POST /predict`, `GET /parcelas`, `GET /health`). Corre con `uvicorn main:app --reload --port 8000` desde `backend/`.
+- `backend/` contiene la API FastAPI (`main.py`, modelo final `routers/modelo_agroraices_final.joblib` con especialistas por estado Hidalgo/Puebla/Tlaxcala, `POST /predict`, `POST /predict/upload-bundle`, `GET /predict/demo-dataset`, `GET /parcelas`, `GET /health`). Corre con `uvicorn main:app --reload --port 8000` desde `backend/`.
 - Visor geoespacial interactivo implementado con **Leaflet** (`components/mapa-parcelas.tsx` y `components/mapa-view.tsx`).
 
 ## Convenciones

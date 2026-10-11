@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server'
 import fs from 'fs'
 import path from 'path'
 
-// Benchmark por municipio (V6 calibrado)
+// Benchmark por municipio (Pipeline Oficial Calibrado)
 const MUNICIPIO_BENCHMARKS: Record<string, number> = {
   Chignahuapan: 4.48,
   Almoloya: 4.52,
@@ -55,18 +55,18 @@ function calcularInferenciaLocalV6(item: {
     pred = baseRegional * 0.70 + (benchmarkMuni + ajusteClimatico) * 0.30
   }
 
-  const rendFinal = Math.round(Math.min(5.60, Math.max(1.50, pred)) * 1000) / 1000
+  const rendFinal = Math.round(Math.min(4.80, Math.max(1.50, pred)) * 1000) / 1000
   const rendKg = Math.round(rendFinal * 1000)
   const prodT = Math.round(rendFinal * area * 100) / 100
 
   let nivel = 'medio'
-  let diag = 'Rendimiento en el promedio comercial esperado para la región.'
+  let diag = 'Rendimiento comercial estable dentro del potencial agroclimático regional.'
   if (rendFinal < 3.30) {
     nivel = 'bajo'
-    diag = 'Rendimiento bajo: Posible estrés termohídrico o zona de hondonada/helada.'
-  } else if (rendFinal > 4.40) {
+    diag = 'Rendimiento limitado por estrés termo-hídrico, helada reproductiva o baja retención edáfica.'
+  } else if (rendFinal > 4.35) {
     nivel = 'alto'
-    diag = 'Alto potencial productivo: Laderas bien drenadas o valles de alta fertilidad.'
+    diag = 'Alto potencial productivo (óptima conservación de humedad, buen drenaje y confort térmico).'
   }
 
   return {
@@ -78,7 +78,8 @@ function calcularInferenciaLocalV6(item: {
     municipio: muni || undefined,
     nivel_potencial: nivel,
     diagnostico: diag,
-    confianza_r2: 0.6951,
+    confianza_r2: 0.7276,
+    correlacion_r: 0.8535,
   }
 }
 
@@ -191,7 +192,7 @@ export async function POST(request: Request) {
 
         return NextResponse.json(
           {
-            error: `Validación incompleta: Se requieren los 4 archivos para ejecutar el modelo V6.`,
+            error: `Validación incompleta: Se requieren los 4 archivos para ejecutar el Pipeline Oficial AgroRaíces.`,
             archivos_cargados: Object.keys(datasetsCargados).map((k) => nombresAmigables[k] || k),
             archivos_faltantes: faltantes.map((f) => nombresAmigables[f]),
             total_cargados: Object.keys(datasetsCargados).length,
@@ -492,8 +493,14 @@ export async function GET(request: Request) {
 
   return NextResponse.json({
     status: 'ok',
-    modelo: 'AgroRaices V6 Maestro',
-    version: '6.0.0',
+    modelo: 'Pipeline Oficial AgroRaíces',
+    version: 'final-production',
+    metricas_oof: {
+      r2_global: 0.7276,
+      pearson_r_global: 0.8535,
+      mae_global_kg: 307.0,
+      rmse_global_kg: 442.7,
+    },
     archivos_requeridos: [
       '1. Parcelas y Superficie (ID_area_rendimiento...csv o parcelas.csv)',
       '2. Satélite BÁSICO (Sentinel-2 y Landsat - Conjunto_datos_BASICO...csv)',

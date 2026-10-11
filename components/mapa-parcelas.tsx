@@ -931,7 +931,7 @@ export default function MapaParcelas() {
       })
 
       if (!res.ok) {
-        throw new Error('Error al conectar con el motor de inferencia V6')
+        throw new Error('Error al conectar con el motor de inferencia oficial')
       }
 
       const json = await res.json()
@@ -942,19 +942,19 @@ export default function MapaParcelas() {
       // Fallback local en caso de error
       const [, temp, ndwi, evi, lai] = nums
       const predFallback = Math.min(
-        5.6,
+        4.8,
         Math.max(
           1.5,
           3.35 +
-            (Number(evi) - 0.2) * 4 +
-            (Number(lai) - 0.3) * 2.3 +
-            (Number(ndwi) - 0.1) * 1.4 +
-            (Number(temp) + 0.6) * 1.8
+            (Number(evi) - 0.2) * 3 +
+            (Number(lai) - 0.3) * 2.0 +
+            (Number(ndwi) - 0.1) * 1.2 +
+            (Number(temp) + 0.6) * 1.5
         )
       )
       setAnalistaResult(Number(predFallback.toFixed(2)))
       setAnalistaDiag('Inferencia local estimada.')
-      setAnalistaPotencial(predFallback >= 4.2 ? 'alto' : predFallback >= 3.2 ? 'medio' : 'bajo')
+      setAnalistaPotencial(predFallback > 4.35 ? 'alto' : predFallback >= 3.3 ? 'medio' : 'bajo')
     } finally {
       setAnalistaLoading(false)
     }
@@ -1107,7 +1107,7 @@ export default function MapaParcelas() {
     const url = URL.createObjectURL(blob)
     const link = document.createElement('a')
     link.href = url
-    link.download = `Predicciones_V6_Lote_${Date.now()}.csv`
+    link.download = `Predicciones_AgroRaices_Lote_${Date.now()}.csv`
     link.click()
     URL.revokeObjectURL(url)
   }
@@ -2106,7 +2106,7 @@ export default function MapaParcelas() {
                   </div>
 
                   <p className="text-xs text-[#a8c3b4] leading-relaxed">
-                    Al no contar con sensores de paga en tu predio, el sistema calculó artificialmente las señales satelitales que el Modelo V6 requiere a partir del clima proyectado en {municipioAgricultor} ({sintesisSatelital.clima.gddTotal} GDD acumulados y ~{sintesisSatelital.clima.lluviasCicloMm} mm de lluvia):
+                    Al no contar con sensores de paga en tu predio, el sistema calculó artificialmente las señales satelitales que el Pipeline Oficial AgroRaíces requiere a partir del clima proyectado en {municipioAgricultor} ({sintesisSatelital.clima.gddTotal} GDD acumulados y ~{sintesisSatelital.clima.lluviasCicloMm} mm de lluvia):
                   </p>
 
                   <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 text-xs pt-1">
@@ -2209,7 +2209,7 @@ export default function MapaParcelas() {
                 <div className="inline-flex items-center gap-2 px-2.5 py-0.5 rounded-md bg-sky-500/20 text-sky-300 text-xs font-medium mb-1">
                   <Sliders className="w-3.5 h-3.5" /> Modo Técnico y de Investigación
                 </div>
-                <h3 className="text-xl sm:text-2xl font-bold text-white">Laboratorio de Modelado AgroCebada V6</h3>
+                <h3 className="text-xl sm:text-2xl font-bold text-white">Laboratorio de Modelado AgroCebada Oficial</h3>
                 <p className="text-xs text-[#a8c3b4] mt-0.5">
                   Evalúa polígonos individuales con parámetros biofísicos o procesa datasets completos en formato .csv o .zip.
                 </p>
@@ -2350,7 +2350,7 @@ export default function MapaParcelas() {
                       disabled={analistaLoading}
                       className="flex-1 py-3 px-4 rounded-xl bg-sky-600 hover:bg-sky-500 text-white font-semibold text-xs transition cursor-pointer shadow-lg disabled:opacity-50 flex items-center justify-center gap-2"
                     >
-                      {analistaLoading ? 'Calculando ensamble V6...' : 'Ejecutar Inferencia del Modelo'}
+                      {analistaLoading ? 'Calculando ensamble oficial...' : 'Ejecutar Inferencia del Modelo'}
                       {!analistaLoading && <ArrowRight className="w-4 h-4" />}
                     </button>
 
@@ -2368,15 +2368,15 @@ export default function MapaParcelas() {
                   </div>
                 </form>
 
-                {/* Panel de Salida del Ensamble V6 */}
+                {/* Panel de Salida del Ensamble Oficial */}
                 <div className="bg-[#10281f] border border-white/10 rounded-2xl p-6 flex flex-col justify-between shadow-xl min-h-[300px]">
                   <div>
                     <div className="flex items-center justify-between border-b border-white/10 pb-3">
                       <span className="text-xs uppercase tracking-wider text-sky-400 font-bold">
-                        Salida Oficial Modelo V6
+                        Salida Oficial AgroRaíces
                       </span>
                       <span className="text-[10px] px-2 py-0.5 rounded bg-sky-500/20 text-sky-300">
-                        ExtraTrees + SVR + Huber
+                        ExtraTrees + SVR + Huber + GPR + PLS
                       </span>
                     </div>
 
@@ -2458,7 +2458,7 @@ export default function MapaParcelas() {
                       </h4>
                     </div>
                     <p className="text-xs text-[#a8c3b4] mt-1 leading-relaxed max-w-2xl">
-                      El Modelo Maestro V6 requiere estrictamente las 4 fuentes de datos para ejecutar la inferencia. Puedes subir los archivos juntos, seleccionarlos uno a uno o usar el dataset oficial.
+                      El Pipeline Oficial AgroRaíces requiere estrictamente las 4 fuentes de datos para ejecutar la inferencia. Puedes subir los archivos juntos, seleccionarlos uno a uno o usar el dataset oficial.
                     </p>
                   </div>
 
@@ -2709,9 +2709,9 @@ export default function MapaParcelas() {
                       }`}
                     >
                       {batchLoading
-                        ? 'Procesando con Modelo V6...'
+                        ? 'Procesando con Pipeline Oficial...'
                         : todosListos
-                        ? 'Ejecutar Inferencia V6 sobre los 4 Archivos'
+                        ? 'Ejecutar Inferencia Oficial sobre los 4 Archivos'
                         : `Sube los 4 archivos para habilitar (${conteoCargados}/4 listos)`}
                       {todosListos && !batchLoading && <ArrowRight className="w-4 h-4" />}
                     </button>
@@ -2747,7 +2747,7 @@ export default function MapaParcelas() {
                   <div className="p-8 rounded-2xl bg-[#10281f]/80 border border-white/10 flex flex-col items-center justify-center gap-3">
                     <div className="w-10 h-10 border-3 border-sky-400 border-t-transparent rounded-full animate-spin" />
                     <span className="text-sm font-semibold text-white">
-                      Validando y cruzando las 4 fuentes de datos con el Modelo Maestro V6...
+                      Validando y cruzando las 4 fuentes de datos con el Pipeline Oficial AgroRaíces...
                     </span>
                   </div>
                 )}

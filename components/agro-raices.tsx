@@ -182,7 +182,7 @@ export function Hero() {
       <div className="relative mx-auto max-w-7xl px-5 lg:px-8">
         <div className="mx-auto max-w-4xl text-center">
           <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-[#b85c38]/30 bg-[#2b211a] px-4 py-2 text-xs font-medium text-[#f0ded3]">
-            <span className="size-2 rounded-full bg-[#d87a52] animate-pulse" /> Modelo Maestro V6 · AgroCebada 2026
+            <span className="size-2 rounded-full bg-[#d87a52] animate-pulse" /> Pipeline Oficial AgroRaíces · AgroCebada 2026
           </div>
           <h1 className="text-balance text-5xl font-semibold leading-[1.04] tracking-[-0.04em] sm:text-6xl lg:text-8xl">
             Lee el campo.<br />
@@ -240,10 +240,10 @@ export function HomeCards() {
               <div className="mb-6 flex size-12 items-center justify-center rounded-2xl bg-[#f5ede6] text-[#b85c38]">
                 <Satellite className="size-6" />
               </div>
-              <span className="text-xs font-semibold uppercase tracking-wider text-[#b85c38]">01 · Arquitectura V6</span>
-              <h3 className="mt-2 text-xl font-semibold text-[#302620]">Quiénes somos y Modelo V6</h3>
+              <span className="text-xs font-semibold uppercase tracking-wider text-[#b85c38]">01 · Arquitectura Oficial</span>
+              <h3 className="mt-2 text-xl font-semibold text-[#302620]">Quiénes somos y Modelo Predictivo</h3>
               <p className="mt-3 text-sm leading-6 text-[#6e5d53]">
-                Conoce la arquitectura multicomponente por estado: modelos especializados de ExtraTrees, SVR y clasificadores ordinales calibrados para Puebla, Hidalgo y Tlaxcala.
+                Conoce la arquitectura desacoplada por estado: modelos especializados de ExtraTrees, SVR, Huber, GPR, PLS y clasificadores ordinales calibrados para Puebla, Hidalgo y Tlaxcala.
               </p>
             </div>
             <Link
@@ -261,7 +261,7 @@ export function HomeCards() {
                 <Zap className="size-6" />
               </div>
               <span className="text-xs font-semibold uppercase tracking-wider text-[#d87a52]">02 · Modelo en Vivo</span>
-              <h3 className="mt-2 text-xl font-semibold text-white">Usa el Modelo V6</h3>
+              <h3 className="mt-2 text-xl font-semibold text-white">Usa el Modelo Oficial</h3>
               <p className="mt-3 text-sm leading-6 text-[#d4bead]">
                 Estima el rendimiento con el asistente para agricultores guiado paso a paso o mediante el laboratorio técnico de analista con soporte de archivos CSV y ZIP.
               </p>
@@ -352,7 +352,7 @@ export function About() {
               Cerrando la brecha entre la telemetría espacial y el rendimiento en tolva.
             </h3>
             <p className="mt-4 text-sm leading-7 text-[#b4c9bc] sm:text-base">
-              Nuestra metodología combina calibración agronómica en campo con series de tiempo multiespectrales. Mediante el Modelo Maestro V6, predecimos el rendimiento antes de la cosecha, permitiendo planificar la logística de acopio, liquidación y decisiones de manejo intrapredial.
+              Nuestra metodología combina calibración agronómica en campo con series de tiempo multiespectrales. Mediante el Pipeline Oficial AgroRaíces, predecimos el rendimiento antes de la cosecha, permitiendo planificar la logística de acopio, liquidación y decisiones de manejo intrapredial.
             </p>
           </div>
         </div>
@@ -420,7 +420,7 @@ export function ModelSpecs() {
         <div className="mb-14 max-w-3xl">
           <p className="eyebrow">02 / Arquitectura de Machine Learning</p>
           <h2 className="section-title mt-4">
-            ¿Cómo predice el Modelo Maestro V6 la cosecha de tu parcela?
+            ¿Cómo predice el Pipeline Oficial AgroRaíces la cosecha de tu parcela?
           </h2>
           <p className="mt-5 leading-7 text-[#5e7367]">
             En lugar de usar una fórmula rígida para todo el país, AgroRaíces implementa una <strong>arquitectura multi-modelo por estado</strong>. Un coordinador territorial identifica la cuenca geográfica de tu predio y consulta a ensambles de algoritmos calibrados específicamente para esa entidad.
@@ -431,7 +431,7 @@ export function ModelSpecs() {
         <div className="mb-12 rounded-3xl bg-[#10281f] p-8 text-white sm:p-10 shadow-xl border border-white/10">
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-white/10 pb-6 mb-8">
             <div>
-              <span className="tag-dark">Arquitectura V6</span>
+              <span className="tag-dark">Arquitectura Oficial</span>
               <h3 className="mt-2 text-2xl font-bold tracking-tight text-white">
                 Ensambles regionales de Machine Learning de alta precisión
               </h3>
@@ -454,10 +454,10 @@ export function ModelSpecs() {
 
             <div className="rounded-2xl border border-[#e2b957]/40 bg-[#16392c]/80 p-6 shadow-inner">
               <div className="text-xs uppercase tracking-wider font-semibold text-[#e2b957] flex items-center gap-1.5">
-                <span>✅</span> La arquitectura AgroRaíces V6
+                <span>✅</span> La arquitectura oficial de AgroRaíces
               </div>
               <p className="mt-2 text-sm leading-6 text-[#d2e4d7]">
-                Divide la inferencia entre tres motores especializados: ExtraTrees + SVR con prior bayesiano en Hidalgo, ensamble tri-modal en Puebla y clasificador ordinal con mediana robusta en Tlaxcala, adaptándose con precisión a las condiciones de cada predio.
+                Divide la inferencia entre tres motores especializados: ExtraTrees + SVR con prior bayesiano y downscaling adiabático en Hidalgo; ensamble dual (base + PLSRegression k=2) con SVR, Huber, GPR y ExtraTrees en Puebla; y clasificador ordinal probabilístico SVC con mediana regional en Tlaxcala.
               </p>
             </div>
           </div>
@@ -524,22 +524,22 @@ export function ModelSpecs() {
                   🤖
                 </div>
                 <span className="text-xs font-semibold uppercase tracking-wider text-[#1e6cb7]">Paso 03</span>
-                <h4 className="mt-1 text-lg font-bold text-[#17352a]">Especialistas V6 por Estado</h4>
+                <h4 className="mt-1 text-lg font-bold text-[#17352a]">Especialistas Oficiales por Estado</h4>
                 <p className="mt-2 text-xs leading-5 text-[#5e7367]">
                   Ensambles optimizados para cada realidad productiva:
                 </p>
                 <ul className="mt-3 space-y-2 text-xs text-[#315543]">
                   <li className="flex items-start gap-1.5">
                     <CheckCircle2 className="size-3.5 text-[#1e6cb7] shrink-0 mt-0.5" />
-                    <span><strong>Hidalgo:</strong> ExtraTrees (75%) + SVR (25%) bio-espacial.</span>
+                    <span><strong>Hidalgo:</strong> ExtraTrees (75%) + SVR RBF (25%) con prior bayesiano y downscaling adiabático.</span>
                   </li>
                   <li className="flex items-start gap-1.5">
                     <CheckCircle2 className="size-3.5 text-[#1e6cb7] shrink-0 mt-0.5" />
-                    <span><strong>Puebla:</strong> Tri-modal: ExtraTrees + SVR + Huber.</span>
+                    <span><strong>Puebla:</strong> Dual Base + PLS (k=2): SVR (45%) + Huber (35%) + GPR (15%) + ExtraTrees (5%).</span>
                   </li>
                   <li className="flex items-start gap-1.5">
                     <CheckCircle2 className="size-3.5 text-[#1e6cb7] shrink-0 mt-0.5" />
-                    <span><strong>Tlaxcala:</strong> SVC ordinal calibrado + mediana regional.</span>
+                    <span><strong>Tlaxcala:</strong> SVC ordinal probabilístico (45%) + mediana regional (55%).</span>
                   </li>
                 </ul>
               </div>
@@ -552,9 +552,9 @@ export function ModelSpecs() {
                   ⚖️
                 </div>
                 <span className="text-xs font-semibold uppercase tracking-wider text-[#e0b653]">Paso 04</span>
-                <h4 className="mt-1 text-lg font-bold text-white">Veredicto y Acotamiento V6</h4>
+                <h4 className="mt-1 text-lg font-bold text-white">Veredicto y Acotamiento Oficial</h4>
                 <p className="mt-2 text-xs leading-5 text-[#a8c3b4]">
-                  Combina el ensamble y acota biológicamente el rendimiento entre <strong>1.50 y 5.60 t/ha</strong>.
+                  Combina el ensamble y acota biológicamente el rendimiento entre <strong>1.50 y 4.80 t/ha</strong>.
                 </p>
                 <div className="my-3 rounded-xl bg-black/40 border border-white/10 p-2.5 text-center text-xs text-[#e2b957] font-semibold">
                   Rendimiento Calibrado para Campo
@@ -574,7 +574,7 @@ export function ModelSpecs() {
             <div className="flex items-center justify-between border-b border-[#e2e9df] pb-4 mb-6">
               <div>
                 <p className="eyebrow">Factores Biofísicos</p>
-                <h3 className="mt-1 text-xl font-bold text-[#17352a]">¿Qué señales procesa el Modelo Maestro V6?</h3>
+                <h3 className="mt-1 text-xl font-bold text-[#17352a]">¿Qué señales procesa el Modelo AgroRaíces?</h3>
               </div>
               <Mountain className="size-6 text-[#28714f]" />
             </div>
@@ -642,7 +642,7 @@ export function ModelSpecs() {
 
               <div className="mt-6 pt-5 border-t border-[#e2e9df] flex items-center justify-between text-xs text-[#5e7367]">
                 <span>Adaptado a temporal y riego</span>
-                <span className="font-semibold text-[#1e5037]">Versión 6.0.0 Oficial</span>
+                <span className="font-semibold text-[#1e5037]">Versión Final Producción (R² 72.8% · r 0.85)</span>
               </div>
             </div>
 
@@ -652,7 +652,7 @@ export function ModelSpecs() {
                 href="/mapa#asistente-modelo"
                 className="flex-1 inline-flex h-12 items-center justify-center gap-2 rounded-2xl bg-[#1e6846] px-6 text-xs font-semibold text-white shadow-md transition hover:bg-[#155538]"
               >
-                Probar el Modelo V6 <ArrowRight className="size-4" />
+                Probar el Modelo <ArrowRight className="size-4" />
               </Link>
               <Link
                 href="/mapa"
@@ -702,7 +702,7 @@ export function PredictionForm() {
     setResult(null)
   }
 
-  function calculate(e: React.FormEvent) {
+  async function calculate(e: React.FormEvent) {
     e.preventDefault()
     const nums = Object.values(values).slice(1).map(Number)
     if (!values.plot || nums.some((n) => !Number.isFinite(n)) || Number(values.area) <= 0) {
@@ -711,22 +711,43 @@ export function PredictionForm() {
     }
     setLoading(true)
     setResult(null)
-    window.setTimeout(() => {
+
+    try {
+      const res = await fetch('/api/predict', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          plot: values.plot,
+          area: Number(values.area),
+          temp: Number(values.temp),
+          ndwi: Number(values.ndwi),
+          evi: Number(values.evi),
+          lai: Number(values.lai),
+        }),
+      })
+      if (res.ok) {
+        const json = await res.json()
+        setResult(Number(json.rendimiento_t_ha))
+      } else {
+        throw new Error('Fallback')
+      }
+    } catch {
       const [, temp, ndwi, evi, lai] = nums
       const prediction = Math.min(
-        5.6,
+        4.80,
         Math.max(
-          2,
+          1.50,
           3.35 +
-            (Number(evi) - 0.2) * 4 +
-            (Number(lai) - 0.3) * 2.3 +
-            (Number(ndwi) - 0.1) * 1.4 +
-            (Number(temp) + 0.6) * 1.8
+            (Number(evi) - 0.2) * 3 +
+            (Number(lai) - 0.3) * 2.0 +
+            (Number(ndwi) - 0.1) * 1.2 +
+            (Number(temp) + 0.6) * 1.5
         )
       )
       setResult(Number(prediction.toFixed(2)))
+    } finally {
       setLoading(false)
-    }, 800)
+    }
   }
 
   function downloadReport() {

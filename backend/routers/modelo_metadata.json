@@ -1,14 +1,37 @@
 {
-  "model_name": "AgroRaices Modelo Maestro V6",
-  "version": "6.0.0",
+  "model_name": "Pipeline Oficial AgroRaíces",
+  "version": "final-production",
   "target": "RENDIMIENTO_T_HA",
   "unit": "toneladas por hectárea (t/ha)",
   "official_metrics_oof": {
-    "pearson_r_global": 0.8342,
-    "r2_global": 0.6951,
-    "mae_global_kg": 323.7,
-    "rmse_global_ton": 0.4682,
-    "acierto_comercial_500kg": 75.4
+    "pearson_r_global": 0.8535,
+    "r2_global": 0.7276,
+    "mae_global_kg": 307.0,
+    "rmse_global_kg": 442.7,
+    "rmse_global_ton": 0.4427,
+    "por_estado": {
+      "Hidalgo": {
+        "n": 36,
+        "pearson_r": 0.9153,
+        "r2": 0.8364,
+        "mae_kg": 227.7,
+        "rmse_kg": 310.1
+      },
+      "Puebla": {
+        "n": 71,
+        "pearson_r": 0.4412,
+        "r2": 0.1692,
+        "mae_kg": 361.0,
+        "rmse_kg": 528.9
+      },
+      "Tlaxcala": {
+        "n": 31,
+        "pearson_r": 0.3821,
+        "r2": 0.0552,
+        "mae_kg": 274.8,
+        "rmse_kg": 359.7
+      }
+    }
   },
   "supported_states": [
     "Hidalgo",
@@ -34,6 +57,6 @@
   },
   "clamping_range": [
     1.5,
-    5.6
+    4.8
   ]
 }
