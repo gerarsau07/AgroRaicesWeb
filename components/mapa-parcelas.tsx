@@ -338,21 +338,34 @@ export default function MapaParcelas() {
 
   // Auto-scroll directo al componente del modelo si se accede con #asistente-modelo
   useEffect(() => {
-    const scrollToAsistente = () => {
-      if (typeof window !== 'undefined' && window.location.hash === '#asistente-modelo') {
-        const timer = setTimeout(() => {
-          const el = document.getElementById('asistente-modelo')
-          if (el) {
-            el.scrollIntoView({ behavior: 'smooth' })
-          }
-        }, 350)
-        return () => clearTimeout(timer)
+    const doScroll = () => {
+      if (typeof window !== 'undefined' && window.location.hash.includes('asistente-modelo')) {
+        const el = document.getElementById('asistente-modelo')
+        if (el) {
+          el.scrollIntoView({ behavior: 'smooth' })
+          return true
+        }
+      }
+      return false
+    }
+
+    if (!doScroll()) {
+      const t1 = setTimeout(doScroll, 150)
+      const t2 = setTimeout(doScroll, 400)
+      const t3 = setTimeout(doScroll, 800)
+      const t4 = setTimeout(doScroll, 1400)
+      window.addEventListener('hashchange', doScroll)
+      return () => {
+        clearTimeout(t1)
+        clearTimeout(t2)
+        clearTimeout(t3)
+        clearTimeout(t4)
+        window.removeEventListener('hashchange', doScroll)
       }
     }
 
-    scrollToAsistente()
-    window.addEventListener('hashchange', scrollToAsistente)
-    return () => window.removeEventListener('hashchange', scrollToAsistente)
+    window.addEventListener('hashchange', doScroll)
+    return () => window.removeEventListener('hashchange', doScroll)
   }, [])
 
   // Carga de datos de la API
