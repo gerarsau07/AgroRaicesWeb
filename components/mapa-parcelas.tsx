@@ -94,9 +94,9 @@ export interface MunicipioInfo {
 
 const ESTADOS_CONFIG = [
   { id: 'todos', label: 'Todos', color: '#e2b957', border: 'border-[#e2b957]' },
-  { id: 'Puebla', label: 'Puebla', color: '#10b981', border: 'border-emerald-500', emoji: '🟢' },
-  { id: 'Hidalgo', label: 'Hidalgo', color: '#f59e0b', border: 'border-amber-500', emoji: '🟠' },
-  { id: 'Tlaxcala', label: 'Tlaxcala', color: '#38bdf8', border: 'border-sky-500', emoji: '🔵' },
+  { id: 'Puebla', label: 'Puebla', color: '#d87a52', border: 'border-[#d87a52]', emoji: '🏺' },
+  { id: 'Hidalgo', label: 'Hidalgo', color: '#e2b957', border: 'border-[#e2b957]', emoji: '🌾' },
+  { id: 'Tlaxcala', label: 'Tlaxcala', color: '#38bdf8', border: 'border-sky-500', emoji: '⛰️' },
 ]
 
 export const MUNICIPIOS_DATA: Record<string, MunicipioInfo> = {
@@ -426,8 +426,8 @@ export default function MapaParcelas() {
   }, [])
 
   const getFeatureColor = (props: ParcelaProperties) => {
-    if (props.estado.toLowerCase().includes('puebla')) return '#10b981'
-    if (props.estado.toLowerCase().includes('hidalgo')) return '#f59e0b'
+    if (props.estado.toLowerCase().includes('puebla')) return '#d87a52'
+    if (props.estado.toLowerCase().includes('hidalgo')) return '#e2b957'
     if (props.estado.toLowerCase().includes('tlaxcala')) return '#38bdf8'
     return '#e2b957'
   }
@@ -515,7 +515,7 @@ export default function MapaParcelas() {
             : `<span style="color:#d97706;font-style:italic;">Por calcular</span>`
 
           const popupContent = `
-            <div style="font-family: inherit; font-size: 13px; color: #10281f; padding: 2px;">
+            <div style="font-family: inherit; font-size: 13px; color: #1e1713; padding: 2px;">
               <div style="font-weight: 700; font-size: 14px; margin-bottom: 4px; display: flex; align-items: center; justify-content: space-between;">
                 <span>Predio de ${props.area_ha} ha</span>
                 <span style="background: ${color}20; color: ${color}; padding: 2px 6px; border-radius: 4px; font-size: 11px;">${props.estado}</span>
@@ -757,8 +757,8 @@ export default function MapaParcelas() {
       estadoSalud = {
         titulo: 'Vigor Óptimo y Alto Potencial',
         subtitulo: `Excelente proyección para el ${infoTemporada.nombre}. La combinación de suelo, humedad y ciclo favorece un alto peso específico y llenado de grano.`,
-        colorBadge: 'bg-emerald-500/20 text-emerald-300 border-emerald-500/40',
-        colorBorder: 'border-emerald-500/30',
+        colorBadge: 'bg-[#b85c38]/20 text-[#f5e3d7] border-[#d87a52]/40',
+        colorBorder: 'border-[#d87a52]/30',
       }
     } else if (rendCalculado >= 3.2) {
       estadoSalud = {
@@ -1118,14 +1118,14 @@ export default function MapaParcelas() {
     <div className="space-y-8 pt-24 pb-20 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
       {/* Encabezado Principal */}
       <div className="border-b border-white/10 pb-6">
-        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-xs font-medium mb-3">
+        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#b85c38]/15 border border-[#d87a52]/20 text-[#e2b957] text-xs font-medium mb-3">
           <Sparkles className="w-3.5 h-3.5" />
           Plataforma de Inteligencia Geoespacial AgroCebada 2026
         </div>
         <h1 className="text-3xl sm:text-4xl font-extrabold tracking-tight text-white">
           Mapa y Modelo de <span className="text-[#e2b957]">Rendimiento Agrícola</span>
         </h1>
-        <p className="mt-2 text-sm sm:text-base text-[#a8c3b4] max-w-3xl leading-relaxed">
+        <p className="mt-2 text-sm sm:text-base text-[#c9b7aa] max-w-3xl leading-relaxed">
           Explora 197 parcelas georreferenciadas con imágenes satelitales Esri y topografía INEGI CEM 4.0, y prueba el modelo en vivo seleccionando si eres <b>agricultor</b> o <b>analista</b>.
         </p>
       </div>
@@ -1133,9 +1133,9 @@ export default function MapaParcelas() {
       {/* --- SECCIÓN 1: VISOR DE MAPA SATELITAL --- */}
       <div id="mapa-interactivo" className="scroll-mt-28 space-y-4">
         {/* Panel de Filtros Rápidos de Estado */}
-        <div className="bg-[#16392c]/70 border border-white/10 rounded-2xl p-4 shadow-xl backdrop-blur-md">
+        <div className="bg-[#291e17]/70 border border-white/10 rounded-2xl p-4 shadow-xl backdrop-blur-md">
           <div className="flex flex-col sm:flex-row sm:items-center gap-2.5">
-            <span className="text-xs font-semibold uppercase tracking-wider text-[#a8c3b4] mr-1">
+            <span className="text-xs font-semibold uppercase tracking-wider text-[#c9b7aa] mr-1">
               Filtro Estado:
             </span>
             <div className="flex flex-wrap gap-2">
@@ -1151,7 +1151,7 @@ export default function MapaParcelas() {
                     className={`inline-flex items-center gap-2 px-3.5 py-1.5 rounded-xl text-xs font-medium border transition-all duration-200 cursor-pointer ${
                       isActive
                         ? `${cfg.border} bg-white/10 text-white shadow-lg ring-1 ring-white/30`
-                        : 'border-white/10 bg-white/5 text-[#a8c3b4] hover:bg-white/10 hover:text-white'
+                        : 'border-white/10 bg-white/5 text-[#c9b7aa] hover:bg-white/10 hover:text-white'
                     }`}
                   >
                     <span>{cfg.emoji || '🌐'}</span>
@@ -1165,8 +1165,8 @@ export default function MapaParcelas() {
 
         {/* Tarjetas de Métricas de Campo */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-3.5">
-          <div className="bg-[#16392c]/50 border border-white/10 rounded-2xl p-4 relative overflow-hidden group">
-            <div className="text-xs uppercase tracking-wider text-[#a8c3b4] flex items-center gap-1.5">
+          <div className="bg-[#291e17]/50 border border-white/10 rounded-2xl p-4 relative overflow-hidden group">
+            <div className="text-xs uppercase tracking-wider text-[#c9b7aa] flex items-center gap-1.5">
               <TrendingUp className="w-3.5 h-3.5 text-[#e2b957]" />
               Rendimiento Medio
             </div>
@@ -1174,27 +1174,27 @@ export default function MapaParcelas() {
               {metricas ? `${metricas.rendimiento_promedio_t_ha} ` : '—'}
               <span className="text-sm font-semibold text-[#e2b957]">t/ha</span>
             </div>
-            <div className="text-[11px] text-[#a8c3b4] mt-0.5">
+            <div className="text-[11px] text-[#c9b7aa] mt-0.5">
               {metricas ? `${Math.round(metricas.rendimiento_promedio_t_ha * 1000)} kg/ha` : '...'}
             </div>
           </div>
 
-          <div className="bg-[#16392c]/50 border border-white/10 rounded-2xl p-4 relative overflow-hidden group">
-            <div className="text-xs uppercase tracking-wider text-[#a8c3b4] flex items-center gap-1.5">
-              <Maximize2 className="w-3.5 h-3.5 text-emerald-400" />
+          <div className="bg-[#291e17]/50 border border-white/10 rounded-2xl p-4 relative overflow-hidden group">
+            <div className="text-xs uppercase tracking-wider text-[#c9b7aa] flex items-center gap-1.5">
+              <Maximize2 className="w-3.5 h-3.5 text-[#e2b957]" />
               Superficie Total
             </div>
             <div className="mt-1 text-2xl font-extrabold text-white">
               {metricas ? `${metricas.superficie_total_ha} ` : '—'}
-              <span className="text-sm font-semibold text-emerald-400">ha</span>
+              <span className="text-sm font-semibold text-[#e2b957]">ha</span>
             </div>
-            <div className="text-[11px] text-[#a8c3b4] mt-0.5">
+            <div className="text-[11px] text-[#c9b7aa] mt-0.5">
               {filteredFeatures.length} parcelas registradas
             </div>
           </div>
 
-          <div className="bg-[#16392c]/50 border border-white/10 rounded-2xl p-4 relative overflow-hidden group">
-            <div className="text-xs uppercase tracking-wider text-[#a8c3b4] flex items-center gap-1.5">
+          <div className="bg-[#291e17]/50 border border-white/10 rounded-2xl p-4 relative overflow-hidden group">
+            <div className="text-xs uppercase tracking-wider text-[#c9b7aa] flex items-center gap-1.5">
               <Mountain className="w-3.5 h-3.5 text-sky-400" />
               Elevación INEGI
             </div>
@@ -1202,21 +1202,21 @@ export default function MapaParcelas() {
               {metricas ? `${metricas.elevacion_promedio_msnm} ` : '—'}
               <span className="text-sm font-semibold text-sky-400">m s.n.m.</span>
             </div>
-            <div className="text-[11px] text-[#a8c3b4] mt-0.5">
+            <div className="text-[11px] text-[#c9b7aa] mt-0.5">
               Pendiente media: {metricas?.pendiente_promedio_grados ?? 2.0}°
             </div>
           </div>
 
-          <div className="bg-[#16392c]/50 border border-white/10 rounded-2xl p-4 relative overflow-hidden group">
-            <div className="text-xs uppercase tracking-wider text-[#a8c3b4] flex items-center gap-1.5">
+          <div className="bg-[#291e17]/50 border border-white/10 rounded-2xl p-4 relative overflow-hidden group">
+            <div className="text-xs uppercase tracking-wider text-[#c9b7aa] flex items-center gap-1.5">
               <Layers className="w-3.5 h-3.5 text-amber-400" />
               Muestras Monitoreadas
             </div>
             <div className="mt-1 text-2xl font-extrabold text-white">
               {metricas?.total_parcelas ?? 0}
-              <span className="text-xs font-normal text-[#a8c3b4] ml-2">predios</span>
+              <span className="text-xs font-normal text-[#c9b7aa] ml-2">predios</span>
             </div>
-            <div className="text-[11px] text-[#a8c3b4] mt-0.5">
+            <div className="text-[11px] text-[#c9b7aa] mt-0.5">
               {metricas ? `${metricas.parcelas_con_rendimiento_real} reales / ${metricas.parcelas_para_prediccion} reto` : '...'}
             </div>
           </div>
@@ -1224,11 +1224,11 @@ export default function MapaParcelas() {
 
         {/* Mapa y Sidebar de Detalle */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
-          <div className="lg:col-span-2 bg-[#16392c]/40 border border-white/10 rounded-2xl overflow-hidden shadow-2xl relative flex flex-col min-h-[480px]">
-            <div className="px-4 py-2 bg-[#10281f]/95 border-b border-white/10 flex flex-wrap items-center justify-between gap-2 text-xs text-[#a8c3b4]">
+          <div className="lg:col-span-2 bg-[#291e17]/40 border border-white/10 rounded-2xl overflow-hidden shadow-2xl relative flex flex-col min-h-[480px]">
+            <div className="px-4 py-2 bg-[#1e1713]/95 border-b border-white/10 flex flex-wrap items-center justify-between gap-2 text-xs text-[#c9b7aa]">
               <div className="flex items-center gap-3">
                 <span className="flex items-center gap-1.5 font-medium">
-                  <span className="w-2.5 h-2.5 rounded-full bg-emerald-500"></span> Puebla (100)
+                  <span className="w-2.5 h-2.5 rounded-full bg-[#d87a52]"></span> Puebla (100)
                 </span>
                 <span className="flex items-center gap-1.5 font-medium">
                   <span className="w-2.5 h-2.5 rounded-full bg-amber-500"></span> Hidalgo (51)
@@ -1239,7 +1239,7 @@ export default function MapaParcelas() {
               </div>
 
               <div className="flex items-center gap-2">
-                <span className="hidden sm:inline-flex items-center gap-1.5 text-[11px] text-[#a8c3b4] bg-white/5 px-2.5 py-1 rounded-xl border border-white/10">
+                <span className="hidden sm:inline-flex items-center gap-1.5 text-[11px] text-[#c9b7aa] bg-white/5 px-2.5 py-1 rounded-xl border border-white/10">
                   <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
                   🛰️ Satélite Esri
                 </span>
@@ -1280,7 +1280,7 @@ export default function MapaParcelas() {
               />
 
               {loading && (
-                <div className="absolute inset-0 bg-[#10281f]/80 backdrop-blur-sm z-20 flex flex-col items-center justify-center gap-3">
+                <div className="absolute inset-0 bg-[#1e1713]/80 backdrop-blur-sm z-20 flex flex-col items-center justify-center gap-3">
                   <div className="w-10 h-10 border-3 border-[#e2b957] border-t-transparent rounded-full animate-spin"></div>
                   <span className="text-sm font-medium text-white">Cargando geometrías satelitales...</span>
                 </div>
@@ -1295,7 +1295,7 @@ export default function MapaParcelas() {
           </div>
 
           {/* Panel Lateral: Parcela Seleccionada */}
-          <div className="bg-[#16392c]/50 border border-white/10 rounded-2xl p-5 flex flex-col justify-between shadow-xl">
+          <div className="bg-[#291e17]/50 border border-white/10 rounded-2xl p-5 flex flex-col justify-between shadow-xl">
             <div>
               <div className="flex items-center justify-between border-b border-white/10 pb-3 mb-4">
                 <h3 className="text-base font-bold text-white flex items-center gap-2">
@@ -1313,27 +1313,27 @@ export default function MapaParcelas() {
 
               {selectedParcela ? (
                 <div className="space-y-3.5">
-                  <div className="bg-[#10281f]/80 p-3 rounded-xl border border-white/5">
-                    <div className="text-[10px] text-[#a8c3b4] uppercase tracking-wider">Superficie de Predio</div>
+                  <div className="bg-[#1e1713]/80 p-3 rounded-xl border border-white/5">
+                    <div className="text-[10px] text-[#c9b7aa] uppercase tracking-wider">Superficie de Predio</div>
                     <div className="text-xl font-extrabold text-white">{selectedParcela.area_ha} hectáreas</div>
-                    <div className="text-xs text-[#a8c3b4] mt-0.5">{selectedParcela.municipio}, {selectedParcela.estado} · Ref: {selectedParcela.id_poligono}</div>
+                    <div className="text-xs text-[#c9b7aa] mt-0.5">{selectedParcela.municipio}, {selectedParcela.estado} · Ref: {selectedParcela.id_poligono}</div>
                   </div>
 
                   <div className="grid grid-cols-2 gap-2.5">
-                    <div className="bg-[#10281f]/60 p-2.5 rounded-xl border border-white/5">
-                      <span className="text-[10px] text-[#a8c3b4] block">Elevación CEM 4.0</span>
+                    <div className="bg-[#1e1713]/60 p-2.5 rounded-xl border border-white/5">
+                      <span className="text-[10px] text-[#c9b7aa] block">Elevación CEM 4.0</span>
                       <span className="text-sm font-bold text-white">{selectedParcela.elevacion_msnm} m</span>
                     </div>
 
-                    <div className="bg-[#10281f]/60 p-2.5 rounded-xl border border-white/5">
-                      <span className="text-[10px] text-[#a8c3b4] block">Pendiente / Relieve</span>
+                    <div className="bg-[#1e1713]/60 p-2.5 rounded-xl border border-white/5">
+                      <span className="text-[10px] text-[#c9b7aa] block">Pendiente / Relieve</span>
                       <span className="text-sm font-bold text-sky-400">
                         {selectedParcela.pendiente_grados ?? '—'}° ({selectedParcela.tipo_relieve})
                       </span>
                     </div>
 
-                    <div className="bg-[#10281f]/60 p-2.5 rounded-xl border border-white/5 col-span-2">
-                      <span className="text-[10px] text-[#a8c3b4] block">Rendimiento Histórico</span>
+                    <div className="bg-[#1e1713]/60 p-2.5 rounded-xl border border-white/5 col-span-2">
+                      <span className="text-[10px] text-[#c9b7aa] block">Rendimiento Histórico</span>
                       {selectedParcela.rendimiento_t_ha !== null ? (
                         <span className="text-base font-bold text-[#e2b957]">{selectedParcela.rendimiento_t_ha} t/ha</span>
                       ) : (
@@ -1345,14 +1345,14 @@ export default function MapaParcelas() {
                   <button
                     type="button"
                     onClick={handleIrAlAsistente}
-                    className="w-full mt-2 py-2.5 px-3 rounded-xl bg-gradient-to-r from-[#1e6846] to-[#175237] hover:from-[#258257] hover:to-[#1c6443] text-white text-xs font-semibold flex items-center justify-center gap-2 border border-emerald-500/30 shadow-md cursor-pointer transition active:scale-[0.98]"
+                    className="w-full mt-2 py-2.5 px-3 rounded-xl bg-gradient-to-r from-[#b85c38] to-[#c96a45] hover:from-[#c96a45] hover:to-[#d87a52] text-white text-xs font-semibold flex items-center justify-center gap-2 border border-[#d87a52]/30 shadow-md cursor-pointer transition active:scale-[0.98]"
                   >
                     <Sprout className="w-4 h-4 text-[#e2b957]" />
                     <span>Evaluar esta parcela en el modelo ⬇</span>
                   </button>
                 </div>
               ) : (
-                <div className="py-10 px-4 text-center text-[#a8c3b4] flex flex-col items-center justify-center">
+                <div className="py-10 px-4 text-center text-[#c9b7aa] flex flex-col items-center justify-center">
                   <Info className="w-8 h-8 text-white/20 mb-2" />
                   <p className="text-xs font-medium text-white/80">Ninguna parcela seleccionada</p>
                   <p className="text-[11px] text-white/50 mt-1 max-w-xs">
@@ -1362,8 +1362,8 @@ export default function MapaParcelas() {
               )}
             </div>
 
-            <div className="mt-4 pt-3 border-t border-white/10 text-[11px] text-[#a8c3b4]/80 flex items-center gap-1.5">
-              <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
+            <div className="mt-4 pt-3 border-t border-white/10 text-[11px] text-[#c9b7aa]/80 flex items-center gap-1.5">
+              <CheckCircle2 className="w-3.5 h-3.5 text-[#e2b957] shrink-0" />
               <span>Coordenadas en EPSG:4326 (WGS 84).</span>
             </div>
           </div>
@@ -1380,18 +1380,18 @@ export default function MapaParcelas() {
           <h2 className="text-2xl sm:text-3xl font-extrabold text-white">
             ¿Cómo deseas evaluar tu cultivo?
           </h2>
-          <p className="text-xs sm:text-sm text-[#a8c3b4] mt-1.5">
+          <p className="text-xs sm:text-sm text-[#c9b7aa] mt-1.5">
             Selecciona tu perfil para adaptar las preguntas y resultados a tus necesidades de campo o análisis técnico.
           </p>
 
-          <div className="mt-6 inline-flex p-1.5 rounded-2xl bg-[#16392c]/90 border border-white/15 shadow-2xl gap-2 w-full max-w-lg">
+          <div className="mt-6 inline-flex p-1.5 rounded-2xl bg-[#291e17]/90 border border-white/15 shadow-2xl gap-2 w-full max-w-lg">
             <button
               type="button"
               onClick={() => setPerfilActivo('agricultor')}
               className={`flex-1 py-3 px-4 rounded-xl font-bold text-xs sm:text-sm flex items-center justify-center gap-2.5 transition-all duration-200 cursor-pointer ${
                 perfilActivo === 'agricultor'
-                  ? 'bg-gradient-to-r from-[#1e6846] to-[#155538] text-white shadow-lg shadow-emerald-950/50 border border-emerald-400/40 ring-1 ring-[#e2b957]/40'
-                  : 'text-[#a8c3b4] hover:text-white hover:bg-white/5 border border-transparent'
+                  ? 'bg-gradient-to-r from-[#b85c38] to-[#c96a45] text-white shadow-lg shadow-emerald-950/50 border border-emerald-400/40 ring-1 ring-[#e2b957]/40'
+                  : 'text-[#c9b7aa] hover:text-white hover:bg-white/5 border border-transparent'
               }`}
             >
               <Sprout className={`w-4 h-4 ${perfilActivo === 'agricultor' ? 'text-[#e2b957]' : ''}`} />
@@ -1407,7 +1407,7 @@ export default function MapaParcelas() {
               className={`flex-1 py-3 px-4 rounded-xl font-bold text-xs sm:text-sm flex items-center justify-center gap-2.5 transition-all duration-200 cursor-pointer ${
                 perfilActivo === 'analista'
                   ? 'bg-gradient-to-r from-[#17352a] to-[#0f241c] text-white shadow-lg border border-sky-400/40 ring-1 ring-sky-400/30'
-                  : 'text-[#a8c3b4] hover:text-white hover:bg-white/5 border border-transparent'
+                  : 'text-[#c9b7aa] hover:text-white hover:bg-white/5 border border-transparent'
               }`}
             >
               <Sliders className={`w-4 h-4 ${perfilActivo === 'analista' ? 'text-sky-400' : ''}`} />
@@ -1424,7 +1424,7 @@ export default function MapaParcelas() {
 
         {/* --- VISTA PERFIL AGRICULTOR EN 5 PASOS --- */}
         {perfilActivo === 'agricultor' && (
-          <div className="bg-[#16392c]/60 border border-white/15 rounded-3xl p-6 sm:p-8 shadow-2xl backdrop-blur-md">
+          <div className="bg-[#291e17]/60 border border-white/15 rounded-3xl p-6 sm:p-8 shadow-2xl backdrop-blur-md">
             {/* Indicador de 5 Pasos */}
             <div className="mb-8">
               <div className="flex items-center justify-between max-w-2xl mx-auto relative">
@@ -1458,15 +1458,15 @@ export default function MapaParcelas() {
                       <div
                         className={`w-8 h-8 sm:w-9 sm:h-9 rounded-full flex items-center justify-center text-xs font-bold transition-all ${
                           actual
-                            ? 'bg-[#e2b957] text-[#10281f] ring-4 ring-[#e2b957]/30 shadow-lg'
+                            ? 'bg-[#e2b957] text-[#1e1713] ring-4 ring-[#e2b957]/30 shadow-lg'
                             : completado
-                            ? 'bg-emerald-500 text-white'
-                            : 'bg-[#10281f] border border-white/20 text-white/50 group-hover:border-white/40'
+                            ? 'bg-[#d87a52] text-white'
+                            : 'bg-[#1e1713] border border-white/20 text-white/50 group-hover:border-white/40'
                         }`}
                       >
                         {completado ? <Check className="w-4 h-4" /> : s.paso}
                       </div>
-                      <span className={`text-[10px] sm:text-[11px] font-semibold text-center ${actual ? 'text-[#e2b957]' : completado ? 'text-emerald-400' : 'text-white/50'}`}>
+                      <span className={`text-[10px] sm:text-[11px] font-semibold text-center ${actual ? 'text-[#e2b957]' : completado ? 'text-[#e2b957]' : 'text-white/50'}`}>
                         {s.label}
                       </span>
                     </button>
@@ -1483,7 +1483,7 @@ export default function MapaParcelas() {
                   <h3 className="text-xl sm:text-2xl font-bold text-white mt-1">
                     ¿En qué estado se encuentra tu parcela de cebada?
                   </h3>
-                  <p className="text-xs text-[#a8c3b4] mt-1">
+                  <p className="text-xs text-[#c9b7aa] mt-1">
                     Selecciona una de las 3 entidades monitoreadas con imágenes satelitales en el Altiplano Central.
                   </p>
                 </div>
@@ -1492,10 +1492,10 @@ export default function MapaParcelas() {
                   {[
                     {
                       nombre: 'Puebla',
-                      color: 'border-emerald-500/50 hover:border-emerald-400',
-                      bg: 'bg-emerald-500/10',
+                      color: 'border-[#d87a52]/50 hover:border-emerald-400',
+                      bg: 'bg-[#b85c38]/15',
                       badge: '100 parcelas monitoreadas',
-                      badgeColor: 'text-emerald-300 bg-emerald-500/20',
+                      badgeColor: 'text-[#f5e3d7] bg-[#b85c38]/20',
                       emoji: '🟢',
                       region: 'Chignahuapan / Sierra Norte',
                     },
@@ -1526,7 +1526,7 @@ export default function MapaParcelas() {
                     >
                       <span className="text-3xl mb-2">{edo.emoji}</span>
                       <h4 className="text-lg font-bold text-white group-hover:text-[#e2b957] transition">{edo.nombre}</h4>
-                      <span className="text-[11px] text-[#a8c3b4] mt-0.5">{edo.region}</span>
+                      <span className="text-[11px] text-[#c9b7aa] mt-0.5">{edo.region}</span>
                       <span className={`mt-3 px-2.5 py-1 rounded-full text-xs font-semibold ${edo.badgeColor}`}>
                         {edo.badge}
                       </span>
@@ -1549,7 +1549,7 @@ export default function MapaParcelas() {
                   <button
                     type="button"
                     onClick={() => setPasoAgricultor(1)}
-                    className="inline-flex items-center gap-1.5 text-xs text-[#a8c3b4] hover:text-white transition cursor-pointer"
+                    className="inline-flex items-center gap-1.5 text-xs text-[#c9b7aa] hover:text-white transition cursor-pointer"
                   >
                     <ArrowLeft className="w-3.5 h-3.5" /> Cambiar estado
                   </button>
@@ -1564,24 +1564,24 @@ export default function MapaParcelas() {
                         key={munKey}
                         type="button"
                         onClick={() => handleSeleccionarMunicipio(munKey)}
-                        className="p-4 rounded-2xl bg-[#10281f]/80 border border-white/10 hover:border-[#e2b957]/60 hover:bg-[#10281f] text-left transition-all duration-200 cursor-pointer shadow-md group flex flex-col justify-between"
+                        className="p-4 rounded-2xl bg-[#1e1713]/80 border border-white/10 hover:border-[#e2b957]/60 hover:bg-[#1e1713] text-left transition-all duration-200 cursor-pointer shadow-md group flex flex-col justify-between"
                       >
                         <div>
                           <div className="flex items-center justify-between">
                             <h4 className="text-base font-bold text-white group-hover:text-[#e2b957] transition">
                               {info.nombre}
                             </h4>
-                            <span className="text-xs font-semibold px-2 py-0.5 rounded-md bg-emerald-500/20 text-emerald-300">
+                            <span className="text-xs font-semibold px-2 py-0.5 rounded-md bg-[#b85c38]/20 text-[#f5e3d7]">
                               {info.totalParcelas} predios satelitales
                             </span>
                           </div>
-                          <p className="text-[11px] text-[#a8c3b4] mt-2 leading-relaxed">
+                          <p className="text-[11px] text-[#c9b7aa] mt-2 leading-relaxed">
                             {info.descripcion}
                           </p>
                         </div>
 
                         <div className="mt-4 pt-3 border-t border-white/5 flex items-center justify-between text-xs">
-                          <span className="text-[#a8c3b4]">Promedio histórico:</span>
+                          <span className="text-[#c9b7aa]">Promedio histórico:</span>
                           <span className="font-bold text-[#e2b957]">{info.rendimientoPromedio} t/ha</span>
                         </div>
                       </button>
@@ -1602,14 +1602,14 @@ export default function MapaParcelas() {
                     <h3 className="text-xl sm:text-2xl font-bold text-white mt-0.5">
                       ¿En qué temporada o fechas cultivas en {municipioAgricultor}?
                     </h3>
-                    <p className="text-xs text-[#a8c3b4] mt-0.5">
+                    <p className="text-xs text-[#c9b7aa] mt-0.5">
                       La temporada y duración del ciclo modulan directamente la radiación térmica y la humedad acumulada en el modelo.
                     </p>
                   </div>
                   <button
                     type="button"
                     onClick={() => setPasoAgricultor(2)}
-                    className="inline-flex items-center gap-1 text-xs text-[#a8c3b4] hover:text-white transition cursor-pointer"
+                    className="inline-flex items-center gap-1 text-xs text-[#c9b7aa] hover:text-white transition cursor-pointer"
                   >
                     <ArrowLeft className="w-3.5 h-3.5" /> Municipio
                   </button>
@@ -1623,19 +1623,19 @@ export default function MapaParcelas() {
                       setFechaInicio('2025-04-01')
                       setFechaFin('2025-10-31')
                     }}
-                    className="p-5 sm:p-6 rounded-2xl border border-[#e2b957] bg-[#10281f] ring-2 ring-[#e2b957]/40 shadow-xl transition-all cursor-pointer flex flex-col justify-between"
+                    className="p-5 sm:p-6 rounded-2xl border border-[#e2b957] bg-[#1e1713] ring-2 ring-[#e2b957]/40 shadow-xl transition-all cursor-pointer flex flex-col justify-between"
                   >
                     <div>
                       <div className="flex items-center justify-between">
                         <div className="flex items-center gap-2.5">
-                          <CloudRain className="w-6 h-6 text-emerald-400" />
+                          <CloudRain className="w-6 h-6 text-[#e2b957]" />
                           <h4 className="font-bold text-white text-lg">Ciclo Principal de Temporal (Abril – Octubre)</h4>
                         </div>
-                        <span className="text-[10px] uppercase font-bold px-2.5 py-1 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">
+                        <span className="text-[10px] uppercase font-bold px-2.5 py-1 rounded-full bg-[#b85c38]/20 text-[#f5e3d7] border border-[#d87a52]/30">
                           Ciclo Oficial del Reto
                         </span>
                       </div>
-                      <p className="text-xs sm:text-sm text-[#a8c3b4] mt-2.5 leading-relaxed">
+                      <p className="text-xs sm:text-sm text-[#c9b7aa] mt-2.5 leading-relaxed">
                         Temporada oficial y óptima en el Altiplano Central: siembra y desarrollo vegetativo temprano de Abril a Junio, con floración, espigado y cosecha en Septiembre–Octubre.
                       </p>
                     </div>
@@ -1644,13 +1644,13 @@ export default function MapaParcelas() {
                       <span className="flex items-center gap-1.5 font-bold">
                         <span>📅</span> 01 Abril ➔ 31 Octubre (~214 días)
                       </span>
-                      <span className="text-emerald-400 font-medium">Óptima biomasa foliar y llenado de grano</span>
+                      <span className="text-[#e2b957] font-medium">Óptima biomasa foliar y llenado de grano</span>
                     </div>
                   </div>
                 </div>
 
                 {/* Proyección Agroclimática en Vivo para el Municipio y Temporada */}
-                <div className="p-4 rounded-2xl bg-[#10281f]/90 border border-white/10 space-y-2">
+                <div className="p-4 rounded-2xl bg-[#1e1713]/90 border border-white/10 space-y-2">
                   <div className="flex items-center justify-between text-xs">
                     <span className="font-semibold text-white flex items-center gap-1.5">
                       <CloudSun className="w-4 h-4 text-[#e2b957]" />
@@ -1660,14 +1660,14 @@ export default function MapaParcelas() {
                       {sintesisSatelital.clima.gddTotal} GDD acumulados
                     </span>
                   </div>
-                  <div className="grid grid-cols-3 gap-2 text-[11px] text-[#a8c3b4]">
+                  <div className="grid grid-cols-3 gap-2 text-[11px] text-[#c9b7aa]">
                     <div className="p-2.5 rounded-xl bg-white/5 border border-white/5">
                       <span className="text-white/60 block">Temp. Pico esperada:</span>
                       <b className="text-white text-xs block mt-0.5">{sintesisSatelital.clima.tMaxPico}°C</b>
                     </div>
                     <div className="p-2.5 rounded-xl bg-white/5 border border-white/5">
                       <span className="text-white/60 block">Lluvias estimadas:</span>
-                      <b className="text-emerald-400 text-xs block mt-0.5">~{sintesisSatelital.clima.lluviasCicloMm} mm</b>
+                      <b className="text-[#e2b957] text-xs block mt-0.5">~{sintesisSatelital.clima.lluviasCicloMm} mm</b>
                     </div>
                     <div className="p-2.5 rounded-xl bg-white/5 border border-white/5">
                       <span className="text-white/60 block">Días riesgo helada:</span>
@@ -1677,7 +1677,7 @@ export default function MapaParcelas() {
                 </div>
 
                 {/* Opción 3: Personalizar Rango de Fechas */}
-                <div className="p-5 rounded-2xl bg-[#10281f]/70 border border-white/10 space-y-4">
+                <div className="p-5 rounded-2xl bg-[#1e1713]/70 border border-white/10 space-y-4">
                   <div className="flex items-center justify-between">
                     <label className="flex items-center gap-2 text-xs font-bold text-white cursor-pointer">
                       <input
@@ -1698,7 +1698,7 @@ export default function MapaParcelas() {
                   </div>
 
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5 pt-1">
-                    <label className="flex flex-col gap-1.5 text-xs text-[#a8c3b4]">
+                    <label className="flex flex-col gap-1.5 text-xs text-[#c9b7aa]">
                       Fecha de siembra / inicio:
                       <input
                         type="date"
@@ -1707,11 +1707,11 @@ export default function MapaParcelas() {
                           setFechaInicio(e.target.value)
                           setTemporada('personalizado')
                         }}
-                        className="h-10 rounded-xl border border-white/10 bg-[#10281f] px-3 text-xs text-white outline-none focus:border-[#e2b957]"
+                        className="h-10 rounded-xl border border-white/10 bg-[#1e1713] px-3 text-xs text-white outline-none focus:border-[#e2b957]"
                       />
                     </label>
 
-                    <label className="flex flex-col gap-1.5 text-xs text-[#a8c3b4]">
+                    <label className="flex flex-col gap-1.5 text-xs text-[#c9b7aa]">
                       Fecha estimada de corte / cosecha:
                       <input
                         type="date"
@@ -1720,7 +1720,7 @@ export default function MapaParcelas() {
                           setFechaFin(e.target.value)
                           setTemporada('personalizado')
                         }}
-                        className="h-10 rounded-xl border border-white/10 bg-[#10281f] px-3 text-xs text-white outline-none focus:border-[#e2b957]"
+                        className="h-10 rounded-xl border border-white/10 bg-[#1e1713] px-3 text-xs text-white outline-none focus:border-[#e2b957]"
                       />
                     </label>
                   </div>
@@ -1730,7 +1730,7 @@ export default function MapaParcelas() {
                   <button
                     type="button"
                     onClick={handleSeleccionarTemporadaYContinuar}
-                    className="py-3 px-6 rounded-xl bg-gradient-to-r from-[#1e6846] to-[#155538] hover:from-[#258257] hover:to-[#1c6443] text-white text-xs sm:text-sm font-bold flex items-center gap-2 shadow-lg transition cursor-pointer"
+                    className="py-3 px-6 rounded-xl bg-gradient-to-r from-[#b85c38] to-[#c96a45] hover:from-[#c96a45] hover:to-[#d87a52] text-white text-xs sm:text-sm font-bold flex items-center gap-2 shadow-lg transition cursor-pointer"
                   >
                     <span>Continuar a Ubicación de Parcela</span>
                     <ArrowRight className="w-4 h-4" />
@@ -1748,7 +1748,7 @@ export default function MapaParcelas() {
                     <h3 className="text-xl sm:text-2xl font-bold text-white">
                       ¿Cómo deseas ubicar tu predio en {municipioAgricultor}?
                     </h3>
-                    <p className="text-xs text-[#a8c3b4] mt-0.5">
+                    <p className="text-xs text-[#c9b7aa] mt-0.5">
                       No necesitas saber códigos técnicos: encuéntrala por sus hectáreas en el mapa satelital o ingresa tu superficie directamente.
                     </p>
                   </div>
@@ -1756,21 +1756,21 @@ export default function MapaParcelas() {
                   <button
                     type="button"
                     onClick={() => setPasoAgricultor(3)}
-                    className="inline-flex items-center gap-1 text-xs text-[#a8c3b4] hover:text-white transition cursor-pointer"
+                    className="inline-flex items-center gap-1 text-xs text-[#c9b7aa] hover:text-white transition cursor-pointer"
                   >
                     <ArrowLeft className="w-3.5 h-3.5" /> Temporada
                   </button>
                 </div>
 
                 {/* SELECTOR DE CAMINO: CAMINO A VS CAMINO B */}
-                <div className="flex rounded-2xl bg-[#10281f] p-1.5 border border-white/10 gap-2">
+                <div className="flex rounded-2xl bg-[#1e1713] p-1.5 border border-white/10 gap-2">
                   <button
                     type="button"
                     onClick={() => setModoSeleccion('mapa_catalogo')}
                     className={`flex-1 py-3 px-4 rounded-xl text-xs sm:text-sm font-bold flex items-center justify-center gap-2 transition cursor-pointer ${
                       modoSeleccion === 'mapa_catalogo'
-                        ? 'bg-[#1e6846] text-white shadow-md border border-emerald-400/30'
-                        : 'text-[#a8c3b4] hover:text-white'
+                        ? 'bg-[#b85c38] text-white shadow-md border border-emerald-400/30'
+                        : 'text-[#c9b7aa] hover:text-white'
                     }`}
                   >
                     <MapPin className="w-4 h-4 text-[#e2b957]" />
@@ -1782,8 +1782,8 @@ export default function MapaParcelas() {
                     onClick={() => setModoSeleccion('manual_hectareas')}
                     className={`flex-1 py-3 px-4 rounded-xl text-xs sm:text-sm font-bold flex items-center justify-center gap-2 transition cursor-pointer ${
                       modoSeleccion === 'manual_hectareas'
-                        ? 'bg-[#1e6846] text-white shadow-md border border-emerald-400/30'
-                        : 'text-[#a8c3b4] hover:text-white'
+                        ? 'bg-[#b85c38] text-white shadow-md border border-emerald-400/30'
+                        : 'text-[#c9b7aa] hover:text-white'
                     }`}
                   >
                     <Sliders className="w-4 h-4 text-[#e2b957]" />
@@ -1794,7 +1794,7 @@ export default function MapaParcelas() {
                 {/* CAMINO A: SELECCIÓN VISUAL POR TAMAÑO Y SATÉLITE */}
                 {modoSeleccion === 'mapa_catalogo' && (
                   <div className="space-y-4">
-                    <div className="p-4 rounded-2xl bg-[#10281f]/80 border border-white/10 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                    <div className="p-4 rounded-2xl bg-[#1e1713]/80 border border-white/10 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                       <div>
                         <span className="text-xs font-semibold text-white">Filtrar parcelas por tamaño aproximado:</span>
                         <div className="flex flex-wrap gap-2 mt-2">
@@ -1810,8 +1810,8 @@ export default function MapaParcelas() {
                               onClick={() => setFiltroTamano(t.id as any)}
                               className={`px-3 py-1.5 rounded-xl text-xs font-medium border transition cursor-pointer ${
                                 filtroTamano === t.id
-                                  ? 'bg-[#e2b957] text-[#10281f] font-bold border-[#e2b957]'
-                                  : 'bg-white/5 border-white/10 text-[#a8c3b4] hover:text-white'
+                                  ? 'bg-[#e2b957] text-[#1e1713] font-bold border-[#e2b957]'
+                                  : 'bg-white/5 border-white/10 text-[#c9b7aa] hover:text-white'
                               }`}
                             >
                               {t.label}
@@ -1837,7 +1837,7 @@ export default function MapaParcelas() {
                         value={filtroTextoParcela}
                         onChange={(e) => setFiltroTextoParcela(e.target.value)}
                         placeholder="Buscar por tamaño (ej. 4.8 ha) o característica..."
-                        className="w-full pl-8 pr-3 py-2 bg-[#10281f]/80 border border-white/10 rounded-xl text-xs text-white placeholder-white/40 focus:outline-none focus:ring-1 focus:ring-[#e2b957]"
+                        className="w-full pl-8 pr-3 py-2 bg-[#1e1713]/80 border border-white/10 rounded-xl text-xs text-white placeholder-white/40 focus:outline-none focus:ring-1 focus:ring-[#e2b957]"
                       />
                     </div>
 
@@ -1851,8 +1851,8 @@ export default function MapaParcelas() {
                             onClick={() => handleSeleccionarParcelaCaminoA(p)}
                             className={`p-4 rounded-2xl border transition-all cursor-pointer flex flex-col justify-between ${
                               isSelected
-                                ? 'bg-[#10281f] border-[#e2b957] ring-2 ring-[#e2b957]/40 shadow-lg'
-                                : 'bg-[#10281f]/70 border-white/10 hover:border-white/30 hover:bg-[#10281f]'
+                                ? 'bg-[#1e1713] border-[#e2b957] ring-2 ring-[#e2b957]/40 shadow-lg'
+                                : 'bg-[#1e1713]/70 border-white/10 hover:border-white/30 hover:bg-[#1e1713]'
                             }`}
                           >
                             <div>
@@ -1860,12 +1860,12 @@ export default function MapaParcelas() {
                                 <h4 className="font-extrabold text-white text-base">
                                   Predio de {p.area_ha} ha
                                 </h4>
-                                <span className="text-[10px] px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 font-semibold">
+                                <span className="text-[10px] px-2 py-0.5 rounded-full bg-[#b85c38]/20 text-[#f5e3d7] font-semibold">
                                   {p.area_ha < 5 ? 'Pequeña' : p.area_ha <= 15 ? 'Mediana' : 'Grande'}
                                 </span>
                               </div>
 
-                              <div className="text-xs text-[#a8c3b4] mt-2 space-y-1">
+                              <div className="text-xs text-[#c9b7aa] mt-2 space-y-1">
                                 <div>Altitud: <b className="text-white">{p.elevacion_msnm} m s.n.m.</b></div>
                                 <div>Relieve: <b className="text-sky-300">{p.tipo_relieve}</b> ({p.pendiente_grados ?? '—'}°)</div>
                                 <div className="text-[10px] text-white/40 pt-1">Referencia técnica: {p.id_poligono}</div>
@@ -1873,7 +1873,7 @@ export default function MapaParcelas() {
                             </div>
 
                             <div className="mt-4 pt-2.5 border-t border-white/5 flex items-center justify-between text-xs">
-                              <span className="text-[10px] text-emerald-400 font-medium">
+                              <span className="text-[10px] text-[#e2b957] font-medium">
                                 {p.rendimiento_t_ha !== null ? 'Dato real verificado' : 'Inferencia IA'}
                               </span>
                               <span className="text-[#e2b957] font-bold inline-flex items-center gap-1">
@@ -1889,19 +1889,19 @@ export default function MapaParcelas() {
 
                 {/* CAMINO B: INGRESO MANUAL DE HECTÁREAS */}
                 {modoSeleccion === 'manual_hectareas' && (
-                  <div className="p-6 rounded-2xl bg-[#10281f]/80 border border-white/10 space-y-5">
+                  <div className="p-6 rounded-2xl bg-[#1e1713]/80 border border-white/10 space-y-5">
                     <div className="space-y-1">
                       <h4 className="font-bold text-white text-base">
                         Estimar con la superficie y condiciones de tu predio
                       </h4>
-                      <p className="text-xs text-[#a8c3b4]">
+                      <p className="text-xs text-[#c9b7aa]">
                         Si tu parcela no se encuentra entre los 197 polígonos del satélite, el modelo calculará la producción usando los patrones satelitales y climáticos calibrados para {municipioAgricultor}.
                       </p>
                     </div>
 
                     <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-2">
                       {/* Superficie en ha */}
-                      <label className="flex flex-col gap-1.5 text-xs text-[#a8c3b4]">
+                      <label className="flex flex-col gap-1.5 text-xs text-[#c9b7aa]">
                         <span className="font-semibold text-white">Superficie de tu terreno (ha):</span>
                         <input
                           type="number"
@@ -1910,18 +1910,18 @@ export default function MapaParcelas() {
                           value={manualAreaHa}
                           onChange={(e) => setManualAreaHa(e.target.value)}
                           placeholder="Ej. 6.5"
-                          className="h-11 rounded-xl border border-white/15 bg-[#10281f] px-3.5 text-sm font-bold text-white outline-none focus:border-[#e2b957] focus:ring-1 focus:ring-[#e2b957]"
+                          className="h-11 rounded-xl border border-white/15 bg-[#1e1713] px-3.5 text-sm font-bold text-white outline-none focus:border-[#e2b957] focus:ring-1 focus:ring-[#e2b957]"
                         />
                         <span className="text-[10px] text-white/50">Hectáreas sembradas</span>
                       </label>
 
                       {/* Tipo de terreno */}
-                      <label className="flex flex-col gap-1.5 text-xs text-[#a8c3b4]">
+                      <label className="flex flex-col gap-1.5 text-xs text-[#c9b7aa]">
                         <span className="font-semibold text-white">Tipo de terreno:</span>
                         <select
                           value={manualTipoTerreno}
                           onChange={(e) => setManualTipoTerreno(e.target.value as any)}
-                          className="h-11 rounded-xl border border-white/15 bg-[#10281f] px-3 text-xs text-white outline-none focus:border-[#e2b957] cursor-pointer"
+                          className="h-11 rounded-xl border border-white/15 bg-[#1e1713] px-3 text-xs text-white outline-none focus:border-[#e2b957] cursor-pointer"
                         >
                           <option value="plano">Plano de valle (Poca pendiente)</option>
                           <option value="ladera_suave">Ladera suave (Lomerío)</option>
@@ -1931,12 +1931,12 @@ export default function MapaParcelas() {
                       </label>
 
                       {/* Régimen de agua */}
-                      <label className="flex flex-col gap-1.5 text-xs text-[#a8c3b4]">
+                      <label className="flex flex-col gap-1.5 text-xs text-[#c9b7aa]">
                         <span className="font-semibold text-white">Régimen de agua / manejo:</span>
                         <select
                           value={manualRegimenAgua}
                           onChange={(e) => setManualRegimenAgua(e.target.value as any)}
-                          className="h-11 rounded-xl border border-white/15 bg-[#10281f] px-3 text-xs text-white outline-none focus:border-[#e2b957] cursor-pointer"
+                          className="h-11 rounded-xl border border-white/15 bg-[#1e1713] px-3 text-xs text-white outline-none focus:border-[#e2b957] cursor-pointer"
                         >
                           <option value="temporal_bueno">Temporal favorable (Buen régimen)</option>
                           <option value="temporal_regular">Temporal regular / seco</option>
@@ -1947,14 +1947,14 @@ export default function MapaParcelas() {
                     </div>
 
                     <div className="pt-3 border-t border-white/10 flex items-center justify-between">
-                      <span className="text-xs text-[#a8c3b4]">
+                      <span className="text-xs text-[#c9b7aa]">
                         Calibrado con datos de {municipioAgricultor} ({infoTemporada.nombre})
                       </span>
 
                       <button
                         type="button"
                         onClick={handleCalcularCaminoB}
-                        className="py-3 px-6 rounded-xl bg-gradient-to-r from-[#1e6846] to-[#155538] hover:from-[#258257] hover:to-[#1c6443] text-white text-xs sm:text-sm font-bold flex items-center gap-2 shadow-lg transition cursor-pointer"
+                        className="py-3 px-6 rounded-xl bg-gradient-to-r from-[#b85c38] to-[#c96a45] hover:from-[#c96a45] hover:to-[#d87a52] text-white text-xs sm:text-sm font-bold flex items-center gap-2 shadow-lg transition cursor-pointer"
                       >
                         <Sprout className="w-4 h-4 text-[#e2b957]" />
                         <span>Calcular Cosecha de mi Terreno</span>
@@ -1970,13 +1970,13 @@ export default function MapaParcelas() {
               <div className="space-y-6 max-w-4xl mx-auto">
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-white/10 pb-4">
                   <div>
-                    <span className="text-xs uppercase tracking-wider text-emerald-400 font-semibold flex items-center gap-1.5">
+                    <span className="text-xs uppercase tracking-wider text-[#e2b957] font-semibold flex items-center gap-1.5">
                       <Sparkles className="w-3.5 h-3.5" /> Estimación completada para tu cultivo
                     </span>
                     <h3 className="text-2xl font-black text-white mt-0.5">
                       {diagnosticoAgricultor.nombrePredio}
                     </h3>
-                    <p className="text-xs text-[#a8c3b4] mt-0.5">
+                    <p className="text-xs text-[#c9b7aa] mt-0.5">
                       {municipioAgricultor}, {estadoAgricultor} · {infoTemporada.nombre} ({infoTemporada.meses})
                     </p>
                   </div>
@@ -1992,7 +1992,7 @@ export default function MapaParcelas() {
                     <button
                       type="button"
                       onClick={handleVerEnMapa}
-                      className="inline-flex items-center gap-1 text-xs px-3 py-1.5 rounded-xl bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 hover:bg-emerald-500/30 transition cursor-pointer"
+                      className="inline-flex items-center gap-1 text-xs px-3 py-1.5 rounded-xl bg-[#b85c38]/20 text-[#f5e3d7] border border-[#d87a52]/30 hover:bg-[#d87a52]/30 transition cursor-pointer"
                     >
                       <MapPin className="w-3.5 h-3.5 text-[#e2b957]" /> Ver en el mapa
                     </button>
@@ -2002,15 +2002,15 @@ export default function MapaParcelas() {
                 {/* Tarjetas Principales de Resultados */}
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                   {/* Rendimiento Esperado */}
-                  <div className="bg-[#10281f] border border-[#e2b957]/40 rounded-2xl p-5 relative overflow-hidden shadow-xl md:col-span-1">
-                    <span className="text-xs uppercase tracking-wider text-[#a8c3b4] font-semibold">
+                  <div className="bg-[#1e1713] border border-[#e2b957]/40 rounded-2xl p-5 relative overflow-hidden shadow-xl md:col-span-1">
+                    <span className="text-xs uppercase tracking-wider text-[#c9b7aa] font-semibold">
                       Rendimiento Esperado
                     </span>
                     <div className="mt-2 text-4xl sm:text-5xl font-black text-[#e2b957] tracking-tight">
                       {diagnosticoAgricultor.rendimiento}{' '}
                       <span className="text-lg font-normal text-white/80">t/ha</span>
                     </div>
-                    <div className="mt-1 text-xs text-[#a8c3b4]">
+                    <div className="mt-1 text-xs text-[#c9b7aa]">
                       ≈ {Math.round(diagnosticoAgricultor.rendimiento * 1000).toLocaleString('es-MX')} kg por hectárea
                     </div>
                     <div className="mt-4 pt-3 border-t border-white/10 text-[11px] text-white/70">
@@ -2019,7 +2019,7 @@ export default function MapaParcelas() {
                           <Sparkles className="w-3 h-3" /> Inferencia de Inteligencia Artificial
                         </span>
                       ) : (
-                        <span className="inline-flex items-center gap-1 text-emerald-400">
+                        <span className="inline-flex items-center gap-1 text-[#e2b957]">
                           <CheckCircle2 className="w-3 h-3" /> Verificado en campo (Cosecha real)
                         </span>
                       )}
@@ -2027,39 +2027,39 @@ export default function MapaParcelas() {
                   </div>
 
                   {/* Cosecha Total Proyectada */}
-                  <div className="bg-[#10281f] border border-white/10 rounded-2xl p-5 shadow-xl md:col-span-1 flex flex-col justify-between">
+                  <div className="bg-[#1e1713] border border-white/10 rounded-2xl p-5 shadow-xl md:col-span-1 flex flex-col justify-between">
                     <div>
-                      <span className="text-xs uppercase tracking-wider text-[#a8c3b4] font-semibold">
+                      <span className="text-xs uppercase tracking-wider text-[#c9b7aa] font-semibold">
                         Cosecha Total Proyectada
                       </span>
                       <div className="mt-2 text-3xl font-extrabold text-white">
                         {diagnosticoAgricultor.produccionTotalT}{' '}
-                        <span className="text-sm font-normal text-emerald-400">toneladas</span>
+                        <span className="text-sm font-normal text-[#e2b957]">toneladas</span>
                       </div>
-                      <div className="text-xs text-[#a8c3b4] mt-1">
+                      <div className="text-xs text-[#c9b7aa] mt-1">
                         Superficie evaluada: <b>{diagnosticoAgricultor.areaEfectivaHa} ha</b>
                       </div>
                     </div>
 
-                    <div className="mt-3 p-2.5 rounded-xl bg-white/5 border border-white/5 text-xs text-[#a8c3b4]">
+                    <div className="mt-3 p-2.5 rounded-xl bg-white/5 border border-white/5 text-xs text-[#c9b7aa]">
                       Equivale a aproximadamente{' '}
                       <b className="text-white font-bold">{diagnosticoAgricultor.bultos50kg.toLocaleString('es-MX')}</b> costales de 50 kg.
                     </div>
                   </div>
 
                   {/* Comparativa Municipal */}
-                  <div className="bg-[#10281f] border border-white/10 rounded-2xl p-5 shadow-xl md:col-span-1 flex flex-col justify-between">
+                  <div className="bg-[#1e1713] border border-white/10 rounded-2xl p-5 shadow-xl md:col-span-1 flex flex-col justify-between">
                     <div>
-                      <span className="text-xs uppercase tracking-wider text-[#a8c3b4] font-semibold">
+                      <span className="text-xs uppercase tracking-wider text-[#c9b7aa] font-semibold">
                         Comparativa {municipioAgricultor}
                       </span>
                       <div className="mt-2 text-2xl font-bold text-white">
                         {diagnosticoAgricultor.munPromedio}{' '}
-                        <span className="text-sm font-normal text-[#a8c3b4]">t/ha promedio</span>
+                        <span className="text-sm font-normal text-[#c9b7aa]">t/ha promedio</span>
                       </div>
                       <div className="text-xs mt-1">
                         {diagnosticoAgricultor.diffConMunicipio >= 0 ? (
-                          <span className="text-emerald-400 font-semibold">
+                          <span className="text-[#e2b957] font-semibold">
                             +{diagnosticoAgricultor.diffConMunicipio} t/ha por encima del promedio
                           </span>
                         ) : (
@@ -2070,14 +2070,14 @@ export default function MapaParcelas() {
                       </div>
                     </div>
 
-                    <div className="mt-3 text-[11px] text-[#a8c3b4] bg-white/5 p-2 rounded-xl">
+                    <div className="mt-3 text-[11px] text-[#c9b7aa] bg-white/5 p-2 rounded-xl">
                       Ciclo: {infoTemporada.nombre} ({infoTemporada.meses})
                     </div>
                   </div>
                 </div>
 
                 {/* Semáforo de Salud Agronómica */}
-                <div className={`p-5 rounded-2xl border ${diagnosticoAgricultor.estadoSalud.colorBorder} bg-[#10281f]/90 space-y-2`}>
+                <div className={`p-5 rounded-2xl border ${diagnosticoAgricultor.estadoSalud.colorBorder} bg-[#1e1713]/90 space-y-2`}>
                   <div className="flex items-center justify-between">
                     <span className="text-xs font-semibold uppercase tracking-wider text-white/70">
                       Diagnóstico del Cultivo
@@ -2086,13 +2086,13 @@ export default function MapaParcelas() {
                       {diagnosticoAgricultor.estadoSalud.titulo}
                     </span>
                   </div>
-                  <p className="text-xs sm:text-sm text-[#a8c3b4] leading-relaxed">
+                  <p className="text-xs sm:text-sm text-[#c9b7aa] leading-relaxed">
                     {diagnosticoAgricultor.estadoSalud.subtitulo}
                   </p>
                 </div>
 
                 {/* Panel de Señales Satelitales Sintetizadas a partir del Clima */}
-                <div className="bg-[#10281f]/90 p-5 rounded-2xl border border-sky-500/30 space-y-3">
+                <div className="bg-[#1e1713]/90 p-5 rounded-2xl border border-sky-500/30 space-y-3">
                   <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-white/10 pb-3">
                     <div className="flex items-center gap-2">
                       <Satellite className="w-4 h-4 text-sky-400" />
@@ -2105,31 +2105,31 @@ export default function MapaParcelas() {
                     </span>
                   </div>
 
-                  <p className="text-xs text-[#a8c3b4] leading-relaxed">
+                  <p className="text-xs text-[#c9b7aa] leading-relaxed">
                     Al no contar con sensores de paga en tu predio, el sistema calculó artificialmente las señales satelitales que el Pipeline Oficial AgroRaíces requiere a partir del clima proyectado en {municipioAgricultor} ({sintesisSatelital.clima.gddTotal} GDD acumulados y ~{sintesisSatelital.clima.lluviasCicloMm} mm de lluvia):
                   </p>
 
                   <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 text-xs pt-1">
                     <div className="p-3 rounded-xl bg-white/5 border border-white/5">
-                      <span className="text-[10px] text-[#a8c3b4] uppercase tracking-wider block">Landsat Térmico (VI6T)</span>
+                      <span className="text-[10px] text-[#c9b7aa] uppercase tracking-wider block">Landsat Térmico (VI6T)</span>
                       <b className="text-amber-300 text-sm block mt-1">{sintesisSatelital.sensores.vi6t_max}</b>
                       <span className="text-[10px] text-white/50 mt-0.5 block">Temp. pico: {sintesisSatelital.clima.tMaxPico}°C</span>
                     </div>
 
                     <div className="p-3 rounded-xl bg-white/5 border border-white/5">
-                      <span className="text-[10px] text-[#a8c3b4] uppercase tracking-wider block">Sentinel-2 Humedad (NDWI)</span>
+                      <span className="text-[10px] text-[#c9b7aa] uppercase tracking-wider block">Sentinel-2 Humedad (NDWI)</span>
                       <b className="text-sky-300 text-sm block mt-1">{sintesisSatelital.sensores.ndwi_min}</b>
                       <span className="text-[10px] text-white/50 mt-0.5 block">Lluvias ciclo: ~{sintesisSatelital.clima.lluviasCicloMm} mm</span>
                     </div>
 
                     <div className="p-3 rounded-xl bg-white/5 border border-white/5">
-                      <span className="text-[10px] text-[#a8c3b4] uppercase tracking-wider block">PlanetScope Vigor (LAI)</span>
-                      <b className="text-emerald-300 text-sm block mt-1">{sintesisSatelital.sensores.lai_mean}</b>
+                      <span className="text-[10px] text-[#c9b7aa] uppercase tracking-wider block">PlanetScope Vigor (LAI)</span>
+                      <b className="text-[#f5e3d7] text-sm block mt-1">{sintesisSatelital.sensores.lai_mean}</b>
                       <span className="text-[10px] text-white/50 mt-0.5 block">Área foliar proyectada</span>
                     </div>
 
                     <div className="p-3 rounded-xl bg-white/5 border border-white/5">
-                      <span className="text-[10px] text-[#a8c3b4] uppercase tracking-wider block">Topografía INEGI CEM 4.0</span>
+                      <span className="text-[10px] text-[#c9b7aa] uppercase tracking-wider block">Topografía INEGI CEM 4.0</span>
                       <b className="text-white text-sm block mt-1">{diagnosticoAgricultor.elevacionMsnm} m</b>
                       <span className="text-[10px] text-white/50 mt-0.5 block">Pendiente: {diagnosticoAgricultor.pendienteGrados}°</span>
                     </div>
@@ -2137,12 +2137,12 @@ export default function MapaParcelas() {
                 </div>
 
                 {/* Recomendaciones Agronómicas Estacionales */}
-                <div className="bg-[#10281f]/80 p-5 rounded-2xl border border-white/10 space-y-3">
+                <div className="bg-[#1e1713]/80 p-5 rounded-2xl border border-white/10 space-y-3">
                   <h4 className="text-sm font-bold text-white flex items-center gap-2">
                     <Sprout className="w-4 h-4 text-[#e2b957]" />
                     Recomendaciones Estacionales para tu Predio
                   </h4>
-                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs text-[#a8c3b4]">
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs text-[#c9b7aa]">
                     <div className="p-3 rounded-xl bg-white/5 border border-white/5">
                       <b className="text-white block mb-1">Manejo de Suelo y Pendiente</b>
                       {diagnosticoAgricultor.pendienteGrados > 3
@@ -2172,7 +2172,7 @@ export default function MapaParcelas() {
                       setMunicipioAgricultor('')
                       setSelectedParcela(null)
                     }}
-                    className="inline-flex items-center gap-1.5 text-xs text-[#a8c3b4] hover:text-white transition cursor-pointer"
+                    className="inline-flex items-center gap-1.5 text-xs text-[#c9b7aa] hover:text-white transition cursor-pointer"
                   >
                     <ArrowLeft className="w-3.5 h-3.5" /> Iniciar nueva consulta
                   </button>
@@ -2189,7 +2189,7 @@ export default function MapaParcelas() {
                     <button
                       type="button"
                       onClick={descargarReporteAgricultor}
-                      className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-[#1e6846] hover:bg-[#165538] text-white text-xs font-semibold shadow-lg transition cursor-pointer"
+                      className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-[#b85c38] hover:bg-[#165538] text-white text-xs font-semibold shadow-lg transition cursor-pointer"
                     >
                       <Download className="w-4 h-4" /> Descargar Ficha del Productor (CSV)
                     </button>
@@ -2202,7 +2202,7 @@ export default function MapaParcelas() {
 
         {/* --- VISTA PERFIL ANALISTA --- */}
         {perfilActivo === 'analista' && (
-          <div className="bg-[#16392c]/60 border border-white/15 rounded-3xl p-6 sm:p-8 shadow-2xl backdrop-blur-md">
+          <div className="bg-[#291e17]/60 border border-white/15 rounded-3xl p-6 sm:p-8 shadow-2xl backdrop-blur-md">
             {/* Cabecera y Sub-Pestañas del Analista */}
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-white/10 pb-5 mb-6">
               <div>
@@ -2210,7 +2210,7 @@ export default function MapaParcelas() {
                   <Sliders className="w-3.5 h-3.5" /> Modo Técnico y de Investigación
                 </div>
                 <h3 className="text-xl sm:text-2xl font-bold text-white">Laboratorio de Modelado AgroCebada Oficial</h3>
-                <p className="text-xs text-[#a8c3b4] mt-0.5">
+                <p className="text-xs text-[#c9b7aa] mt-0.5">
                   Evalúa polígonos individuales con parámetros biofísicos o procesa datasets completos en formato .csv o .zip.
                 </p>
               </div>
@@ -2234,7 +2234,7 @@ export default function MapaParcelas() {
                 className={`pb-3 px-4 text-xs sm:text-sm font-bold flex items-center gap-2 border-b-2 transition cursor-pointer ${
                   subPestanaAnalista === 'parametros'
                     ? 'border-sky-400 text-white'
-                    : 'border-transparent text-[#a8c3b4] hover:text-white'
+                    : 'border-transparent text-[#c9b7aa] hover:text-white'
                 }`}
               >
                 <Sliders className="w-4 h-4 text-sky-400" />
@@ -2247,7 +2247,7 @@ export default function MapaParcelas() {
                 className={`pb-3 px-4 text-xs sm:text-sm font-bold flex items-center gap-2 border-b-2 transition cursor-pointer ${
                   subPestanaAnalista === 'archivos'
                     ? 'border-sky-400 text-white'
-                    : 'border-transparent text-[#a8c3b4] hover:text-white'
+                    : 'border-transparent text-[#c9b7aa] hover:text-white'
                 }`}
               >
                 <Upload className="w-4 h-4 text-sky-400" />
@@ -2261,7 +2261,7 @@ export default function MapaParcelas() {
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
                 <form onSubmit={handleCalcularAnalista} className="space-y-4">
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
-                    <label className="flex flex-col gap-1.5 text-xs font-medium text-[#a8c3b4]">
+                    <label className="flex flex-col gap-1.5 text-xs font-medium text-[#c9b7aa]">
                       ID de Polígono / Predio
                       <input
                         type="text"
@@ -2269,11 +2269,11 @@ export default function MapaParcelas() {
                         placeholder="Ej. AGC_001"
                         value={analistaValues.plot}
                         onChange={(e) => setAnalistaValues({ ...analistaValues, plot: e.target.value })}
-                        className="h-10 rounded-xl border border-white/10 bg-[#10281f]/80 px-3 text-xs text-white outline-none focus:border-[#e2b957] focus:ring-1 focus:ring-[#e2b957]"
+                        className="h-10 rounded-xl border border-white/10 bg-[#1e1713]/80 px-3 text-xs text-white outline-none focus:border-[#e2b957] focus:ring-1 focus:ring-[#e2b957]"
                       />
                     </label>
 
-                    <label className="flex flex-col gap-1.5 text-xs font-medium text-[#a8c3b4]">
+                    <label className="flex flex-col gap-1.5 text-xs font-medium text-[#c9b7aa]">
                       Superficie (ha)
                       <input
                         type="number"
@@ -2283,11 +2283,11 @@ export default function MapaParcelas() {
                         placeholder="Ej. 15.5"
                         value={analistaValues.area}
                         onChange={(e) => setAnalistaValues({ ...analistaValues, area: e.target.value })}
-                        className="h-10 rounded-xl border border-white/10 bg-[#10281f]/80 px-3 text-xs text-white outline-none focus:border-[#e2b957] focus:ring-1 focus:ring-[#e2b957]"
+                        className="h-10 rounded-xl border border-white/10 bg-[#1e1713]/80 px-3 text-xs text-white outline-none focus:border-[#e2b957] focus:ring-1 focus:ring-[#e2b957]"
                       />
                     </label>
 
-                    <label className="flex flex-col gap-1.5 text-xs font-medium text-[#a8c3b4]">
+                    <label className="flex flex-col gap-1.5 text-xs font-medium text-[#c9b7aa]">
                       vi6t_max · Temperatura satelital
                       <input
                         type="number"
@@ -2296,11 +2296,11 @@ export default function MapaParcelas() {
                         placeholder="-0.58"
                         value={analistaValues.temp}
                         onChange={(e) => setAnalistaValues({ ...analistaValues, temp: e.target.value })}
-                        className="h-10 rounded-xl border border-white/10 bg-[#10281f]/80 px-3 text-xs text-white outline-none focus:border-[#e2b957] focus:ring-1 focus:ring-[#e2b957]"
+                        className="h-10 rounded-xl border border-white/10 bg-[#1e1713]/80 px-3 text-xs text-white outline-none focus:border-[#e2b957] focus:ring-1 focus:ring-[#e2b957]"
                       />
                     </label>
 
-                    <label className="flex flex-col gap-1.5 text-xs font-medium text-[#a8c3b4]">
+                    <label className="flex flex-col gap-1.5 text-xs font-medium text-[#c9b7aa]">
                       ndwi_mean · Estrés hídrico
                       <input
                         type="number"
@@ -2309,11 +2309,11 @@ export default function MapaParcelas() {
                         placeholder="0.22"
                         value={analistaValues.ndwi}
                         onChange={(e) => setAnalistaValues({ ...analistaValues, ndwi: e.target.value })}
-                        className="h-10 rounded-xl border border-white/10 bg-[#10281f]/80 px-3 text-xs text-white outline-none focus:border-[#e2b957] focus:ring-1 focus:ring-[#e2b957]"
+                        className="h-10 rounded-xl border border-white/10 bg-[#1e1713]/80 px-3 text-xs text-white outline-none focus:border-[#e2b957] focus:ring-1 focus:ring-[#e2b957]"
                       />
                     </label>
 
-                    <label className="flex flex-col gap-1.5 text-xs font-medium text-[#a8c3b4]">
+                    <label className="flex flex-col gap-1.5 text-xs font-medium text-[#c9b7aa]">
                       evi_std · Variabilidad de verdor
                       <input
                         type="number"
@@ -2322,11 +2322,11 @@ export default function MapaParcelas() {
                         placeholder="0.26"
                         value={analistaValues.evi}
                         onChange={(e) => setAnalistaValues({ ...analistaValues, evi: e.target.value })}
-                        className="h-10 rounded-xl border border-white/10 bg-[#10281f]/80 px-3 text-xs text-white outline-none focus:border-[#e2b957] focus:ring-1 focus:ring-[#e2b957]"
+                        className="h-10 rounded-xl border border-white/10 bg-[#1e1713]/80 px-3 text-xs text-white outline-none focus:border-[#e2b957] focus:ring-1 focus:ring-[#e2b957]"
                       />
                     </label>
 
-                    <label className="flex flex-col gap-1.5 text-xs font-medium text-[#a8c3b4]">
+                    <label className="flex flex-col gap-1.5 text-xs font-medium text-[#c9b7aa]">
                       lai_std · Área foliar
                       <input
                         type="number"
@@ -2335,7 +2335,7 @@ export default function MapaParcelas() {
                         placeholder="0.38"
                         value={analistaValues.lai}
                         onChange={(e) => setAnalistaValues({ ...analistaValues, lai: e.target.value })}
-                        className="h-10 rounded-xl border border-white/10 bg-[#10281f]/80 px-3 text-xs text-white outline-none focus:border-[#e2b957] focus:ring-1 focus:ring-[#e2b957]"
+                        className="h-10 rounded-xl border border-white/10 bg-[#1e1713]/80 px-3 text-xs text-white outline-none focus:border-[#e2b957] focus:ring-1 focus:ring-[#e2b957]"
                       />
                     </label>
                   </div>
@@ -2360,7 +2360,7 @@ export default function MapaParcelas() {
                         setAnalistaValues(initialAnalistaValues)
                         setAnalistaResult(null)
                       }}
-                      className="py-3 px-3 rounded-xl bg-white/5 hover:bg-white/10 text-[#a8c3b4] text-xs transition cursor-pointer"
+                      className="py-3 px-3 rounded-xl bg-white/5 hover:bg-white/10 text-[#c9b7aa] text-xs transition cursor-pointer"
                       title="Reiniciar valores"
                     >
                       <RefreshCw className="w-4 h-4" />
@@ -2369,7 +2369,7 @@ export default function MapaParcelas() {
                 </form>
 
                 {/* Panel de Salida del Ensamble Oficial */}
-                <div className="bg-[#10281f] border border-white/10 rounded-2xl p-6 flex flex-col justify-between shadow-xl min-h-[300px]">
+                <div className="bg-[#1e1713] border border-white/10 rounded-2xl p-6 flex flex-col justify-between shadow-xl min-h-[300px]">
                   <div>
                     <div className="flex items-center justify-between border-b border-white/10 pb-3">
                       <span className="text-xs uppercase tracking-wider text-sky-400 font-bold">
@@ -2381,7 +2381,7 @@ export default function MapaParcelas() {
                     </div>
 
                     {analistaResult === null ? (
-                      <div className="py-12 text-center text-[#a8c3b4] flex flex-col items-center">
+                      <div className="py-12 text-center text-[#c9b7aa] flex flex-col items-center">
                         <BarChart3 className="w-10 h-10 text-white/20 mb-3" />
                         <p className="text-sm font-semibold text-white">Parámetros listos para inferencia</p>
                         <p className="text-xs text-white/50 max-w-xs mt-1">
@@ -2391,44 +2391,44 @@ export default function MapaParcelas() {
                     ) : (
                       <div className="py-4 space-y-4">
                         <div>
-                          <span className="text-xs text-[#a8c3b4]">Rendimiento Predicho:</span>
+                          <span className="text-xs text-[#c9b7aa]">Rendimiento Predicho:</span>
                           <div className="text-4xl font-black text-[#e2b957] mt-1">
                             {analistaResult.toFixed(2)} <span className="text-lg font-normal text-white">t/ha</span>
                           </div>
-                          <div className="text-xs text-[#a8c3b4] mt-0.5">
+                          <div className="text-xs text-[#c9b7aa] mt-0.5">
                             ≈ {Math.round(analistaResult * 1000).toLocaleString('es-MX')} kg/ha
                           </div>
                         </div>
 
                         <div className="p-3 rounded-xl bg-white/5 border border-white/5 grid grid-cols-2 gap-2 text-xs">
                           <div>
-                            <span className="text-[#a8c3b4] block">Producción Total:</span>
+                            <span className="text-[#c9b7aa] block">Producción Total:</span>
                             <b className="text-white">
                               {(analistaResult * Number(analistaValues.area)).toFixed(1)} t
                             </b>
                           </div>
                           <div>
-                            <span className="text-[#a8c3b4] block">Nivel Potencial:</span>
-                            <b className={analistaPotencial === 'alto' ? 'text-emerald-400' : analistaPotencial === 'medio' ? 'text-amber-400' : 'text-rose-400'}>
+                            <span className="text-[#c9b7aa] block">Nivel Potencial:</span>
+                            <b className={analistaPotencial === 'alto' ? 'text-[#e2b957]' : analistaPotencial === 'medio' ? 'text-amber-400' : 'text-rose-400'}>
                               {analistaPotencial ? analistaPotencial.toUpperCase() : 'MEDIO'}
                             </b>
                           </div>
                         </div>
 
                         {analistaDiag && (
-                          <div className="p-3 rounded-xl bg-white/5 border border-white/5 text-xs text-[#a8c3b4]">
+                          <div className="p-3 rounded-xl bg-white/5 border border-white/5 text-xs text-[#c9b7aa]">
                             <b className="text-white block mb-0.5">Diagnóstico Agroecológico:</b>
                             {analistaDiag}
                           </div>
                         )}
 
                         {selectedParcela && selectedParcela.rendimiento_t_ha !== null && (
-                          <div className="p-3 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-xs">
-                            <span className="text-emerald-300 font-semibold block">Validación Cruzada (Residuo OOF):</span>
+                          <div className="p-3 rounded-xl bg-[#b85c38]/15 border border-[#d87a52]/20 text-xs">
+                            <span className="text-[#f5e3d7] font-semibold block">Validación Cruzada (Residuo OOF):</span>
                             <div className="text-white mt-1">
                               Real: <b>{selectedParcela.rendimiento_t_ha} t/ha</b> · Predicho: <b>{analistaResult} t/ha</b>
                             </div>
-                            <div className="text-[#a8c3b4] mt-0.5">
+                            <div className="text-[#c9b7aa] mt-0.5">
                               Error residual absoluto: <b>{Math.abs(selectedParcela.rendimiento_t_ha - analistaResult).toFixed(2)} t/ha</b>
                             </div>
                           </div>
@@ -2437,7 +2437,7 @@ export default function MapaParcelas() {
                     )}
                   </div>
 
-                  <div className="pt-3 border-t border-white/10 text-[11px] text-[#a8c3b4] flex items-center justify-between">
+                  <div className="pt-3 border-t border-white/10 text-[11px] text-[#c9b7aa] flex items-center justify-between">
                     <span>Ensamble multimodelo regional en producción</span>
                     <span>AgroCebada 2026</span>
                   </div>
@@ -2449,7 +2449,7 @@ export default function MapaParcelas() {
             {subPestanaAnalista === 'archivos' && (
               <div className="space-y-6">
                 {/* Cabecera del Checklist y Estado de Ingesta */}
-                <div className="p-5 rounded-2xl bg-[#10281f]/90 border border-white/10 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                <div className="p-5 rounded-2xl bg-[#1e1713]/90 border border-white/10 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                   <div>
                     <div className="flex items-center gap-2">
                       <Layers className="w-4 h-4 text-sky-400" />
@@ -2457,7 +2457,7 @@ export default function MapaParcelas() {
                         Matriz de Ingesta Obligatoria (4 Fuentes Requeridas)
                       </h4>
                     </div>
-                    <p className="text-xs text-[#a8c3b4] mt-1 leading-relaxed max-w-2xl">
+                    <p className="text-xs text-[#c9b7aa] mt-1 leading-relaxed max-w-2xl">
                       El Pipeline Oficial AgroRaíces requiere estrictamente las 4 fuentes de datos para ejecutar la inferencia. Puedes subir los archivos juntos, seleccionarlos uno a uno o usar el dataset oficial.
                     </p>
                   </div>
@@ -2466,7 +2466,7 @@ export default function MapaParcelas() {
                     <span
                       className={`px-3 py-1.5 rounded-xl text-xs font-bold border flex items-center gap-1.5 ${
                         todosListos
-                          ? 'bg-emerald-500/20 text-emerald-300 border-emerald-500/40'
+                          ? 'bg-[#b85c38]/20 text-[#f5e3d7] border-[#d87a52]/40'
                           : 'bg-amber-500/20 text-amber-300 border-amber-500/40'
                       }`}
                     >
@@ -2482,8 +2482,8 @@ export default function MapaParcelas() {
                   <div
                     className={`p-4 rounded-2xl border transition-all flex flex-col justify-between ${
                       archivosState.parcelas.cargado
-                        ? 'bg-[#10281f] border-emerald-500/40 ring-1 ring-emerald-500/30'
-                        : 'bg-[#10281f]/60 border-white/10 hover:border-white/20'
+                        ? 'bg-[#1e1713] border-[#d87a52]/40 ring-1 ring-emerald-500/30'
+                        : 'bg-[#1e1713]/60 border-white/10 hover:border-white/20'
                     }`}
                   >
                     <div>
@@ -2492,7 +2492,7 @@ export default function MapaParcelas() {
                         <span
                           className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${
                             archivosState.parcelas.cargado
-                              ? 'bg-emerald-500/20 text-emerald-300'
+                              ? 'bg-[#b85c38]/20 text-[#f5e3d7]'
                               : 'bg-rose-500/20 text-rose-300'
                           }`}
                         >
@@ -2500,7 +2500,7 @@ export default function MapaParcelas() {
                         </span>
                       </div>
                       <h5 className="font-bold text-white text-xs mt-2.5">1. Parcelas y Superficie</h5>
-                      <p className="text-[11px] text-[#a8c3b4] mt-1 leading-snug">
+                      <p className="text-[11px] text-[#c9b7aa] mt-1 leading-snug">
                         ID_area_rendimiento...csv o parcelas.csv (Superficie, Estado y Municipio)
                       </p>
                     </div>
@@ -2529,17 +2529,17 @@ export default function MapaParcelas() {
                   <div
                     className={`p-4 rounded-2xl border transition-all flex flex-col justify-between ${
                       archivosState.basico.cargado
-                        ? 'bg-[#10281f] border-emerald-500/40 ring-1 ring-emerald-500/30'
-                        : 'bg-[#10281f]/60 border-white/10 hover:border-white/20'
+                        ? 'bg-[#1e1713] border-[#d87a52]/40 ring-1 ring-emerald-500/30'
+                        : 'bg-[#1e1713]/60 border-white/10 hover:border-white/20'
                     }`}
                   >
                     <div>
                       <div className="flex items-center justify-between">
-                        <Satellite className="w-5 h-5 text-emerald-400" />
+                        <Satellite className="w-5 h-5 text-[#e2b957]" />
                         <span
                           className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${
                             archivosState.basico.cargado
-                              ? 'bg-emerald-500/20 text-emerald-300'
+                              ? 'bg-[#b85c38]/20 text-[#f5e3d7]'
                               : 'bg-rose-500/20 text-rose-300'
                           }`}
                         >
@@ -2547,7 +2547,7 @@ export default function MapaParcelas() {
                         </span>
                       </div>
                       <h5 className="font-bold text-white text-xs mt-2.5">2. Satélite BÁSICO</h5>
-                      <p className="text-[11px] text-[#a8c3b4] mt-1 leading-snug">
+                      <p className="text-[11px] text-[#c9b7aa] mt-1 leading-snug">
                         Conjunto_datos_BASICO...csv (Sentinel-2 y Landsat: vi6t, ndwi, dswi2)
                       </p>
                     </div>
@@ -2565,7 +2565,7 @@ export default function MapaParcelas() {
                       />
                       <label
                         htmlFor="slot-basico"
-                        className="w-full py-1.5 px-2.5 rounded-lg bg-white/5 hover:bg-white/10 text-[11px] text-emerald-300 font-semibold text-center block cursor-pointer transition truncate"
+                        className="w-full py-1.5 px-2.5 rounded-lg bg-white/5 hover:bg-white/10 text-[11px] text-[#f5e3d7] font-semibold text-center block cursor-pointer transition truncate"
                       >
                         {archivosState.basico.cargado ? archivosState.basico.nombre : '+ Subir BÁSICO'}
                       </label>
@@ -2576,8 +2576,8 @@ export default function MapaParcelas() {
                   <div
                     className={`p-4 rounded-2xl border transition-all flex flex-col justify-between ${
                       archivosState.pro.cargado
-                        ? 'bg-[#10281f] border-emerald-500/40 ring-1 ring-emerald-500/30'
-                        : 'bg-[#10281f]/60 border-white/10 hover:border-white/20'
+                        ? 'bg-[#1e1713] border-[#d87a52]/40 ring-1 ring-emerald-500/30'
+                        : 'bg-[#1e1713]/60 border-white/10 hover:border-white/20'
                     }`}
                   >
                     <div>
@@ -2586,7 +2586,7 @@ export default function MapaParcelas() {
                         <span
                           className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${
                             archivosState.pro.cargado
-                              ? 'bg-emerald-500/20 text-emerald-300'
+                              ? 'bg-[#b85c38]/20 text-[#f5e3d7]'
                               : 'bg-rose-500/20 text-rose-300'
                           }`}
                         >
@@ -2594,7 +2594,7 @@ export default function MapaParcelas() {
                         </span>
                       </div>
                       <h5 className="font-bold text-white text-xs mt-2.5">3. Satélite PRO</h5>
-                      <p className="text-[11px] text-[#a8c3b4] mt-1 leading-snug">
+                      <p className="text-[11px] text-[#c9b7aa] mt-1 leading-snug">
                         Conjunto_datos_PRO...csv (PlanetScope: lai_mean, lai_std, msavi)
                       </p>
                     </div>
@@ -2623,8 +2623,8 @@ export default function MapaParcelas() {
                   <div
                     className={`p-4 rounded-2xl border transition-all flex flex-col justify-between ${
                       archivosState.topografia.cargado
-                        ? 'bg-[#10281f] border-emerald-500/40 ring-1 ring-emerald-500/30'
-                        : 'bg-[#10281f]/60 border-white/10 hover:border-white/20'
+                        ? 'bg-[#1e1713] border-[#d87a52]/40 ring-1 ring-emerald-500/30'
+                        : 'bg-[#1e1713]/60 border-white/10 hover:border-white/20'
                     }`}
                   >
                     <div>
@@ -2633,7 +2633,7 @@ export default function MapaParcelas() {
                         <span
                           className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${
                             archivosState.topografia.cargado
-                              ? 'bg-emerald-500/20 text-emerald-300'
+                              ? 'bg-[#b85c38]/20 text-[#f5e3d7]'
                               : 'bg-rose-500/20 text-rose-300'
                           }`}
                         >
@@ -2641,7 +2641,7 @@ export default function MapaParcelas() {
                         </span>
                       </div>
                       <h5 className="font-bold text-white text-xs mt-2.5">4. Topografía INEGI CEM 4.0</h5>
-                      <p className="text-[11px] text-[#a8c3b4] mt-1 leading-snug">
+                      <p className="text-[11px] text-[#c9b7aa] mt-1 leading-snug">
                         Reto_...Topografia_INEGI_CEM4.zip (Archivos .tif de 120m) o .csv
                       </p>
                     </div>
@@ -2670,7 +2670,7 @@ export default function MapaParcelas() {
                 {/* Zona de Carga Rápida Múltiple y Botón Demo */}
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                   {/* Zona de Drag & Drop de Archivos Múltiples */}
-                  <div className="md:col-span-2 p-5 rounded-2xl border-2 border-dashed border-white/20 hover:border-sky-400/60 transition bg-[#10281f]/70 flex flex-col items-center justify-center text-center">
+                  <div className="md:col-span-2 p-5 rounded-2xl border-2 border-dashed border-white/20 hover:border-sky-400/60 transition bg-[#1e1713]/70 flex flex-col items-center justify-center text-center">
                     <input
                       type="file"
                       id="multi-upload-analista"
@@ -2692,7 +2692,7 @@ export default function MapaParcelas() {
                       <div className="font-semibold text-white text-sm">
                         Arrastra o selecciona tus 4 archivos a la vez
                       </div>
-                      <div className="text-xs text-[#a8c3b4] max-w-md">
+                      <div className="text-xs text-[#c9b7aa] max-w-md">
                         El clasificador inteligente detectará automáticamente qué archivo corresponde a cada una de las 4 fuentes requeridas.
                       </div>
                     </label>
@@ -2718,7 +2718,7 @@ export default function MapaParcelas() {
                   </div>
 
                   {/* Tarjeta de Carga Rápida Oficial (Las 4 fuentes juntas) */}
-                  <div className="p-5 rounded-2xl bg-[#10281f] border border-white/10 flex flex-col justify-between">
+                  <div className="p-5 rounded-2xl bg-[#1e1713] border border-white/10 flex flex-col justify-between">
                     <div>
                       <div className="flex items-center gap-2 text-xs font-bold text-[#e2b957] uppercase tracking-wider">
                         <Sparkles className="w-4 h-4" /> Reto Oficial AgroCebada
@@ -2726,8 +2726,8 @@ export default function MapaParcelas() {
                       <h4 className="text-base font-bold text-white mt-1">
                         Cargar las 4 fuentes oficiales
                       </h4>
-                      <p className="text-xs text-[#a8c3b4] mt-1.5 leading-relaxed">
-                        Carga automáticamente los 4 archivos del proyecto (<code className="text-[#e2b957]">ID_area_rendimiento</code>, <code className="text-emerald-400">BASICO</code>, <code className="text-sky-400">PRO</code> y <code className="text-indigo-400">Topografía</code>) y predice las <b>59 parcelas sin rendimiento</b>.
+                      <p className="text-xs text-[#c9b7aa] mt-1.5 leading-relaxed">
+                        Carga automáticamente los 4 archivos del proyecto (<code className="text-[#e2b957]">ID_area_rendimiento</code>, <code className="text-[#e2b957]">BASICO</code>, <code className="text-sky-400">PRO</code> y <code className="text-indigo-400">Topografía</code>) y predice las <b>59 parcelas sin rendimiento</b>.
                       </p>
                     </div>
 
@@ -2735,7 +2735,7 @@ export default function MapaParcelas() {
                       type="button"
                       onClick={handleCargarDemoDataset}
                       disabled={batchLoading}
-                      className="mt-4 py-2.5 px-4 rounded-xl bg-gradient-to-r from-[#1e6846] to-[#155538] hover:from-[#258257] hover:to-[#1c6443] text-white font-bold text-xs transition cursor-pointer shadow-md disabled:opacity-50 flex items-center justify-center gap-2"
+                      className="mt-4 py-2.5 px-4 rounded-xl bg-gradient-to-r from-[#b85c38] to-[#c96a45] hover:from-[#c96a45] hover:to-[#d87a52] text-white font-bold text-xs transition cursor-pointer shadow-md disabled:opacity-50 flex items-center justify-center gap-2"
                     >
                       {batchLoading ? 'Calculando 59 parcelas...' : '⚡ Cargar 4 Fuentes Oficiales (59 Predios)'}
                     </button>
@@ -2744,7 +2744,7 @@ export default function MapaParcelas() {
 
                 {/* Spinner de Carga */}
                 {batchLoading && (
-                  <div className="p-8 rounded-2xl bg-[#10281f]/80 border border-white/10 flex flex-col items-center justify-center gap-3">
+                  <div className="p-8 rounded-2xl bg-[#1e1713]/80 border border-white/10 flex flex-col items-center justify-center gap-3">
                     <div className="w-10 h-10 border-3 border-sky-400 border-t-transparent rounded-full animate-spin" />
                     <span className="text-sm font-semibold text-white">
                       Validando y cruzando las 4 fuentes de datos con el Pipeline Oficial AgroRaíces...
@@ -2767,34 +2767,34 @@ export default function MapaParcelas() {
                   <div className="space-y-4 pt-2">
                     {/* Resumen Global */}
                     <div className="grid grid-cols-2 sm:grid-cols-4 gap-3.5">
-                      <div className="bg-[#10281f] p-4 rounded-2xl border border-white/10">
-                        <span className="text-xs text-[#a8c3b4] uppercase tracking-wider block">Parcelas Evaluadas</span>
+                      <div className="bg-[#1e1713] p-4 rounded-2xl border border-white/10">
+                        <span className="text-xs text-[#c9b7aa] uppercase tracking-wider block">Parcelas Evaluadas</span>
                         <div className="text-2xl font-black text-white mt-1">{batchResult.total_parcelas}</div>
                         <span className="text-[10px] text-white/50">Predios sin rendimiento previo</span>
                       </div>
 
-                      <div className="bg-[#10281f] p-4 rounded-2xl border border-white/10">
-                        <span className="text-xs text-[#a8c3b4] uppercase tracking-wider block">Rendimiento Medio</span>
+                      <div className="bg-[#1e1713] p-4 rounded-2xl border border-white/10">
+                        <span className="text-xs text-[#c9b7aa] uppercase tracking-wider block">Rendimiento Medio</span>
                         <div className="text-2xl font-black text-[#e2b957] mt-1">
                           {batchResult.rendimiento_promedio_t_ha} <span className="text-sm font-normal text-white">t/ha</span>
                         </div>
-                        <span className="text-[10px] text-[#a8c3b4]">
+                        <span className="text-[10px] text-[#c9b7aa]">
                           ≈ {Math.round(batchResult.rendimiento_promedio_t_ha * 1000)} kg/ha
                         </span>
                       </div>
 
-                      <div className="bg-[#10281f] p-4 rounded-2xl border border-white/10">
-                        <span className="text-xs text-[#a8c3b4] uppercase tracking-wider block">Producción Total</span>
-                        <div className="text-2xl font-black text-emerald-400 mt-1">
+                      <div className="bg-[#1e1713] p-4 rounded-2xl border border-white/10">
+                        <span className="text-xs text-[#c9b7aa] uppercase tracking-wider block">Producción Total</span>
+                        <div className="text-2xl font-black text-[#e2b957] mt-1">
                           {batchResult.produccion_total_t} <span className="text-sm font-normal text-white">t</span>
                         </div>
                         <span className="text-[10px] text-white/50">Estimación en tolva</span>
                       </div>
 
-                      <div className="bg-[#10281f] p-4 rounded-2xl border border-white/10">
-                        <span className="text-xs text-[#a8c3b4] uppercase tracking-wider block">Distribución</span>
+                      <div className="bg-[#1e1713] p-4 rounded-2xl border border-white/10">
+                        <span className="text-xs text-[#c9b7aa] uppercase tracking-wider block">Distribución</span>
                         <div className="flex items-center gap-2 mt-2 text-xs font-bold">
-                          <span className="text-emerald-400">{batchResult.conteo_alto} Alto</span>
+                          <span className="text-[#e2b957]">{batchResult.conteo_alto} Alto</span>
                           <span className="text-white/30">·</span>
                           <span className="text-amber-400">{batchResult.conteo_medio} Medio</span>
                           <span className="text-white/30">·</span>
@@ -2805,7 +2805,7 @@ export default function MapaParcelas() {
                     </div>
 
                     {/* Tabla de Predicciones */}
-                    <div className="bg-[#10281f] rounded-2xl border border-white/10 overflow-hidden shadow-xl">
+                    <div className="bg-[#1e1713] rounded-2xl border border-white/10 overflow-hidden shadow-xl">
                       <div className="p-4 border-b border-white/10 flex flex-wrap items-center justify-between gap-3">
                         <div className="flex items-center gap-2">
                           <Table className="w-4 h-4 text-sky-400" />
@@ -2817,7 +2817,7 @@ export default function MapaParcelas() {
                         <button
                           type="button"
                           onClick={handleDescargarCsvLote}
-                          className="py-2 px-4 rounded-xl bg-[#1e6846] hover:bg-[#155538] text-white font-bold text-xs transition cursor-pointer flex items-center gap-2 shadow-md"
+                          className="py-2 px-4 rounded-xl bg-[#b85c38] hover:bg-[#155538] text-white font-bold text-xs transition cursor-pointer flex items-center gap-2 shadow-md"
                         >
                           <Download className="w-4 h-4" />
                           <span>Descargar Resultados en CSV (Formato Oficial)</span>
@@ -2825,7 +2825,7 @@ export default function MapaParcelas() {
                       </div>
 
                       <div className="max-h-80 overflow-y-auto">
-                        <table className="w-full text-left text-xs text-[#a8c3b4]">
+                        <table className="w-full text-left text-xs text-[#c9b7aa]">
                           <thead className="bg-black/30 text-[11px] uppercase tracking-wider text-white/70 sticky top-0">
                             <tr>
                               <th className="py-2.5 px-4">ID Predio</th>
@@ -2850,7 +2850,7 @@ export default function MapaParcelas() {
                                   <span
                                     className={`px-2 py-0.5 rounded text-[10px] font-bold ${
                                       p.nivel_potencial === 'alto'
-                                        ? 'bg-emerald-500/20 text-emerald-300'
+                                        ? 'bg-[#b85c38]/20 text-[#f5e3d7]'
                                         : p.nivel_potencial === 'medio'
                                         ? 'bg-amber-500/20 text-amber-300'
                                         : 'bg-rose-500/20 text-rose-300'

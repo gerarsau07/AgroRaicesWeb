@@ -9,70 +9,28 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger'
 
 gsap.registerPlugin(ScrollTrigger)
 
+const STATION_IMAGES = [
+  '/photos/satelite1.webp',
+  '/photos/satelite2.webp',
+  '/photos/person.webp',
+]
+
 export function ScrollWorld() {
   const containerRef = useRef<HTMLDivElement>(null)
-  const videoRef = useRef<HTMLVideoElement>(null)
   const [activeStationIndex, setActiveStationIndex] = useState(0)
-  const [reducedMotion, setReducedMotion] = useState(false)
-  const [isReady, setIsReady] = useState(false)
-
-  // Detect accessibility
-  useEffect(() => {
-    if (typeof window !== 'undefined') {
-      const mediaQuery = window.matchMedia('(prefers-reduced-motion: reduce)')
-      setReducedMotion(mediaQuery.matches)
-    }
-  }, [])
-
-  // iOS Safari unlock & metadata
-  const handleLoadedMetadata = () => {
-    setIsReady(true)
-    const video = videoRef.current
-    if (video) {
-      video.play().then(() => video.pause()).catch(() => {})
-    }
-  }
 
   useEffect(() => {
     const container = containerRef.current
-    const video = videoRef.current
     if (!container) return
-
-    // Interpolation object for buttery-smooth video scrubbing
-    const scrubObj = { time: 0 }
-    let animFrameId: number
-
-    // Render loop using requestAnimationFrame
-    const updateVideoFrame = () => {
-      if (video && video.duration && !isNaN(video.duration) && !reducedMotion) {
-        if (Math.abs(video.currentTime - scrubObj.time) > 0.015) {
-          video.currentTime = scrubObj.time
-        }
-      }
-      animFrameId = requestAnimationFrame(updateVideoFrame)
-    }
-    animFrameId = requestAnimationFrame(updateVideoFrame)
 
     const ctx = gsap.context(() => {
       ScrollTrigger.create({
         trigger: container,
         start: 'top top',
         end: 'bottom bottom',
-        scrub: 1.2,
+        scrub: 0.5,
         onUpdate: (self) => {
           const progress = self.progress
-
-          if (video && video.duration && !isNaN(video.duration)) {
-            // Full 100% video progression mapped directly to the scroll
-            gsap.to(scrubObj, {
-              time: progress * video.duration,
-              duration: 0.15,
-              ease: 'power1.out',
-              overwrite: 'auto',
-            })
-          }
-
-          // Active station calculation
           const stationIdx = scrollWorldStations.findIndex(
             (s) => progress >= s.range[0] && progress <= s.range[1]
           )
@@ -84,44 +42,40 @@ export function ScrollWorld() {
     }, container)
 
     return () => {
-      cancelAnimationFrame(animFrameId)
       ctx.revert()
     }
-  }, [reducedMotion, isReady])
+  }, [])
 
   const currentStation = scrollWorldStations[activeStationIndex] || scrollWorldStations[0]
   const stationIcons = [Satellite, Mountain, UserCheck]
   const ActiveIcon = stationIcons[activeStationIndex] || Satellite
 
   return (
-    <div ref={containerRef} className="relative h-[320vh] w-full bg-[#1b1511]">
+    <div ref={containerRef} className="relative h-[240vh] w-full bg-[#1b1410]">
       {/* Sticky Fullscreen Viewport */}
       <div className="sticky top-0 h-screen w-full overflow-hidden">
-        {/* Fullscreen Video (cebada.mp4) */}
-        {!reducedMotion ? (
-          <video
-            ref={videoRef}
-            src="/videos/cebada.mp4"
-            preload="auto"
-            muted
-            playsInline
-            onLoadedMetadata={handleLoadedMetadata}
-            className="absolute inset-0 h-full w-full object-cover will-change-[contents]"
-          />
-        ) : (
-          <Image
-            src="/photos/satelite1.webp"
-            alt="Monitoreo Agrícola AgroRaíces"
-            fill
-            priority
-            className="object-cover"
-            sizes="100vw"
-          />
-        )}
+        {/* Fullscreen Background Images with Crossfade (Zero Video Loading) */}
+        {STATION_IMAGES.map((src, idx) => (
+          <div
+            key={src}
+            className={`absolute inset-0 transition-opacity duration-700 ease-in-out ${
+              idx === activeStationIndex ? 'opacity-100 z-0' : 'opacity-0 z-0 pointer-events-none'
+            }`}
+          >
+            <Image
+              src={src}
+              alt={currentStation.title}
+              fill
+              priority={idx === 0}
+              className="object-cover transform scale-105 transition-transform duration-1000"
+              sizes="100vw"
+            />
+          </div>
+        ))}
 
-        {/* Cinematic Vignette & Ambient Shading */}
-        <div className="pointer-events-none absolute inset-0 z-10 bg-gradient-to-t from-[#1b1511] via-[#1b1511]/40 to-transparent" />
-        <div className="pointer-events-none absolute inset-0 z-10 bg-gradient-to-r from-[#1b1511]/90 via-[#1b1511]/35 to-transparent sm:max-w-3xl" />
+        {/* Cinematic Vignette & Ambient Earth Shading */}
+        <div className="pointer-events-none absolute inset-0 z-10 bg-gradient-to-t from-[#1b1410] via-[#1b1410]/50 to-[#1b1410]/20" />
+        <div className="pointer-events-none absolute inset-0 z-10 bg-gradient-to-r from-[#1b1410]/95 via-[#1b1410]/40 to-transparent sm:max-w-3xl" />
 
         {/* Narrative HUD & Station Card (Bottom Left) */}
         <div className="absolute inset-x-0 bottom-0 z-20 px-6 pb-12 sm:px-12 sm:pb-16 lg:px-20">
@@ -167,7 +121,13 @@ export function ScrollWorld() {
           {scrollWorldStations.map((station, idx) => {
             const isActive = idx === activeStationIndex
             return (
-              <div key={station.id} className="group relative flex items-center">
+              <button
+                key={station.id}
+                type="button"
+                onClick={() => setActiveStationIndex(idx)}
+                className="group relative flex items-center cursor-pointer p-1"
+                aria-label={station.title}
+              >
                 <div
                   className={`size-3 rounded-full transition-all duration-300 ${
                     isActive
@@ -175,10 +135,10 @@ export function ScrollWorld() {
                       : 'bg-white/30 hover:bg-white/60'
                   }`}
                 />
-                <span className="absolute right-6 hidden whitespace-nowrap rounded-lg border border-white/10 bg-[#27201b]/90 px-3 py-1 text-xs text-[#dcd2c9] shadow-md backdrop-blur-md group-hover:block">
+                <span className="absolute right-7 hidden whitespace-nowrap rounded-lg border border-white/10 bg-[#27201b]/95 px-3 py-1 text-xs text-[#dcd2c9] shadow-md backdrop-blur-md group-hover:block">
                   {station.title}
                 </span>
-              </div>
+              </button>
             )
           })}
         </div>

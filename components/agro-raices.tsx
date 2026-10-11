@@ -57,40 +57,26 @@ export function Navbar() {
   const links = [
     { label: 'Inicio', href: '/' },
     { label: 'Nosotros', href: '/nosotros' },
-    { label: 'Modelo', href: '/mapa#asistente-modelo' },
+    { label: 'Modelo', href: '/modelo' },
     { label: 'Mapa', href: '/mapa' },
   ]
 
-  const handleIrAlModelo = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
-    if (href.includes('#asistente-modelo')) {
-      if (pathname === '/mapa') {
-        e.preventDefault()
-        const el = document.getElementById('asistente-modelo')
-        if (el) {
-          el.scrollIntoView({ behavior: 'smooth' })
-        }
-        window.history.pushState(null, '', '/mapa#asistente-modelo')
-      }
-      setOpen(false)
-    }
-  }
-
   return (
-    <header className="fixed inset-x-0 top-0 z-50 border-b border-white/10 bg-[#10281f]/90 backdrop-blur-xl">
+    <header className="fixed inset-x-0 top-0 z-50 border-b border-[#4e3b2e]/40 bg-[#1e1713]/90 text-white backdrop-blur-xl transition-colors duration-300">
       <div className="mx-auto flex h-[72px] max-w-7xl items-center justify-between px-5 lg:px-8">
         <Link href="/" className="flex items-center gap-3 text-left transition hover:opacity-90" aria-label="Ir al inicio">
           <Image 
-            src="/images/logo.png" 
+            src="/images/logo.webp" 
             alt="Logo AgroRaíces" 
             width={160} 
             height={160} 
-            className="rounded-xl object-contain "
+            className="rounded-xl object-contain"
           />
           <span>
             <span className="block text-lg font-semibold tracking-tight text-white">
-              Agro<span className="text-[#e2b957]">Raíces</span>
+              Agro<span className="text-[#d87a52]">Raíces</span>
             </span>
-            <span className="block text-[10px] uppercase tracking-[0.2em] text-[#a8c3b4]">
+            <span className="block text-[10px] uppercase tracking-[0.2em] text-[#c7b2a3]">
               AgroCebada 2026
             </span>
           </span>
@@ -99,21 +85,18 @@ export function Navbar() {
         {/* Desktop Navigation */}
         <nav className="hidden items-center gap-8 md:flex" aria-label="Navegación principal">
           {links.map(({ label, href }) => {
-            const isActive = href === '/mapa#asistente-modelo'
-              ? false
-              : pathname === href
+            const isActive = pathname === href
             return (
               <Link
                 key={href}
                 href={href}
-                onClick={(e) => handleIrAlModelo(e, href)}
                 className={`relative py-1 text-sm font-medium transition-colors ${
-                  isActive ? 'text-[#e2b957]' : 'text-[#c0d2c8] hover:text-white'
+                  isActive ? 'text-[#e2b957]' : 'text-[#d4bead] hover:text-white'
                 }`}
               >
                 {label}
                 {isActive && (
-                  <span className="absolute inset-x-0 -bottom-1 h-0.5 rounded-full bg-[#e2b957]" />
+                  <span className="absolute inset-x-0 -bottom-1 h-0.5 rounded-full bg-[#d87a52]" />
                 )}
               </Link>
             )
@@ -121,9 +104,8 @@ export function Navbar() {
         </nav>
 
         <Link
-          href="/mapa#asistente-modelo"
-          onClick={(e) => handleIrAlModelo(e, '/mapa#asistente-modelo')}
-          className="hidden h-10 items-center gap-2 rounded-full bg-[#d6a849] px-5 text-sm font-semibold text-[#10281f] shadow-sm transition hover:bg-[#e7c26c] sm:inline-flex cursor-pointer"
+          href="/modelo"
+          className="hidden h-10 items-center gap-2 rounded-full bg-[#b85c38] px-5 text-sm font-semibold text-white shadow-lg shadow-[#b85c38]/20 transition hover:bg-[#c96a45] sm:inline-flex cursor-pointer"
         >
           Probar el modelo <ArrowRight className="size-4" />
         </Link>
@@ -140,20 +122,18 @@ export function Navbar() {
 
       {/* Mobile Drawer */}
       {open && (
-        <nav className="flex flex-col gap-3 border-t border-white/10 bg-[#10281f] px-5 py-6 md:hidden">
+        <nav className="flex flex-col gap-3 border-t border-[#4e3b2e]/40 bg-[#1e1713] px-5 py-6 md:hidden">
           {links.map(({ label, href }) => {
-            const isActive = href === '/mapa#asistente-modelo'
-              ? false
-              : pathname === href
+            const isActive = pathname === href
             return (
               <Link
                 key={href}
                 href={href}
-                onClick={(e) => handleIrAlModelo(e, href)}
+                onClick={() => setOpen(false)}
                 className={`rounded-lg px-3 py-2 text-base font-medium transition ${
                   isActive
-                    ? 'bg-[#1e4432] text-[#e2b957]'
-                    : 'text-[#c0d2c8] hover:bg-white/5 hover:text-white'
+                    ? 'bg-[#2f221a] text-[#d87a52]'
+                    : 'text-[#d4bead] hover:bg-white/5 hover:text-white'
                 }`}
               >
                 {label}
@@ -161,9 +141,9 @@ export function Navbar() {
             )
           })}
           <Link
-            href="/mapa#asistente-modelo"
-            onClick={(e) => handleIrAlModelo(e, '/mapa#asistente-modelo')}
-            className="mt-2 flex h-11 items-center justify-center gap-2 rounded-xl bg-[#d6a849] text-sm font-semibold text-[#10281f] hover:bg-[#e7c26c] cursor-pointer"
+            href="/modelo"
+            onClick={() => setOpen(false)}
+            className="mt-2 flex h-11 items-center justify-center gap-2 rounded-xl bg-[#b85c38] text-sm font-semibold text-white hover:bg-[#c96a45] cursor-pointer"
           >
             Probar el modelo <ArrowRight className="size-4" />
           </Link>
@@ -301,27 +281,29 @@ export function HomeCards() {
 
 export function About() {
   return (
-    <section className="bg-[#f6f5ef] pt-32 pb-24 text-[#17352a] lg:pt-36 lg:pb-32">
+    <section className="bg-[#faf7f2] pt-32 pb-24 text-[#241810] lg:pt-36 lg:pb-32">
       <div className="mx-auto max-w-7xl px-5 lg:px-8">
         <div className="grid gap-14 lg:grid-cols-[0.9fr_1.1fr] lg:items-end">
           <div>
-            <p className="eyebrow">01 / Quiénes somos y Metodología</p>
-            <h2 className="section-title mt-4">Ciencia de datos y satélites con raíces en el territorio.</h2>
-            <p className="mt-6 max-w-lg text-base leading-7 text-[#5e7367]">
+            <p className="text-xs font-bold uppercase tracking-[0.2em] text-[#b85c38]">01 / Quiénes somos y Metodología</p>
+            <h2 className="text-balance text-4xl font-extrabold leading-tight tracking-[-0.035em] text-[#241810] sm:text-5xl mt-4">
+              Ciencia de datos y satélites con raíces en el territorio.
+            </h2>
+            <p className="mt-6 max-w-lg text-base leading-7 text-[#6e5a4d]">
               Nacimos para transformar la cadena agroindustrial de la cebada maltera. Integramos señales satelitales multiespectrales (PlanetScope, Sentinel-2, Landsat) con topografía de alta precisión INEGI CEM 4.0 para predecir con certeza el rendimiento antes de la cosecha.
             </p>
             <div className="mt-8 flex flex-wrap gap-4">
               <Link
-                href="/mapa#asistente-modelo"
-                className="inline-flex items-center gap-2 rounded-full bg-[#1e6846] px-5 py-2.5 text-sm font-medium text-white shadow-sm transition hover:bg-[#155538]"
+                href="/modelo"
+                className="inline-flex items-center gap-2 rounded-full bg-[#b85c38] px-6 py-3 text-sm font-semibold text-white shadow-lg shadow-[#b85c38]/20 transition hover:bg-[#c96a45]"
               >
                 Usar el modelo en vivo <ArrowRight className="size-4" />
               </Link>
               <Link
                 href="/mapa"
-                className="inline-flex items-center gap-2 rounded-full border border-[#b8cabe] bg-white px-5 py-2.5 text-sm font-medium text-[#17352a] shadow-sm transition hover:bg-[#e3ebdf]"
+                className="inline-flex items-center gap-2 rounded-full border border-[#c4b1a1] bg-white px-6 py-3 text-sm font-semibold text-[#241810] shadow-sm transition hover:bg-[#ede5dc]"
               >
-                Ver parcelas en el mapa <ChevronRight className="size-4" />
+                Ver parcelas en el mapa <ChevronRight className="size-4 text-[#d87a52]" />
               </Link>
             </div>
           </div>
@@ -344,14 +326,16 @@ export function About() {
           </div>
         </div>
 
-        {/* Sección complementaria */}
-        <div className="mt-20 rounded-3xl bg-[#10281f] p-8 text-white sm:p-12">
+        {/* Sección complementaria: Propósito */}
+        <div className="mt-20 rounded-3xl border border-[#4d392c] bg-[#1e1713] p-8 text-white sm:p-12 shadow-xl">
           <div className="max-w-3xl">
-            <span className="tag-gold">Propósito AgroCebada 2026</span>
-            <h3 className="mt-4 text-2xl font-semibold sm:text-3xl">
+            <span className="inline-flex rounded-full bg-[#e2b957] px-3.5 py-1 text-[11px] font-bold uppercase tracking-[0.14em] text-[#1e1713]">
+              Propósito AgroCebada 2026
+            </span>
+            <h3 className="mt-4 text-2xl font-bold sm:text-3xl text-white">
               Cerrando la brecha entre la telemetría espacial y el rendimiento en tolva.
             </h3>
-            <p className="mt-4 text-sm leading-7 text-[#b4c9bc] sm:text-base">
+            <p className="mt-4 text-sm leading-7 text-[#c9b7aa] sm:text-base">
               Nuestra metodología combina calibración agronómica en campo con series de tiempo multiespectrales. Mediante el Pipeline Oficial AgroRaíces, predecimos el rendimiento antes de la cosecha, permitiendo planificar la logística de acopio, liquidación y decisiones de manejo intrapredial.
             </p>
           </div>
@@ -363,12 +347,12 @@ export function About() {
 
 function Sensor({ icon, title, copy }: { icon: React.ReactNode; title: string; copy: string }) {
   return (
-    <div className="rounded-2xl border border-[#d7e0d5] bg-white p-5 shadow-sm transition hover:border-[#b8cabe] hover:shadow-md">
-      <div className="mb-6 flex size-10 items-center justify-center rounded-xl bg-[#e9f0e6] text-[#28714f]">
+    <div className="rounded-2xl border border-[#ded4c6] bg-white p-5 shadow-sm transition hover:border-[#b85c38] hover:shadow-md">
+      <div className="mb-6 flex size-10 items-center justify-center rounded-xl bg-[#2e2017] text-[#d87a52]">
         {icon}
       </div>
-      <h3 className="font-semibold text-[#17352a]">{title}</h3>
-      <p className="mt-2 text-sm leading-6 text-[#6b7f73]">{copy}</p>
+      <h3 className="font-bold text-[#241810]">{title}</h3>
+      <p className="mt-2 text-sm leading-6 text-[#6e5a4d]">{copy}</p>
     </div>
   )
 }
@@ -414,24 +398,26 @@ export function ModelSpecs() {
   ]
 
   return (
-    <section className="bg-white pt-32 pb-24 lg:pt-36 lg:pb-32">
+    <section className="bg-[#221913] pt-24 pb-24 text-[#f0eae1] lg:pt-28 lg:pb-32 border-t border-[#3d2e24]">
       <div className="mx-auto max-w-7xl px-5 lg:px-8">
         {/* Encabezado Principal */}
         <div className="mb-14 max-w-3xl">
-          <p className="eyebrow">02 / Arquitectura de Machine Learning</p>
-          <h2 className="section-title mt-4">
+          <p className="text-xs font-bold uppercase tracking-[0.2em] text-[#d87a52]">02 / Arquitectura de Machine Learning</p>
+          <h2 className="mt-4 text-balance text-4xl font-extrabold leading-tight tracking-[-0.035em] text-white sm:text-5xl">
             ¿Cómo predice el Pipeline Oficial AgroRaíces la cosecha de tu parcela?
           </h2>
-          <p className="mt-5 leading-7 text-[#5e7367]">
+          <p className="mt-5 leading-7 text-[#c7b4a6]">
             En lugar de usar una fórmula rígida para todo el país, AgroRaíces implementa una <strong>arquitectura multi-modelo por estado</strong>. Un coordinador territorial identifica la cuenca geográfica de tu predio y consulta a ensambles de algoritmos calibrados específicamente para esa entidad.
           </p>
         </div>
 
         {/* 1. La Idea Central */}
-        <div className="mb-12 rounded-3xl bg-[#10281f] p-8 text-white sm:p-10 shadow-xl border border-white/10">
-          <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-white/10 pb-6 mb-8">
+        <div className="mb-12 rounded-3xl bg-[#1a130f] p-8 text-white sm:p-10 shadow-xl border border-[#4a382c]">
+          <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-[#3d2e24] pb-6 mb-8">
             <div>
-              <span className="tag-dark">Arquitectura Oficial</span>
+              <span className="inline-flex rounded-full border border-[#d87a52]/40 bg-[#2b1f18] px-3.5 py-1 text-[10px] font-bold uppercase tracking-[0.14em] text-[#d87a52]">
+                Arquitectura Oficial
+              </span>
               <h3 className="mt-2 text-2xl font-bold tracking-tight text-white">
                 Ensambles regionales de Machine Learning de alta precisión
               </h3>
@@ -443,20 +429,20 @@ export function ModelSpecs() {
           </div>
 
           <div className="grid gap-6 md:grid-cols-2">
-            <div className="rounded-2xl border border-white/10 bg-[#16392c]/80 p-6">
-              <div className="text-xs uppercase tracking-wider font-semibold text-rose-300 flex items-center gap-1.5">
+            <div className="rounded-2xl border border-rose-950/60 bg-[#251817] p-6">
+              <div className="text-xs uppercase tracking-wider font-bold text-rose-400 flex items-center gap-1.5">
                 <span>❌</span> El método tradicional
               </div>
-              <p className="mt-2 text-sm leading-6 text-[#b8d0be]">
+              <p className="mt-2 text-sm leading-6 text-[#d9bebd]">
                 Usa una sola regresión lineal global. Trata por igual a una parcela plana con riego en el Valle de Apan que a una parcela en ladera volcánica en Chignahuapan o temporal en Calpulalpan, provocando sesgos críticos de estimación.
               </p>
             </div>
 
-            <div className="rounded-2xl border border-[#e2b957]/40 bg-[#16392c]/80 p-6 shadow-inner">
-              <div className="text-xs uppercase tracking-wider font-semibold text-[#e2b957] flex items-center gap-1.5">
+            <div className="rounded-2xl border border-[#d87a52]/50 bg-[#2a1d17] p-6 shadow-inner">
+              <div className="text-xs uppercase tracking-wider font-bold text-[#e2b957] flex items-center gap-1.5">
                 <span>✅</span> La arquitectura oficial de AgroRaíces
               </div>
-              <p className="mt-2 text-sm leading-6 text-[#d2e4d7]">
+              <p className="mt-2 text-sm leading-6 text-[#f0ded3]">
                 Divide la inferencia entre tres motores especializados: ExtraTrees + SVR con prior bayesiano y downscaling adiabático en Hidalgo; ensamble dual (base + PLSRegression k=2) con SVR, Huber, GPR y ExtraTrees en Puebla; y clasificador ordinal probabilístico SVC con mediana regional en Tlaxcala.
               </p>
             </div>
@@ -466,100 +452,100 @@ export function ModelSpecs() {
         {/* 2. El proceso en 4 pasos claros */}
         <div className="mb-14">
           <div className="mb-8">
-            <p className="eyebrow">Pipeline Técnico</p>
-            <h3 className="section-title mt-2 text-3xl">Los 4 pasos de la inferencia en producción</h3>
+            <p className="text-xs font-bold uppercase tracking-[0.2em] text-[#d87a52]">Pipeline Técnico</p>
+            <h3 className="mt-2 text-3xl font-extrabold text-white">Los 4 pasos de la inferencia en producción</h3>
           </div>
 
           <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
             {/* Paso 1 */}
-            <div className="flex flex-col justify-between rounded-3xl border border-[#d7e0d5] bg-[#f9faf7] p-6 shadow-sm hover:shadow-md transition">
+            <div className="flex flex-col justify-between rounded-3xl border border-[#4a382c] bg-[#1a130f] p-6 shadow-sm hover:border-[#b85c38] transition">
               <div>
-                <div className="mb-4 flex size-12 items-center justify-center rounded-2xl bg-[#e9f0e6] text-2xl">
+                <div className="mb-4 flex size-12 items-center justify-center rounded-2xl bg-[#2e2017] text-2xl">
                   🛰️
                 </div>
-                <span className="text-xs font-semibold uppercase tracking-wider text-[#499266]">Paso 01</span>
-                <h4 className="mt-1 text-lg font-bold text-[#17352a]">Ingesta Multiespectral</h4>
-                <p className="mt-2 text-xs leading-5 text-[#5e7367]">
+                <span className="text-xs font-bold uppercase tracking-wider text-[#d87a52]">Paso 01</span>
+                <h4 className="mt-1 text-lg font-bold text-white">Ingesta Multiespectral</h4>
+                <p className="mt-2 text-xs leading-5 text-[#c7b4a6]">
                   Fusión de 3 constelaciones satelitales y topografía nativa de 120m:
                 </p>
-                <ul className="mt-3 space-y-2 text-xs text-[#315543]">
+                <ul className="mt-3 space-y-2 text-xs text-[#dcd2c9]">
                   <li className="flex items-start gap-1.5">
-                    <CheckCircle2 className="size-3.5 text-[#28714f] shrink-0 mt-0.5" />
+                    <CheckCircle2 className="size-3.5 text-[#e2b957] shrink-0 mt-0.5" />
                     <span><strong>PlanetScope (3m):</strong> Área foliar (LAI) y textura foliar.</span>
                   </li>
                   <li className="flex items-start gap-1.5">
-                    <CheckCircle2 className="size-3.5 text-[#28714f] shrink-0 mt-0.5" />
+                    <CheckCircle2 className="size-3.5 text-[#e2b957] shrink-0 mt-0.5" />
                     <span><strong>Sentinel-2:</strong> Humedad y estrés hídrico (NDWI, DSWI2).</span>
                   </li>
                   <li className="flex items-start gap-1.5">
-                    <CheckCircle2 className="size-3.5 text-[#28714f] shrink-0 mt-0.5" />
-                    <span><strong>Landsat & INEGI:</strong> Térmico VI6T y relieve CEM 4.0 (120m).</span>
+                    <CheckCircle2 className="size-3.5 text-[#e2b957] shrink-0 mt-0.5" />
+                    <span><strong>Landsat & INEGI:</strong> Térmico VI6T y relieve CEM 4.0.</span>
                   </li>
                 </ul>
               </div>
             </div>
 
             {/* Paso 2 */}
-            <div className="flex flex-col justify-between rounded-3xl border border-[#d7e0d5] bg-[#f9faf7] p-6 shadow-sm hover:shadow-md transition">
+            <div className="flex flex-col justify-between rounded-3xl border border-[#4a382c] bg-[#1a130f] p-6 shadow-sm hover:border-[#e2b957] transition">
               <div>
-                <div className="mb-4 flex size-12 items-center justify-center rounded-2xl bg-[#fdf3dc] text-2xl">
+                <div className="mb-4 flex size-12 items-center justify-center rounded-2xl bg-[#2e2017] text-2xl">
                   🧭
                 </div>
-                <span className="text-xs font-semibold uppercase tracking-wider text-[#9b721e]">Paso 02</span>
-                <h4 className="mt-1 text-lg font-bold text-[#17352a]">Enrutador Territorial</h4>
-                <p className="mt-2 text-xs leading-5 text-[#5e7367]">
+                <span className="text-xs font-bold uppercase tracking-wider text-[#e2b957]">Paso 02</span>
+                <h4 className="mt-1 text-lg font-bold text-white">Enrutador Territorial</h4>
+                <p className="mt-2 text-xs leading-5 text-[#c7b4a6]">
                   Identifica la cuenca territorial y el estado (Puebla, Hidalgo o Tlaxcala) de tu predio.
                 </p>
-                <div className="mt-3 rounded-xl bg-white border border-[#e2e8df] p-3 text-xs text-[#4b5563]">
-                  <span className="font-semibold text-[#17352a] block mb-1">Calibración Territorial:</span>
+                <div className="mt-3 rounded-xl bg-[#251b15] border border-[#4a382c] p-3 text-xs text-[#c7b4a6]">
+                  <span className="font-semibold text-white block mb-1">Calibración Territorial:</span>
                   Aplica prior bayesiano municipal y selecciona los modelos de Machine Learning calibrados específicamente para esa entidad.
                 </div>
               </div>
             </div>
 
             {/* Paso 3 */}
-            <div className="flex flex-col justify-between rounded-3xl border border-[#d7e0d5] bg-[#f9faf7] p-6 shadow-sm hover:shadow-md transition">
+            <div className="flex flex-col justify-between rounded-3xl border border-[#4a382c] bg-[#1a130f] p-6 shadow-sm hover:border-[#d87a52] transition">
               <div>
-                <div className="mb-4 flex size-12 items-center justify-center rounded-2xl bg-[#eaf4fd] text-2xl">
+                <div className="mb-4 flex size-12 items-center justify-center rounded-2xl bg-[#2e2017] text-2xl">
                   🤖
                 </div>
-                <span className="text-xs font-semibold uppercase tracking-wider text-[#1e6cb7]">Paso 03</span>
-                <h4 className="mt-1 text-lg font-bold text-[#17352a]">Especialistas Oficiales por Estado</h4>
-                <p className="mt-2 text-xs leading-5 text-[#5e7367]">
+                <span className="text-xs font-bold uppercase tracking-wider text-[#d87a52]">Paso 03</span>
+                <h4 className="mt-1 text-lg font-bold text-white">Especialistas Oficiales</h4>
+                <p className="mt-2 text-xs leading-5 text-[#c7b4a6]">
                   Ensambles optimizados para cada realidad productiva:
                 </p>
-                <ul className="mt-3 space-y-2 text-xs text-[#315543]">
+                <ul className="mt-3 space-y-2 text-xs text-[#dcd2c9]">
                   <li className="flex items-start gap-1.5">
-                    <CheckCircle2 className="size-3.5 text-[#1e6cb7] shrink-0 mt-0.5" />
-                    <span><strong>Hidalgo:</strong> ExtraTrees (75%) + SVR RBF (25%) con prior bayesiano y downscaling adiabático.</span>
+                    <CheckCircle2 className="size-3.5 text-[#d87a52] shrink-0 mt-0.5" />
+                    <span><strong>Hidalgo:</strong> ExtraTrees (75%) + SVR RBF (25%).</span>
                   </li>
                   <li className="flex items-start gap-1.5">
-                    <CheckCircle2 className="size-3.5 text-[#1e6cb7] shrink-0 mt-0.5" />
-                    <span><strong>Puebla:</strong> Dual Base + PLS (k=2): SVR (45%) + Huber (35%) + GPR (15%) + ExtraTrees (5%).</span>
+                    <CheckCircle2 className="size-3.5 text-[#d87a52] shrink-0 mt-0.5" />
+                    <span><strong>Puebla:</strong> Dual Base + PLS (k=2).</span>
                   </li>
                   <li className="flex items-start gap-1.5">
-                    <CheckCircle2 className="size-3.5 text-[#1e6cb7] shrink-0 mt-0.5" />
-                    <span><strong>Tlaxcala:</strong> SVC ordinal probabilístico (45%) + mediana regional (55%).</span>
+                    <CheckCircle2 className="size-3.5 text-[#d87a52] shrink-0 mt-0.5" />
+                    <span><strong>Tlaxcala:</strong> SVC ordinal + mediana regional.</span>
                   </li>
                 </ul>
               </div>
             </div>
 
             {/* Paso 4 */}
-            <div className="flex flex-col justify-between rounded-3xl border border-[#27503b] bg-[#10281f] p-6 text-white shadow-md hover:shadow-lg transition">
+            <div className="flex flex-col justify-between rounded-3xl border border-[#b85c38]/40 bg-gradient-to-b from-[#2a1d16] to-[#1c130e] p-6 text-white shadow-xl hover:border-[#d87a52] transition">
               <div>
-                <div className="mb-4 flex size-12 items-center justify-center rounded-2xl bg-[#1c4030] text-2xl">
+                <div className="mb-4 flex size-12 items-center justify-center rounded-2xl bg-[#3d271c] text-2xl">
                   ⚖️
                 </div>
-                <span className="text-xs font-semibold uppercase tracking-wider text-[#e0b653]">Paso 04</span>
-                <h4 className="mt-1 text-lg font-bold text-white">Veredicto y Acotamiento Oficial</h4>
-                <p className="mt-2 text-xs leading-5 text-[#a8c3b4]">
+                <span className="text-xs font-bold uppercase tracking-wider text-[#e2b957]">Paso 04</span>
+                <h4 className="mt-1 text-lg font-bold text-white">Veredicto y Acotamiento</h4>
+                <p className="mt-2 text-xs leading-5 text-[#c7b4a6]">
                   Combina el ensamble y acota biológicamente el rendimiento entre <strong>1.50 y 4.80 t/ha</strong>.
                 </p>
                 <div className="my-3 rounded-xl bg-black/40 border border-white/10 p-2.5 text-center text-xs text-[#e2b957] font-semibold">
                   Rendimiento Calibrado para Campo
                 </div>
-                <p className="text-[11px] leading-4 text-[#a8c3b4]">
+                <p className="text-[11px] leading-4 text-[#a69284]">
                   Garantiza estimaciones fidedignas para tolva, liquidaciones y conteo de bultos de 50 kg.
                 </p>
               </div>
@@ -570,13 +556,13 @@ export function ModelSpecs() {
         {/* 3. ¿Qué señales toma en cuenta? y Garantías de Confianza */}
         <div className="grid gap-8 lg:grid-cols-[1.1fr_0.9fr] items-start">
           {/* Factores tomados en cuenta */}
-          <div className="rounded-3xl border border-[#dde5db] bg-[#f7f9f5] p-7 sm:p-9 shadow-sm">
-            <div className="flex items-center justify-between border-b border-[#e2e9df] pb-4 mb-6">
+          <div className="rounded-3xl border border-[#4a382c] bg-[#1a130f] p-7 sm:p-9 shadow-sm">
+            <div className="flex items-center justify-between border-b border-[#3d2e24] pb-4 mb-6">
               <div>
-                <p className="eyebrow">Factores Biofísicos</p>
-                <h3 className="mt-1 text-xl font-bold text-[#17352a]">¿Qué señales procesa el Modelo AgroRaíces?</h3>
+                <p className="text-xs font-bold uppercase tracking-[0.2em] text-[#d87a52]">Factores Biofísicos</p>
+                <h3 className="mt-1 text-xl font-bold text-white">¿Qué señales procesa el Modelo AgroRaíces?</h3>
               </div>
-              <Mountain className="size-6 text-[#28714f]" />
+              <Mountain className="size-6 text-[#d87a52]" />
             </div>
 
             <div className="space-y-4">
@@ -584,17 +570,17 @@ export function ModelSpecs() {
                 <div key={item.titulo}>
                   <div className="mb-1.5 flex justify-between items-baseline gap-3 text-xs">
                     <div>
-                      <span className="font-bold text-[#1e5037] flex items-center gap-1.5 text-sm">
+                      <span className="font-bold text-[#f0ded3] flex items-center gap-1.5 text-sm">
                         <span>{item.icono}</span>
                         {item.titulo}
                       </span>
-                      <span className="block text-[11px] text-[#6b7f73] mt-0.5">{item.explicacion}</span>
+                      <span className="block text-[11px] text-[#9e8b7d] mt-0.5">{item.explicacion}</span>
                     </div>
-                    <span className="font-bold text-[#17352a] text-sm shrink-0">{item.porcentaje}% peso</span>
+                    <span className="font-bold text-[#e2b957] text-sm shrink-0">{item.porcentaje}% peso</span>
                   </div>
-                  <div className="h-2 rounded-full bg-[#dce7dc] overflow-hidden">
+                  <div className="h-2 rounded-full bg-[#2e2017] overflow-hidden">
                     <div
-                      className="h-full rounded-full bg-gradient-to-r from-[#28714f] to-[#e2b957] transition-all duration-700"
+                      className="h-full rounded-full bg-gradient-to-r from-[#b85c38] to-[#e2b957] transition-all duration-700"
                       style={{ width: `${item.porcentaje}%` }}
                     />
                   </div>
@@ -605,60 +591,60 @@ export function ModelSpecs() {
 
           {/* Garantías y Confianza en Campo */}
           <div className="space-y-6">
-            <div className="rounded-3xl border border-[#dde5db] bg-white p-7 sm:p-8 shadow-sm">
+            <div className="rounded-3xl border border-[#4a382c] bg-[#1a130f] p-7 sm:p-8 shadow-sm">
               <div className="flex items-center gap-2 mb-3">
-                <ShieldCheck className="size-5 text-[#28714f]" />
-                <h3 className="text-lg font-bold text-[#17352a]">Certeza y Calibración en Campo</h3>
+                <ShieldCheck className="size-5 text-[#e2b957]" />
+                <h3 className="text-lg font-bold text-white">Certeza y Calibración en Campo</h3>
               </div>
-              <p className="text-xs text-[#5e7367] leading-relaxed mb-6">
+              <p className="text-xs text-[#c7b4a6] leading-relaxed mb-6">
                 Diseñado y contrastado con cosechas reales de productores en Puebla, Hidalgo y Tlaxcala para brindarte respaldo confiable en tus decisiones agrícolas.
               </p>
 
               <div className="grid grid-cols-2 gap-3">
-                <div className="rounded-2xl border border-[#e0e7dd] bg-[#f9faf7] p-4">
-                  <span className="text-xs font-semibold uppercase tracking-wider text-[#789083]">Calibración Local</span>
-                  <div className="mt-1 text-lg font-bold text-[#17352a]">Altiplano Central</div>
-                  <div className="mt-0.5 text-[11px] text-[#81968a]">Puebla, Hidalgo y Tlaxcala</div>
+                <div className="rounded-2xl border border-[#3d2e24] bg-[#221812] p-4">
+                  <span className="text-xs font-semibold uppercase tracking-wider text-[#9e8b7d]">Calibración Local</span>
+                  <div className="mt-1 text-lg font-bold text-white">Altiplano Central</div>
+                  <div className="mt-0.5 text-[11px] text-[#b8a293]">Puebla, Hidalgo y Tlaxcala</div>
                 </div>
 
-                <div className="rounded-2xl border border-[#e0e7dd] bg-[#f9faf7] p-4">
-                  <span className="text-xs font-semibold uppercase tracking-wider text-[#789083]">Enfoque Productivo</span>
-                  <div className="mt-1 text-lg font-bold text-[#17352a]">Cebada Maltera</div>
-                  <div className="mt-0.5 text-[11px] text-[#81968a]">Acorde al estándar industrial</div>
+                <div className="rounded-2xl border border-[#3d2e24] bg-[#221812] p-4">
+                  <span className="text-xs font-semibold uppercase tracking-wider text-[#9e8b7d]">Enfoque Productivo</span>
+                  <div className="mt-1 text-lg font-bold text-white">Cebada Maltera</div>
+                  <div className="mt-0.5 text-[11px] text-[#b8a293]">Acorde al estándar industrial</div>
                 </div>
 
-                <div className="rounded-2xl border border-[#e0e7dd] bg-[#f9faf7] p-4">
-                  <span className="text-xs font-semibold uppercase tracking-wider text-[#789083]">Rango Productivo</span>
-                  <div className="mt-1 text-lg font-bold text-[#9b721e]">Biológicamente Realista</div>
-                  <div className="mt-0.5 text-[11px] text-[#81968a]">Sin cifras exageradas o irreales</div>
+                <div className="rounded-2xl border border-[#3d2e24] bg-[#221812] p-4">
+                  <span className="text-xs font-semibold uppercase tracking-wider text-[#9e8b7d]">Rango Productivo</span>
+                  <div className="mt-1 text-lg font-bold text-[#e2b957]">Biológicamente Realista</div>
+                  <div className="mt-0.5 text-[11px] text-[#b8a293]">Acotado [1.50 – 4.80 t/ha]</div>
                 </div>
 
-                <div className="rounded-2xl border border-[#e0e7dd] bg-[#f9faf7] p-4">
-                  <span className="text-xs font-semibold uppercase tracking-wider text-[#789083]">Respuesta</span>
-                  <div className="mt-1 text-lg font-bold text-[#28714f]">Tiempo Real</div>
-                  <div className="mt-0.5 text-[11px] text-[#81968a]">Inferencia y reporte al instante</div>
+                <div className="rounded-2xl border border-[#3d2e24] bg-[#221812] p-4">
+                  <span className="text-xs font-semibold uppercase tracking-wider text-[#9e8b7d]">Respuesta</span>
+                  <div className="mt-1 text-lg font-bold text-[#d87a52]">Tiempo Real</div>
+                  <div className="mt-0.5 text-[11px] text-[#b8a293]">Inferencia y reporte al instante</div>
                 </div>
               </div>
 
-              <div className="mt-6 pt-5 border-t border-[#e2e9df] flex items-center justify-between text-xs text-[#5e7367]">
+              <div className="mt-6 pt-5 border-t border-[#3d2e24] flex items-center justify-between text-xs text-[#a69284]">
                 <span>Adaptado a temporal y riego</span>
-                <span className="font-semibold text-[#1e5037]">Versión Final Producción (R² 72.8% · r 0.85)</span>
+                <span className="font-semibold text-[#e2b957]">Versión Final Producción (R² 72.8% · r 0.85)</span>
               </div>
             </div>
 
             {/* Accesos directos */}
             <div className="flex flex-col sm:flex-row gap-3">
               <Link
-                href="/mapa#asistente-modelo"
-                className="flex-1 inline-flex h-12 items-center justify-center gap-2 rounded-2xl bg-[#1e6846] px-6 text-xs font-semibold text-white shadow-md transition hover:bg-[#155538]"
+                href="/modelo"
+                className="flex-1 inline-flex h-12 items-center justify-center gap-2 rounded-2xl bg-[#b85c38] px-6 text-xs font-semibold text-white shadow-md transition hover:bg-[#c96a45]"
               >
                 Probar el Modelo <ArrowRight className="size-4" />
               </Link>
               <Link
                 href="/mapa"
-                className="flex-1 inline-flex h-12 items-center justify-center gap-2 rounded-2xl border border-[#d7e0d5] bg-white px-6 text-xs font-semibold text-[#17352a] shadow-sm transition hover:bg-[#f3f6f1]"
+                className="flex-1 inline-flex h-12 items-center justify-center gap-2 rounded-2xl border border-[#4a382c] bg-[#1a130f] px-6 text-xs font-semibold text-[#f0ded3] shadow-sm transition hover:bg-[#251b15]"
               >
-                Ver parcelas en el mapa <ChevronRight className="size-4" />
+                Ver parcelas en el mapa <ChevronRight className="size-4 text-[#d87a52]" />
               </Link>
             </div>
           </div>
@@ -909,26 +895,29 @@ export function PredictionForm() {
 
 export function Footer() {
   return (
-    <footer className="border-t border-white/10 bg-[#10281f] px-5 py-10 text-[#a8c0af] lg:px-8">
-      <div className="mx-auto flex max-w-7xl flex-col items-center justify-between gap-4 text-sm sm:flex-row">
+    <footer className="border-t border-[#3d2e24] bg-[#16100c] px-5 py-12 text-[#c9b7aa] transition-colors duration-300 lg:px-8">
+      <div className="mx-auto flex max-w-7xl flex-col items-center justify-between gap-6 text-sm sm:flex-row">
         <div className="flex items-center gap-3">
           <Image 
-            src="/images/logo.png" 
+            src="/images/logo.webp" 
             alt="Logo AgroRaíces" 
             width={140} 
             height={140} 
             className="rounded-lg object-contain"
           />
-          <span>© 2026 AgroRaíces ·</span>
+          <span className="text-[#e6d8ce]">
+            © 2026 AgroRaíces ·
+          </span>
         </div>
-        <div className="flex items-center gap-6 text-xs text-[#8aa895]">
+        <div className="flex items-center gap-6 text-xs text-[#b39e8f]">
           <Link href="/" className="hover:text-white transition">Inicio</Link>
           <Link href="/nosotros" className="hover:text-white transition">Nosotros</Link>
-          <Link href="/mapa#asistente-modelo" className="hover:text-white transition">Modelo</Link>
+          <Link href="/modelo" className="hover:text-white transition">Modelo</Link>
           <Link href="/mapa" className="hover:text-white transition">Mapa</Link>
         </div>
         <span className="flex items-center gap-2 text-xs">
-          <Leaf className="size-3.5 text-[#d6a849]" /> Ciencia  de datos para cultivar futuro.
+          <Leaf className="size-3.5 text-[#d87a52]" />
+          <span>Ciencia de datos para cultivar futuro.</span>
         </span>
       </div>
     </footer>
