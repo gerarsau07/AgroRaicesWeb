@@ -1390,7 +1390,7 @@ export default function MapaParcelas() {
               onClick={() => setPerfilActivo('agricultor')}
               className={`flex-1 py-3 px-4 rounded-xl font-bold text-xs sm:text-sm flex items-center justify-center gap-2.5 transition-all duration-200 cursor-pointer ${
                 perfilActivo === 'agricultor'
-                  ? 'bg-gradient-to-r from-[#b85c38] to-[#c96a45] text-white shadow-lg shadow-emerald-950/50 border border-emerald-400/40 ring-1 ring-[#e2b957]/40'
+                  ? 'bg-gradient-to-r from-[#b85c38] to-[#c96a45] text-white shadow-lg shadow-[#b85c38]/25 border border-[#d87a52]/50 ring-1 ring-[#e2b957]/40'
                   : 'text-[#c9b7aa] hover:text-white hover:bg-white/5 border border-transparent'
               }`}
             >
@@ -1406,7 +1406,7 @@ export default function MapaParcelas() {
               onClick={() => setPerfilActivo('analista')}
               className={`flex-1 py-3 px-4 rounded-xl font-bold text-xs sm:text-sm flex items-center justify-center gap-2.5 transition-all duration-200 cursor-pointer ${
                 perfilActivo === 'analista'
-                  ? 'bg-gradient-to-r from-[#17352a] to-[#0f241c] text-white shadow-lg border border-sky-400/40 ring-1 ring-sky-400/30'
+                  ? 'bg-gradient-to-r from-[#3d2a1f] to-[#291b14] text-white shadow-lg border border-[#e2b957]/50 ring-1 ring-[#e2b957]/30'
                   : 'text-[#c9b7aa] hover:text-white hover:bg-white/5 border border-transparent'
               }`}
             >
