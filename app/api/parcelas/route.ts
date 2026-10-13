@@ -103,6 +103,8 @@ function loadModelTelemetryMap(): Record<string, {
   return {}
 }
 
+const BACKEND_URL = process.env.BACKEND_URL || 'http://localhost:8000'
+
 export async function GET(request: Request) {
   try {
     const { searchParams } = new URL(request.url)
@@ -113,8 +115,8 @@ export async function GET(request: Request) {
       const controller = new AbortController()
       const timeoutId = setTimeout(() => controller.abort(), 1200)
       const fastApiUrl = estadoParam
-        ? `http://localhost:8000/api/parcelas?estado=${encodeURIComponent(estadoParam)}`
-        : 'http://localhost:8000/api/parcelas'
+        ? `${BACKEND_URL}/api/parcelas?estado=${encodeURIComponent(estadoParam)}`
+        : `${BACKEND_URL}/api/parcelas`
       const resFast = await fetch(fastApiUrl, { signal: controller.signal })
       clearTimeout(timeoutId)
       if (resFast.ok) {
@@ -287,9 +289,10 @@ export async function GET(request: Request) {
         features,
       },
     })
-  } catch (error: any) {
+  } catch (error: unknown) {
+    console.error('Error en /api/parcelas:', error)
     return NextResponse.json(
-      { error: error?.message || 'Error al procesar parcelas desde backend/data/' },
+      { error: 'Error interno al procesar los datos geoespaciales de parcelas.' },
       { status: 500 }
     )
   }

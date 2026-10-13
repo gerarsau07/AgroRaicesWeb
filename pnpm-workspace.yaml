@@ -3,3 +3,12 @@ pmOnFail: ignore
 minimumReleaseAgeExclude:
   - '@next/*'
   - next
+  - postcss
+  - nanoid
+  - source-map-js
+  - baseline-browser-mapping
+
+overrides:
+  nanoid@<3.3.18: '^3.3.18'
+  source-map-js@<1.2.2: '^1.2.2'
+  baseline-browser-mapping@<2.11.0: '^2.11.0'

@@ -172,6 +172,11 @@ function clasificarArchivoCsv(headers: string[], filename: string = ''): string 
   return 'desconocido'
 }
 
+const BACKEND_URL = process.env.BACKEND_URL || 'http://localhost:8000'
+const MAX_UPLOAD_FILES = 6
+const MAX_FILE_SIZE_BYTES = 60 * 1024 * 1024 // 60 MB por archivo
+const MAX_FULL_PARSE_BYTES = 15 * 1024 * 1024 // 15 MB para CSVs que se parsean completos en memoria
+
 export async function POST(request: Request) {
   const contentType = request.headers.get('content-type') || ''
 
@@ -194,6 +199,22 @@ export async function POST(request: Request) {
         return NextResponse.json({ error: 'No se envió ningún archivo.' }, { status: 400 })
       }
 
+      if (files.length > MAX_UPLOAD_FILES) {
+        return NextResponse.json(
+          { error: `Se excedió el límite máximo de archivos permitidos (${MAX_UPLOAD_FILES}).` },
+          { status: 413 }
+        )
+      }
+
+      for (const f of files) {
+        if (f.size > MAX_FILE_SIZE_BYTES) {
+          return NextResponse.json(
+            { error: `El archivo "${f.name}" excede el tamaño máximo permitido (60 MB).` },
+            { status: 413 }
+          )
+        }
+      }
+
       // Intentar enviar a FastAPI si está activo
       try {
         const backendFormData = new FormData()
@@ -204,7 +225,7 @@ export async function POST(request: Request) {
         const controller = new AbortController()
         const timeoutId = setTimeout(() => controller.abort(), 3000)
 
-        const resFastApi = await fetch('http://localhost:8000/predict/upload-bundle', {
+        const resFastApi = await fetch(`${BACKEND_URL}/predict/upload-bundle`, {
           method: 'POST',
           body: backendFormData,
           signal: controller.signal,
@@ -241,6 +262,12 @@ export async function POST(request: Request) {
 
         if (categoria !== 'desconocido') {
           if (categoria === 'parcelas' || categoria === 'topografia') {
+            if (file.size > MAX_FULL_PARSE_BYTES) {
+              return NextResponse.json(
+                { error: `El archivo "${file.name}" excede el tamaño límite para tablas de parcelas/topografía (15 MB).` },
+                { status: 413 }
+              )
+            }
             const fullText = Buffer.from(await file.arrayBuffer()).toString('utf-8')
             datasetsCargados[categoria] = {
               filename: file.name,
@@ -374,8 +401,9 @@ export async function POST(request: Request) {
         ],
         predicciones,
       })
-    } catch (e: any) {
-      return NextResponse.json({ error: e?.message || 'Error al procesar los 4 archivos.' }, { status: 500 })
+    } catch (e: unknown) {
+      console.error('Error procesando archivos en /api/predict:', e)
+      return NextResponse.json({ error: 'Error interno al procesar los archivos enviados.' }, { status: 500 })
     }
   }
 
@@ -387,7 +415,7 @@ export async function POST(request: Request) {
       const controller = new AbortController()
       const timeoutId = setTimeout(() => controller.abort(), 1500)
 
-      const resFastApi = await fetch('http://localhost:8000/predict', {
+      const resFastApi = await fetch(`${BACKEND_URL}/predict`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(body),
@@ -405,8 +433,9 @@ export async function POST(request: Request) {
 
     const localResult = calcularInferenciaOficial(body)
     return NextResponse.json(localResult)
-  } catch (error: any) {
-    return NextResponse.json({ error: error?.message || 'Error en inferencia' }, { status: 400 })
+  } catch (error: unknown) {
+    console.error('Error en petición JSON de /api/predict:', error)
+    return NextResponse.json({ error: 'Formato de solicitud inválido para inferencia.' }, { status: 400 })
   }
 }
 
@@ -419,7 +448,7 @@ export async function GET(request: Request) {
       const controller = new AbortController()
       const timeoutId = setTimeout(() => controller.abort(), 1500)
 
-      const resFast = await fetch('http://localhost:8000/predict/demo-dataset', { signal: controller.signal })
+      const resFast = await fetch(`${BACKEND_URL}/predict/demo-dataset`, { signal: controller.signal })
       clearTimeout(timeoutId)
       if (resFast.ok) {
         return NextResponse.json(await resFast.json())
@@ -528,8 +557,9 @@ export async function GET(request: Request) {
         ],
         predicciones,
       })
-    } catch (e: any) {
-      return NextResponse.json({ error: e?.message || 'Error cargando las 4 fuentes de backend/data/' }, { status: 500 })
+    } catch (e: unknown) {
+      console.error('Error cargando demo dataset en /api/predict:', e)
+      return NextResponse.json({ error: 'Error interno al cargar el conjunto de datos de demostración.' }, { status: 500 })
     }
   }
 

@@ -86,6 +86,23 @@ export interface ApiResponse {
   }
 }
 
+function escapeHtml(value: unknown): string {
+  return String(value ?? '')
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;')
+}
+
+function sanitizeCsvText(value: unknown): string {
+  const str = String(value ?? '').replace(/"/g, '""')
+  if (/^[=+\-@\t\r]/.test(str)) {
+    return `"'${str}"`
+  }
+  return `"${str}"`
+}
+
 export interface MunicipioInfo {
   nombre: string
   estado: 'Puebla' | 'Hidalgo' | 'Tlaxcala'
@@ -528,22 +545,29 @@ export default function MapaParcelas() {
           layersByIdRef.current.set(props.id_poligono, layer as L.Path)
 
           const color = getFeatureColor(props)
+          const safeArea = escapeHtml(props.area_ha)
+          const safeEstado = escapeHtml(props.estado)
+          const safeMunicipio = escapeHtml(props.municipio)
+          const safeId = escapeHtml(props.id_poligono)
+          const safeElev = escapeHtml(props.elevacion_msnm)
+          const safePend = escapeHtml(props.pendiente_grados ?? '—')
+          const safeRelieve = escapeHtml(props.tipo_relieve)
           const rendText = props.rendimiento_t_ha !== null
-            ? `<b>${props.rendimiento_t_ha} t/ha</b>`
+            ? `<b>${escapeHtml(props.rendimiento_t_ha)} t/ha</b>`
             : `<span style="color:#d97706;font-style:italic;">Por calcular</span>`
 
           const popupContent = `
             <div style="font-family: inherit; font-size: 13px; color: #1e1713; padding: 2px;">
               <div style="font-weight: 700; font-size: 14px; margin-bottom: 4px; display: flex; align-items: center; justify-content: space-between;">
-                <span>Predio de ${props.area_ha} ha</span>
-                <span style="background: ${color}20; color: ${color}; padding: 2px 6px; border-radius: 4px; font-size: 11px;">${props.estado}</span>
+                <span>Predio de ${safeArea} ha</span>
+                <span style="background: ${color}20; color: ${color}; padding: 2px 6px; border-radius: 4px; font-size: 11px;">${safeEstado}</span>
               </div>
-              <div style="font-size: 12px; color: #4b5563; margin-bottom: 6px;">${props.municipio} · Ref: ${props.id_poligono}</div>
+              <div style="font-size: 12px; color: #4b5563; margin-bottom: 6px;">${safeMunicipio} · Ref: ${safeId}</div>
               <div style="border-top: 1px solid #e5e7eb; padding-top: 6px; display: grid; grid-template-columns: 1fr 1fr; gap: 4px;">
                 <div><span style="color:#6b7280;">Rendimiento:</span> ${rendText}</div>
-                <div><span style="color:#6b7280;">Elevación:</span> <b>${props.elevacion_msnm} m</b></div>
-                <div><span style="color:#6b7280;">Pendiente:</span> <b>${props.pendiente_grados ?? '—'}°</b></div>
-                <div><span style="color:#6b7280;">Relieve:</span> <b>${props.tipo_relieve}</b></div>
+                <div><span style="color:#6b7280;">Elevación:</span> <b>${safeElev} m</b></div>
+                <div><span style="color:#6b7280;">Pendiente:</span> <b>${safePend}°</b></div>
+                <div><span style="color:#6b7280;">Relieve:</span> <b>${safeRelieve}</b></div>
               </div>
             </div>
           `
@@ -1186,7 +1210,7 @@ export default function MapaParcelas() {
       'ID_POLIGONO,Estado,Municipio,Rendimiento_Predicho_t_ha,Rendimiento_kg_ha,Produccion_Estimada_t,Nivel_Potencial,Diagnostico,Confianza_R2',
       ...batchResult.predicciones.map(
         (p) =>
-          `"${p.plot}","${p.estado}","${p.municipio || ''}",${p.rendimiento_t_ha},${p.rendimiento_kg_ha},${p.produccion_estimada_t},"${p.nivel_potencial}","${p.diagnostico}",${p.confianza_r2}`
+          `${sanitizeCsvText(p.plot)},${sanitizeCsvText(p.estado)},${sanitizeCsvText(p.municipio || '')},${Number(p.rendimiento_t_ha)},${Number(p.rendimiento_kg_ha)},${Number(p.produccion_estimada_t)},${sanitizeCsvText(p.nivel_potencial)},${sanitizeCsvText(p.diagnostico)},${Number(p.confianza_r2)}`
       ),
     ]
     const blob = new Blob([lines.join('\n')], { type: 'text/csv;charset=utf-8;' })

@@ -804,11 +804,14 @@ export function PredictionForm() {
 
   function downloadReport() {
     if (result === null) return
-    const csv = `parcela,area_ha,rendimiento_t_ha,rendimiento_kg_ha,produccion_estimada_t\n${values.plot},${values.area},${result},${Math.round(result * 1000)},${(result * Number(values.area)).toFixed(1)}\n`
+    const cleanPlot = String(values.plot || 'Parcela').replace(/"/g, '""')
+    const safePlotCell = /^[=+\-@\t\r]/.test(cleanPlot) ? `"'${cleanPlot}"` : `"${cleanPlot}"`
+    const safeFileSlug = values.plot.replace(/[^a-zA-Z0-9_-]+/g, '_') || 'parcela'
+    const csv = `parcela,area_ha,rendimiento_t_ha,rendimiento_kg_ha,produccion_estimada_t\n${safePlotCell},${Number(values.area)},${result},${Math.round(result * 1000)},${(result * Number(values.area)).toFixed(1)}\n`
     const url = URL.createObjectURL(new Blob([csv], { type: 'text/csv' }))
     const a = document.createElement('a')
     a.href = url
-    a.download = `reporte-${values.plot.replace(/\s+/g, '_') || 'parcela'}.csv`
+    a.download = `reporte-${safeFileSlug}.csv`
     a.click()
     URL.revokeObjectURL(url)
   }
