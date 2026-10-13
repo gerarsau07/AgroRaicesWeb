@@ -58,5 +58,1977 @@
   "clamping_range": [
     1.5,
     4.8
-  ]
+  ],
+  "parcelas_telemetria": {
+    "AGC_196": {
+      "rendimiento_t_ha": 3.528,
+      "nivel_potencial": "medio",
+      "diagnostico": "Rendimiento comercial estable dentro del potencial agroclimático regional.",
+      "vi6t_max": -0.545,
+      "ndwi_mean": -0.081,
+      "evi_std": 0.0334,
+      "lai_std": 0.7464,
+      "proxy_relieve_m": 526.3
+    },
+    "AGC_044": {
+      "rendimiento_t_ha": 3.456,
+      "nivel_potencial": "medio",
+      "diagnostico": "Rendimiento comercial estable dentro del potencial agroclimático regional.",
+      "vi6t_max": -0.512,
+      "ndwi_mean": -0.0551,
+      "evi_std": 0.0303,
+      "lai_std": 0.6548,
+      "proxy_relieve_m": 233.8
+    },
+    "AGC_020": {
+      "rendimiento_t_ha": 3.521,
+      "nivel_potencial": "medio",
+      "diagnostico": "Rendimiento comercial estable dentro del potencial agroclimático regional.",
+      "vi6t_max": -0.527,
+      "ndwi_mean": -0.0624,
+      "evi_std": 0.0392,
+      "lai_std": 0.8052,
+      "proxy_relieve_m": 599.3
+    },
+    "AGC_174": {
+      "rendimiento_t_ha": 4.626,
+      "nivel_potencial": "alto",
+      "diagnostico": "Alto potencial productivo (óptima conservación de humedad, buen drenaje y confort térmico).",
+      "vi6t_max": -0.517,
+      "ndwi_mean": -0.094,
+      "evi_std": 0.0329,
+      "lai_std": 0.451,
+      "proxy_relieve_m": 585.3
+    },
+    "AGC_083": {
+      "rendimiento_t_ha": 4.601,
+      "nivel_potencial": "alto",
+      "diagnostico": "Alto potencial productivo (óptima conservación de humedad, buen drenaje y confort térmico).",
+      "vi6t_max": -0.498,
+      "ndwi_mean": -0.1043,
+      "evi_std": 0.0233,
+      "lai_std": 0.535,
+      "proxy_relieve_m": 368.7
+    },
+    "AGC_149": {
+      "rendimiento_t_ha": 4.456,
+      "nivel_potencial": "alto",
+      "diagnostico": "Alto potencial productivo (óptima conservación de humedad, buen drenaje y confort térmico).",
+      "vi6t_max": -0.523,
+      "ndwi_mean": -0.0424,
+      "evi_std": 0.0526,
+      "lai_std": 0.5988,
+      "proxy_relieve_m": 840.3
+    },
+    "AGC_052": {
+      "rendimiento_t_ha": 4.484,
+      "nivel_potencial": "alto",
+      "diagnostico": "Alto potencial productivo (óptima conservación de humedad, buen drenaje y confort térmico).",
+      "vi6t_max": -0.532,
+      "ndwi_mean": -0.0491,
+      "evi_std": 0.0536,
+      "lai_std": 0.6192,
+      "proxy_relieve_m": 544.3
+    },
+    "AGC_009": {
+      "rendimiento_t_ha": 4.74,
+      "nivel_potencial": "alto",
+      "diagnostico": "Alto potencial productivo (óptima conservación de humedad, buen drenaje y confort térmico).",
+      "vi6t_max": -0.599,
+      "ndwi_mean": -0.0016,
+      "evi_std": 0.0522,
+      "lai_std": 0.4363,
+      "proxy_relieve_m": 139.3
+    },
+    "AGC_119": {
+      "rendimiento_t_ha": 4.459,
+      "nivel_potencial": "alto",
+      "diagnostico": "Alto potencial productivo (óptima conservación de humedad, buen drenaje y confort térmico).",
+      "vi6t_max": -0.595,
+      "ndwi_mean": 0.0139,
+      "evi_std": 0.067,
+      "lai_std": 0.5104,
+      "proxy_relieve_m": 192.4
+    },
+    "AGC_064": {
+      "rendimiento_t_ha": 4.551,
+      "nivel_potencial": "alto",
+      "diagnostico": "Alto potencial productivo (óptima conservación de humedad, buen drenaje y confort térmico).",
+      "vi6t_max": -0.478,
+      "ndwi_mean": -0.0295,
+      "evi_std": 0.0567,
+      "lai_std": 0.4546,
+      "proxy_relieve_m": 442.9
+    },
+    "AGC_130": {
+      "rendimiento_t_ha": 4.52,
+      "nivel_potencial": "alto",
+      "diagnostico": "Alto potencial productivo (óptima conservación de humedad, buen drenaje y confort térmico).",
+      "vi6t_max": -0.495,
+      "ndwi_mean": -0.0573,
+      "evi_std": 0.0415,
+      "lai_std": 0.5407,
+      "proxy_relieve_m": 735.4
+    },
+    "AGC_035": {
+      "rendimiento_t_ha": 4.614,
+      "nivel_potencial": "alto",
+      "diagnostico": "Alto potencial productivo (óptima conservación de humedad, buen drenaje y confort térmico).",
+      "vi6t_max": -0.538,
+      "ndwi_mean": -0.0891,
+      "evi_std": 0.0449,
+      "lai_std": 0.6552,
+      "proxy_relieve_m": 1013.8
+    },
+    "AGC_047": {
+      "rendimiento_t_ha": 4.484,
+      "nivel_potencial": "alto",
+      "diagnostico": "Alto potencial productivo (óptima conservación de humedad, buen drenaje y confort térmico).",
+      "vi6t_max": -0.525,
+      "ndwi_mean": -0.0998,
+      "evi_std": 0.0349,
+      "lai_std": 0.6371,
+      "proxy_relieve_m": 1440.2
+    },
+    "AGC_084": {
+      "rendimiento_t_ha": 4.516,
+      "nivel_potencial": "alto",
+      "diagnostico": "Alto potencial productivo (óptima conservación de humedad, buen drenaje y confort térmico).",
+      "vi6t_max": -0.55,
+      "ndwi_mean": -0.0529,
+      "evi_std": 0.0587,
+      "lai_std": 0.5254,
+      "proxy_relieve_m": 806.4
+    },
+    "AGC_151": {
+      "rendimiento_t_ha": 4.683,
+      "nivel_potencial": "alto",
+      "diagnostico": "Alto potencial productivo (óptima conservación de humedad, buen drenaje y confort térmico).",
+      "vi6t_max": -0.564,
+      "ndwi_mean": -0.114,
+      "evi_std": 0.0542,
+      "lai_std": 0.5836,
+      "proxy_relieve_m": 907.2
+    },
+    "AGC_137": {
+      "rendimiento_t_ha": 4.554,
+      "nivel_potencial": "alto",
+      "diagnostico": "Alto potencial productivo (óptima conservación de humedad, buen drenaje y confort térmico).",
+      "vi6t_max": -0.552,
+      "ndwi_mean": -0.0685,
+      "evi_std": 0.0582,
+      "lai_std": 0.5742,
+      "proxy_relieve_m": 1637.1
+    },
+    "AGC_152": {
+      "rendimiento_t_ha": 4.794,
+      "nivel_potencial": "alto",
+      "diagnostico": "Alto potencial productivo (óptima conservación de humedad, buen drenaje y confort térmico).",
+      "vi6t_max": -0.572,
+      "ndwi_mean": -0.0235,
+      "evi_std": 0.0632,
+      "lai_std": 0.4958,
+      "proxy_relieve_m": 458.5
+    },
+    "AGC_051": {
+      "rendimiento_t_ha": 4.424,
+      "nivel_potencial": "alto",
+      "diagnostico": "Alto potencial productivo (óptima conservación de humedad, buen drenaje y confort térmico).",
+      "vi6t_max": -0.538,
+      "ndwi_mean": -0.0524,
+      "evi_std": 0.0431,
+      "lai_std": 0.5772,
+      "proxy_relieve_m": 779.4
+    },
+    "AGC_107": {
+      "rendimiento_t_ha": 4.525,
+      "nivel_potencial": "alto",
+      "diagnostico": "Alto potencial productivo (óptima conservación de humedad, buen drenaje y confort térmico).",
+      "vi6t_max": -0.525,
+      "ndwi_mean": -0.0859,
+      "evi_std": 0.049,
+      "lai_std": 0.5239,
+      "proxy_relieve_m": 476.0
+    },
+    "AGC_065": {
+      "rendimiento_t_ha": 4.469,
+      "nivel_potencial": "alto",
+      "diagnostico": "Alto potencial productivo (óptima conservación de humedad, buen drenaje y confort térmico).",
+      "vi6t_max": -0.562,
+      "ndwi_mean": -0.0486,
+      "evi_std": 0.0551,
+      "lai_std": 0.618,
+      "proxy_relieve_m": 1695.3
+    },
+    "AGC_059": {
+      "rendimiento_t_ha": 4.463,
+      "nivel_potencial": "alto",
+      "diagnostico": "Alto potencial productivo (óptima conservación de humedad, buen drenaje y confort térmico).",
+      "vi6t_max": -0.564,
+      "ndwi_mean": -0.0475,
+      "evi_std": 0.0511,
+      "lai_std": 0.5933,
+      "proxy_relieve_m": 854.7
+    },
+    "AGC_184": {
+      "rendimiento_t_ha": 4.496,
+      "nivel_potencial": "alto",
+      "diagnostico": "Alto potencial productivo (óptima conservación de humedad, buen drenaje y confort térmico).",
+      "vi6t_max": -0.497,
+      "ndwi_mean": -0.092,
+      "evi_std": 0.0297,
+      "lai_std": 0.5332,
+      "proxy_relieve_m": 533.3
+    },
+    "AGC_082": {
+      "rendimiento_t_ha": 4.476,
+      "nivel_potencial": "alto",
+      "diagnostico": "Alto potencial productivo (óptima conservación de humedad, buen drenaje y confort térmico).",
+      "vi6t_max": -0.537,
+      "ndwi_mean": -0.0508,
+      "evi_std": 0.0372,
+      "lai_std": 0.5042,
+      "proxy_relieve_m": 586.0
+    },
+    "AGC_146": {
+      "rendimiento_t_ha": 4.534,
+      "nivel_potencial": "alto",
+      "diagnostico": "Alto potencial productivo (óptima conservación de humedad, buen drenaje y confort térmico).",
+      "vi6t_max": -0.519,
+      "ndwi_mean": -0.1035,
+      "evi_std": 0.0415,
+      "lai_std": 0.5269,
+      "proxy_relieve_m": 233.8
+    },
+    "AGC_128": {
+      "rendimiento_t_ha": 4.497,
+      "nivel_potencial": "alto",
+      "diagnostico": "Alto potencial productivo (óptima conservación de humedad, buen drenaje y confort térmico).",
+      "vi6t_max": -0.521,
+      "ndwi_mean": -0.0841,
+      "evi_std": 0.0406,
+      "lai_std": 0.5336,
+      "proxy_relieve_m": 524.1
+    },
+    "AGC_180": {
+      "rendimiento_t_ha": 4.243,
+      "nivel_potencial": "medio",
+      "diagnostico": "Rendimiento comercial estable dentro del potencial agroclimático regional.",
+      "vi6t_max": -0.546,
+      "ndwi_mean": -0.0358,
+      "evi_std": 0.0439,
+      "lai_std": 0.597,
+      "proxy_relieve_m": 641.5
+    },
+    "AGC_134": {
+      "rendimiento_t_ha": 4.485,
+      "nivel_potencial": "alto",
+      "diagnostico": "Alto potencial productivo (óptima conservación de humedad, buen drenaje y confort térmico).",
+      "vi6t_max": -0.56,
+      "ndwi_mean": -0.0239,
+      "evi_std": 0.0422,
+      "lai_std": 0.5566,
+      "proxy_relieve_m": 355.3
+    },
+    "AGC_041": {
+      "rendimiento_t_ha": 2.758,
+      "nivel_potencial": "bajo",
+      "diagnostico": "Rendimiento limitado por estrés termo-hídrico, helada reproductiva o baja retención edáfica.",
+      "vi6t_max": -0.534,
+      "ndwi_mean": -0.0335,
+      "evi_std": 0.0393,
+      "lai_std": 0.5343,
+      "proxy_relieve_m": 988.8
+    },
+    "AGC_166": {
+      "rendimiento_t_ha": 2.77,
+      "nivel_potencial": "bajo",
+      "diagnostico": "Rendimiento limitado por estrés termo-hídrico, helada reproductiva o baja retención edáfica.",
+      "vi6t_max": -0.54,
+      "ndwi_mean": -0.0509,
+      "evi_std": 0.0387,
+      "lai_std": 0.5213,
+      "proxy_relieve_m": 527.3
+    },
+    "AGC_003": {
+      "rendimiento_t_ha": 3.283,
+      "nivel_potencial": "bajo",
+      "diagnostico": "Rendimiento limitado por estrés termo-hídrico, helada reproductiva o baja retención edáfica.",
+      "vi6t_max": -0.543,
+      "ndwi_mean": -0.0225,
+      "evi_std": 0.0677,
+      "lai_std": 0.5452,
+      "proxy_relieve_m": 895.2
+    },
+    "AGC_081": {
+      "rendimiento_t_ha": 3.608,
+      "nivel_potencial": "medio",
+      "diagnostico": "Rendimiento comercial estable dentro del potencial agroclimático regional.",
+      "vi6t_max": -0.546,
+      "ndwi_mean": -0.0617,
+      "evi_std": 0.0461,
+      "lai_std": 0.657,
+      "proxy_relieve_m": 418.0
+    },
+    "AGC_129": {
+      "rendimiento_t_ha": 3.447,
+      "nivel_potencial": "medio",
+      "diagnostico": "Rendimiento comercial estable dentro del potencial agroclimático regional.",
+      "vi6t_max": -0.577,
+      "ndwi_mean": 0.0175,
+      "evi_std": 0.065,
+      "lai_std": 0.6515,
+      "proxy_relieve_m": 732.0
+    },
+    "AGC_034": {
+      "rendimiento_t_ha": 2.316,
+      "nivel_potencial": "bajo",
+      "diagnostico": "Rendimiento limitado por estrés termo-hídrico, helada reproductiva o baja retención edáfica.",
+      "vi6t_max": -0.436,
+      "ndwi_mean": -0.0306,
+      "evi_std": 0.0514,
+      "lai_std": 0.4538,
+      "proxy_relieve_m": 530.3
+    },
+    "AGC_079": {
+      "rendimiento_t_ha": 3.254,
+      "nivel_potencial": "bajo",
+      "diagnostico": "Rendimiento limitado por estrés termo-hídrico, helada reproductiva o baja retención edáfica.",
+      "vi6t_max": -0.521,
+      "ndwi_mean": 0.0084,
+      "evi_std": 0.0503,
+      "lai_std": 0.6498,
+      "proxy_relieve_m": 943.6
+    },
+    "AGC_070": {
+      "rendimiento_t_ha": 3.294,
+      "nivel_potencial": "bajo",
+      "diagnostico": "Rendimiento limitado por estrés termo-hídrico, helada reproductiva o baja retención edáfica.",
+      "vi6t_max": -0.545,
+      "ndwi_mean": 0.0234,
+      "evi_std": 0.0731,
+      "lai_std": 0.5906,
+      "proxy_relieve_m": 987.0
+    },
+    "AGC_113": {
+      "rendimiento_t_ha": 3.147,
+      "nivel_potencial": "bajo",
+      "diagnostico": "Rendimiento limitado por estrés termo-hídrico, helada reproductiva o baja retención edáfica.",
+      "vi6t_max": -0.56,
+      "ndwi_mean": 0.008,
+      "evi_std": 0.0345,
+      "lai_std": 0.6271,
+      "proxy_relieve_m": 860.4
+    },
+    "AGC_038": {
+      "rendimiento_t_ha": 3.259,
+      "nivel_potencial": "bajo",
+      "diagnostico": "Rendimiento limitado por estrés termo-hídrico, helada reproductiva o baja retención edáfica.",
+      "vi6t_max": -0.56,
+      "ndwi_mean": 0.017,
+      "evi_std": 0.0592,
+      "lai_std": 0.5799,
+      "proxy_relieve_m": 375.4
+    },
+    "AGC_042": {
+      "rendimiento_t_ha": 3.034,
+      "nivel_potencial": "bajo",
+      "diagnostico": "Rendimiento limitado por estrés termo-hídrico, helada reproductiva o baja retención edáfica.",
+      "vi6t_max": -0.545,
+      "ndwi_mean": -0.0245,
+      "evi_std": 0.0447,
+      "lai_std": 0.5538,
+      "proxy_relieve_m": 392.8
+    },
+    "AGC_194": {
+      "rendimiento_t_ha": 3.178,
+      "nivel_potencial": "bajo",
+      "diagnostico": "Rendimiento limitado por estrés termo-hídrico, helada reproductiva o baja retención edáfica.",
+      "vi6t_max": -0.532,
+      "ndwi_mean": -0.0042,
+      "evi_std": 0.0487,
+      "lai_std": 0.4437,
+      "proxy_relieve_m": 441.4
+    },
+    "AGC_030": {
+      "rendimiento_t_ha": 3.08,
+      "nivel_potencial": "bajo",
+      "diagnostico": "Rendimiento limitado por estrés termo-hídrico, helada reproductiva o baja retención edáfica.",
+      "vi6t_max": -0.557,
+      "ndwi_mean": -0.0004,
+      "evi_std": 0.0495,
+      "lai_std": 0.442,
+      "proxy_relieve_m": 947.2
+    },
+    "AGC_078": {
+      "rendimiento_t_ha": 3.101,
+      "nivel_potencial": "bajo",
+      "diagnostico": "Rendimiento limitado por estrés termo-hídrico, helada reproductiva o baja retención edáfica.",
+      "vi6t_max": -0.57,
+      "ndwi_mean": -0.0001,
+      "evi_std": 0.0449,
+      "lai_std": 0.6236,
+      "proxy_relieve_m": 356.6
+    },
+    "AGC_121": {
+      "rendimiento_t_ha": 3.195,
+      "nivel_potencial": "bajo",
+      "diagnostico": "Rendimiento limitado por estrés termo-hídrico, helada reproductiva o baja retención edáfica.",
+      "vi6t_max": -0.543,
+      "ndwi_mean": -0.0246,
+      "evi_std": 0.0366,
+      "lai_std": 0.6796,
+      "proxy_relieve_m": 629.3
+    },
+    "AGC_148": {
+      "rendimiento_t_ha": 3.094,
+      "nivel_potencial": "bajo",
+      "diagnostico": "Rendimiento limitado por estrés termo-hídrico, helada reproductiva o baja retención edáfica.",
+      "vi6t_max": -0.536,
+      "ndwi_mean": -0.0158,
+      "evi_std": 0.0267,
+      "lai_std": 0.6837,
+      "proxy_relieve_m": 306.6
+    },
+    "AGC_067": {
+      "rendimiento_t_ha": 3.011,
+      "nivel_potencial": "bajo",
+      "diagnostico": "Rendimiento limitado por estrés termo-hídrico, helada reproductiva o baja retención edáfica.",
+      "vi6t_max": -0.522,
+      "ndwi_mean": -0.1191,
+      "evi_std": 0.0291,
+      "lai_std": 0.5444,
+      "proxy_relieve_m": 248.0
+    },
+    "AGC_089": {
+      "rendimiento_t_ha": 3.05,
+      "nivel_potencial": "bajo",
+      "diagnostico": "Rendimiento limitado por estrés termo-hídrico, helada reproductiva o baja retención edáfica.",
+      "vi6t_max": -0.541,
+      "ndwi_mean": -0.0392,
+      "evi_std": 0.0226,
+      "lai_std": 0.5988,
+      "proxy_relieve_m": 260.8
+    },
+    "AGC_007": {
+      "rendimiento_t_ha": 3.364,
+      "nivel_potencial": "medio",
+      "diagnostico": "Rendimiento comercial estable dentro del potencial agroclimático regional.",
+      "vi6t_max": -0.544,
+      "ndwi_mean": 0.0114,
+      "evi_std": 0.0465,
+      "lai_std": 0.8687,
+      "proxy_relieve_m": 403.6
+    },
+    "AGC_080": {
+      "rendimiento_t_ha": 3.429,
+      "nivel_potencial": "medio",
+      "diagnostico": "Rendimiento comercial estable dentro del potencial agroclimático regional.",
+      "vi6t_max": -0.567,
+      "ndwi_mean": -0.0188,
+      "evi_std": 0.0534,
+      "lai_std": 0.7073,
+      "proxy_relieve_m": 821.1
+    },
+    "AGC_156": {
+      "rendimiento_t_ha": 3.235,
+      "nivel_potencial": "bajo",
+      "diagnostico": "Rendimiento limitado por estrés termo-hídrico, helada reproductiva o baja retención edáfica.",
+      "vi6t_max": -0.534,
+      "ndwi_mean": -0.0419,
+      "evi_std": 0.036,
+      "lai_std": 0.7342,
+      "proxy_relieve_m": 551.8
+    },
+    "AGC_140": {
+      "rendimiento_t_ha": 3.191,
+      "nivel_potencial": "bajo",
+      "diagnostico": "Rendimiento limitado por estrés termo-hídrico, helada reproductiva o baja retención edáfica.",
+      "vi6t_max": -0.536,
+      "ndwi_mean": -0.0297,
+      "evi_std": 0.0365,
+      "lai_std": 0.7863,
+      "proxy_relieve_m": 451.4
+    },
+    "AGC_118": {
+      "rendimiento_t_ha": 3.278,
+      "nivel_potencial": "bajo",
+      "diagnostico": "Rendimiento limitado por estrés termo-hídrico, helada reproductiva o baja retención edáfica.",
+      "vi6t_max": -0.523,
+      "ndwi_mean": -0.0305,
+      "evi_std": 0.0436,
+      "lai_std": 0.6001,
+      "proxy_relieve_m": 382.0
+    },
+    "AGC_190": {
+      "rendimiento_t_ha": 4.368,
+      "nivel_potencial": "alto",
+      "diagnostico": "Alto potencial productivo (óptima conservación de humedad, buen drenaje y confort térmico).",
+      "vi6t_max": -0.489,
+      "ndwi_mean": -0.038,
+      "evi_std": 0.0382,
+      "lai_std": 0.6381,
+      "proxy_relieve_m": 499.3
+    },
+    "AGC_092": {
+      "rendimiento_t_ha": 4.659,
+      "nivel_potencial": "alto",
+      "diagnostico": "Alto potencial productivo (óptima conservación de humedad, buen drenaje y confort térmico).",
+      "vi6t_max": -0.526,
+      "ndwi_mean": -0.0496,
+      "evi_std": 0.036,
+      "lai_std": 0.6546,
+      "proxy_relieve_m": 141.3
+    },
+    "AGC_091": {
+      "rendimiento_t_ha": 4.539,
+      "nivel_potencial": "alto",
+      "diagnostico": "Alto potencial productivo (óptima conservación de humedad, buen drenaje y confort térmico).",
+      "vi6t_max": -0.52,
+      "ndwi_mean": -0.0086,
+      "evi_std": 0.0474,
+      "lai_std": 0.6053,
+      "proxy_relieve_m": 108.9
+    },
+    "AGC_060": {
+      "rendimiento_t_ha": 4.68,
+      "nivel_potencial": "alto",
+      "diagnostico": "Alto potencial productivo (óptima conservación de humedad, buen drenaje y confort térmico).",
+      "vi6t_max": -0.548,
+      "ndwi_mean": -0.0311,
+      "evi_std": 0.042,
+      "lai_std": 0.4615,
+      "proxy_relieve_m": 289.3
+    },
+    "AGC_115": {
+      "rendimiento_t_ha": 4.461,
+      "nivel_potencial": "alto",
+      "diagnostico": "Alto potencial productivo (óptima conservación de humedad, buen drenaje y confort térmico).",
+      "vi6t_max": -0.525,
+      "ndwi_mean": -0.0617,
+      "evi_std": 0.0439,
+      "lai_std": 0.4624,
+      "proxy_relieve_m": 592.8
+    },
+    "AGC_191": {
+      "rendimiento_t_ha": 4.694,
+      "nivel_potencial": "alto",
+      "diagnostico": "Alto potencial productivo (óptima conservación de humedad, buen drenaje y confort térmico).",
+      "vi6t_max": -0.543,
+      "ndwi_mean": 0.0038,
+      "evi_std": 0.0662,
+      "lai_std": 0.4934,
+      "proxy_relieve_m": 312.0
+    },
+    "AGC_085": {
+      "rendimiento_t_ha": 4.158,
+      "nivel_potencial": "medio",
+      "diagnostico": "Rendimiento comercial estable dentro del potencial agroclimático regional.",
+      "vi6t_max": -0.493,
+      "ndwi_mean": -0.0703,
+      "evi_std": 0.0334,
+      "lai_std": 0.5158,
+      "proxy_relieve_m": 462.9
+    },
+    "AGC_188": {
+      "rendimiento_t_ha": 4.624,
+      "nivel_potencial": "alto",
+      "diagnostico": "Alto potencial productivo (óptima conservación de humedad, buen drenaje y confort térmico).",
+      "vi6t_max": -0.501,
+      "ndwi_mean": -0.0705,
+      "evi_std": 0.0471,
+      "lai_std": 0.4777,
+      "proxy_relieve_m": 368.9
+    },
+    "AGC_126": {
+      "rendimiento_t_ha": 4.421,
+      "nivel_potencial": "alto",
+      "diagnostico": "Alto potencial productivo (óptima conservación de humedad, buen drenaje y confort térmico).",
+      "vi6t_max": -0.483,
+      "ndwi_mean": -0.0342,
+      "evi_std": 0.0341,
+      "lai_std": 0.5747,
+      "proxy_relieve_m": 559.3
+    },
+    "AGC_097": {
+      "rendimiento_t_ha": 4.744,
+      "nivel_potencial": "alto",
+      "diagnostico": "Alto potencial productivo (óptima conservación de humedad, buen drenaje y confort térmico).",
+      "vi6t_max": -0.525,
+      "ndwi_mean": -0.0606,
+      "evi_std": 0.0361,
+      "lai_std": 0.4866,
+      "proxy_relieve_m": 442.8
+    },
+    "AGC_043": {
+      "rendimiento_t_ha": 4.24,
+      "nivel_potencial": "medio",
+      "diagnostico": "Rendimiento comercial estable dentro del potencial agroclimático regional.",
+      "vi6t_max": -0.534,
+      "ndwi_mean": -0.1023,
+      "evi_std": 0.0258,
+      "lai_std": 0.6301,
+      "proxy_relieve_m": 554.7
+    },
+    "AGC_185": {
+      "rendimiento_t_ha": 4.658,
+      "nivel_potencial": "alto",
+      "diagnostico": "Alto potencial productivo (óptima conservación de humedad, buen drenaje y confort térmico).",
+      "vi6t_max": -0.495,
+      "ndwi_mean": -0.0935,
+      "evi_std": 0.0367,
+      "lai_std": 0.4408,
+      "proxy_relieve_m": 707.9
+    },
+    "AGC_108": {
+      "rendimiento_t_ha": 4.74,
+      "nivel_potencial": "alto",
+      "diagnostico": "Alto potencial productivo (óptima conservación de humedad, buen drenaje y confort térmico).",
+      "vi6t_max": -0.52,
+      "ndwi_mean": -0.0731,
+      "evi_std": 0.0382,
+      "lai_std": 0.3809,
+      "proxy_relieve_m": 397.0
+    },
+    "AGC_181": {
+      "rendimiento_t_ha": 4.491,
+      "nivel_potencial": "alto",
+      "diagnostico": "Alto potencial productivo (óptima conservación de humedad, buen drenaje y confort térmico).",
+      "vi6t_max": -0.531,
+      "ndwi_mean": -0.0601,
+      "evi_std": 0.0381,
+      "lai_std": 0.5925,
+      "proxy_relieve_m": 257.3
+    },
+    "AGC_153": {
+      "rendimiento_t_ha": 4.312,
+      "nivel_potencial": "medio",
+      "diagnostico": "Rendimiento comercial estable dentro del potencial agroclimático regional.",
+      "vi6t_max": -0.505,
+      "ndwi_mean": -0.0619,
+      "evi_std": 0.0457,
+      "lai_std": 0.4071,
+      "proxy_relieve_m": 322.4
+    },
+    "AGC_006": {
+      "rendimiento_t_ha": 4.394,
+      "nivel_potencial": "alto",
+      "diagnostico": "Alto potencial productivo (óptima conservación de humedad, buen drenaje y confort térmico).",
+      "vi6t_max": -0.482,
+      "ndwi_mean": -0.0259,
+      "evi_std": 0.0368,
+      "lai_std": 0.6976,
+      "proxy_relieve_m": 402.9
+    },
+    "AGC_036": {
+      "rendimiento_t_ha": 4.357,
+      "nivel_potencial": "alto",
+      "diagnostico": "Alto potencial productivo (óptima conservación de humedad, buen drenaje y confort térmico).",
+      "vi6t_max": -0.515,
+      "ndwi_mean": -0.0837,
+      "evi_std": 0.0341,
+      "lai_std": 0.5613,
+      "proxy_relieve_m": 434.9
+    },
+    "AGC_109": {
+      "rendimiento_t_ha": 4.674,
+      "nivel_potencial": "alto",
+      "diagnostico": "Alto potencial productivo (óptima conservación de humedad, buen drenaje y confort térmico).",
+      "vi6t_max": -0.539,
+      "ndwi_mean": -0.0674,
+      "evi_std": 0.0403,
+      "lai_std": 0.4405,
+      "proxy_relieve_m": 367.2
+    },
+    "AGC_077": {
+      "rendimiento_t_ha": 4.577,
+      "nivel_potencial": "alto",
+      "diagnostico": "Alto potencial productivo (óptima conservación de humedad, buen drenaje y confort térmico).",
+      "vi6t_max": -0.497,
+      "ndwi_mean": -0.0733,
+      "evi_std": 0.0391,
+      "lai_std": 0.581,
+      "proxy_relieve_m": 536.8
+    },
+    "AGC_177": {
+      "rendimiento_t_ha": 4.338,
+      "nivel_potencial": "medio",
+      "diagnostico": "Rendimiento comercial estable dentro del potencial agroclimático regional.",
+      "vi6t_max": -0.505,
+      "ndwi_mean": -0.0846,
+      "evi_std": 0.0329,
+      "lai_std": 0.5978,
+      "proxy_relieve_m": 496.4
+    },
+    "AGC_105": {
+      "rendimiento_t_ha": 4.461,
+      "nivel_potencial": "alto",
+      "diagnostico": "Alto potencial productivo (óptima conservación de humedad, buen drenaje y confort térmico).",
+      "vi6t_max": -0.524,
+      "ndwi_mean": -0.1102,
+      "evi_std": 0.0261,
+      "lai_std": 0.5179,
+      "proxy_relieve_m": 440.1
+    },
+    "AGC_182": {
+      "rendimiento_t_ha": 4.567,
+      "nivel_potencial": "alto",
+      "diagnostico": "Alto potencial productivo (óptima conservación de humedad, buen drenaje y confort térmico).",
+      "vi6t_max": -0.545,
+      "ndwi_mean": -0.0454,
+      "evi_std": 0.0531,
+      "lai_std": 0.5076,
+      "proxy_relieve_m": 543.5
+    },
+    "AGC_096": {
+      "rendimiento_t_ha": 4.528,
+      "nivel_potencial": "alto",
+      "diagnostico": "Alto potencial productivo (óptima conservación de humedad, buen drenaje y confort térmico).",
+      "vi6t_max": -0.517,
+      "ndwi_mean": -0.1085,
+      "evi_std": 0.031,
+      "lai_std": 0.453,
+      "proxy_relieve_m": 1004.5
+    },
+    "AGC_176": {
+      "rendimiento_t_ha": 4.369,
+      "nivel_potencial": "alto",
+      "diagnostico": "Alto potencial productivo (óptima conservación de humedad, buen drenaje y confort térmico).",
+      "vi6t_max": -0.519,
+      "ndwi_mean": -0.0375,
+      "evi_std": 0.0411,
+      "lai_std": 0.6223,
+      "proxy_relieve_m": 532.0
+    },
+    "AGC_155": {
+      "rendimiento_t_ha": 4.751,
+      "nivel_potencial": "alto",
+      "diagnostico": "Alto potencial productivo (óptima conservación de humedad, buen drenaje y confort térmico).",
+      "vi6t_max": -0.529,
+      "ndwi_mean": -0.0642,
+      "evi_std": 0.0538,
+      "lai_std": 0.5408,
+      "proxy_relieve_m": 244.4
+    },
+    "AGC_100": {
+      "rendimiento_t_ha": 4.467,
+      "nivel_potencial": "alto",
+      "diagnostico": "Alto potencial productivo (óptima conservación de humedad, buen drenaje y confort térmico).",
+      "vi6t_max": -0.517,
+      "ndwi_mean": -0.104,
+      "evi_std": 0.032,
+      "lai_std": 0.5275,
+      "proxy_relieve_m": 681.2
+    },
+    "AGC_135": {
+      "rendimiento_t_ha": 4.569,
+      "nivel_potencial": "alto",
+      "diagnostico": "Alto potencial productivo (óptima conservación de humedad, buen drenaje y confort térmico).",
+      "vi6t_max": -0.506,
+      "ndwi_mean": -0.0268,
+      "evi_std": 0.0372,
+      "lai_std": 0.5365,
+      "proxy_relieve_m": 295.8
+    },
+    "AGC_186": {
+      "rendimiento_t_ha": 4.567,
+      "nivel_potencial": "alto",
+      "diagnostico": "Alto potencial productivo (óptima conservación de humedad, buen drenaje y confort térmico).",
+      "vi6t_max": -0.499,
+      "ndwi_mean": -0.1,
+      "evi_std": 0.0427,
+      "lai_std": 0.5249,
+      "proxy_relieve_m": 923.3
+    },
+    "AGC_143": {
+      "rendimiento_t_ha": 4.49,
+      "nivel_potencial": "alto",
+      "diagnostico": "Alto potencial productivo (óptima conservación de humedad, buen drenaje y confort térmico).",
+      "vi6t_max": -0.537,
+      "ndwi_mean": -0.105,
+      "evi_std": 0.0386,
+      "lai_std": 0.4877,
+      "proxy_relieve_m": 681.5
+    },
+    "AGC_018": {
+      "rendimiento_t_ha": 4.526,
+      "nivel_potencial": "alto",
+      "diagnostico": "Alto potencial productivo (óptima conservación de humedad, buen drenaje y confort térmico).",
+      "vi6t_max": -0.522,
+      "ndwi_mean": -0.1119,
+      "evi_std": 0.0341,
+      "lai_std": 0.5658,
+      "proxy_relieve_m": 287.0
+    },
+    "AGC_106": {
+      "rendimiento_t_ha": 4.23,
+      "nivel_potencial": "medio",
+      "diagnostico": "Rendimiento comercial estable dentro del potencial agroclimático regional.",
+      "vi6t_max": -0.431,
+      "ndwi_mean": -0.0779,
+      "evi_std": 0.0257,
+      "lai_std": 0.5704,
+      "proxy_relieve_m": 537.9
+    },
+    "AGC_033": {
+      "rendimiento_t_ha": 4.507,
+      "nivel_potencial": "alto",
+      "diagnostico": "Alto potencial productivo (óptima conservación de humedad, buen drenaje y confort térmico).",
+      "vi6t_max": -0.503,
+      "ndwi_mean": -0.0423,
+      "evi_std": 0.0544,
+      "lai_std": 0.523,
+      "proxy_relieve_m": 882.3
+    },
+    "AGC_150": {
+      "rendimiento_t_ha": 4.534,
+      "nivel_potencial": "alto",
+      "diagnostico": "Alto potencial productivo (óptima conservación de humedad, buen drenaje y confort térmico).",
+      "vi6t_max": -0.528,
+      "ndwi_mean": -0.097,
+      "evi_std": 0.0367,
+      "lai_std": 0.5876,
+      "proxy_relieve_m": 348.2
+    },
+    "AGC_104": {
+      "rendimiento_t_ha": 4.461,
+      "nivel_potencial": "alto",
+      "diagnostico": "Alto potencial productivo (óptima conservación de humedad, buen drenaje y confort térmico).",
+      "vi6t_max": -0.526,
+      "ndwi_mean": -0.0761,
+      "evi_std": 0.0391,
+      "lai_std": 0.5794,
+      "proxy_relieve_m": 352.1
+    },
+    "AGC_167": {
+      "rendimiento_t_ha": 4.564,
+      "nivel_potencial": "alto",
+      "diagnostico": "Alto potencial productivo (óptima conservación de humedad, buen drenaje y confort térmico).",
+      "vi6t_max": -0.518,
+      "ndwi_mean": -0.0428,
+      "evi_std": 0.0465,
+      "lai_std": 0.5744,
+      "proxy_relieve_m": 307.7
+    },
+    "AGC_002": {
+      "rendimiento_t_ha": 4.513,
+      "nivel_potencial": "alto",
+      "diagnostico": "Alto potencial productivo (óptima conservación de humedad, buen drenaje y confort térmico).",
+      "vi6t_max": -0.523,
+      "ndwi_mean": -0.0731,
+      "evi_std": 0.0422,
+      "lai_std": 0.6695,
+      "proxy_relieve_m": 290.6
+    },
+    "AGC_136": {
+      "rendimiento_t_ha": 4.492,
+      "nivel_potencial": "alto",
+      "diagnostico": "Alto potencial productivo (óptima conservación de humedad, buen drenaje y confort térmico).",
+      "vi6t_max": -0.526,
+      "ndwi_mean": -0.0855,
+      "evi_std": 0.0347,
+      "lai_std": 0.5724,
+      "proxy_relieve_m": 239.4
+    },
+    "AGC_178": {
+      "rendimiento_t_ha": 4.465,
+      "nivel_potencial": "alto",
+      "diagnostico": "Alto potencial productivo (óptima conservación de humedad, buen drenaje y confort térmico).",
+      "vi6t_max": -0.507,
+      "ndwi_mean": -0.1065,
+      "evi_std": 0.0303,
+      "lai_std": 0.4455,
+      "proxy_relieve_m": 709.8
+    },
+    "AGC_125": {
+      "rendimiento_t_ha": 4.224,
+      "nivel_potencial": "medio",
+      "diagnostico": "Rendimiento comercial estable dentro del potencial agroclimático regional.",
+      "vi6t_max": -0.525,
+      "ndwi_mean": -0.0829,
+      "evi_std": 0.028,
+      "lai_std": 0.6886,
+      "proxy_relieve_m": 727.6
+    },
+    "AGC_116": {
+      "rendimiento_t_ha": 4.448,
+      "nivel_potencial": "alto",
+      "diagnostico": "Alto potencial productivo (óptima conservación de humedad, buen drenaje y confort térmico).",
+      "vi6t_max": -0.522,
+      "ndwi_mean": -0.1009,
+      "evi_std": 0.0265,
+      "lai_std": 0.5768,
+      "proxy_relieve_m": 582.0
+    },
+    "AGC_162": {
+      "rendimiento_t_ha": 4.764,
+      "nivel_potencial": "alto",
+      "diagnostico": "Alto potencial productivo (óptima conservación de humedad, buen drenaje y confort térmico).",
+      "vi6t_max": -0.476,
+      "ndwi_mean": -0.0414,
+      "evi_std": 0.0424,
+      "lai_std": 0.4375,
+      "proxy_relieve_m": 485.8
+    },
+    "AGC_057": {
+      "rendimiento_t_ha": 4.561,
+      "nivel_potencial": "alto",
+      "diagnostico": "Alto potencial productivo (óptima conservación de humedad, buen drenaje y confort térmico).",
+      "vi6t_max": -0.524,
+      "ndwi_mean": 0.0058,
+      "evi_std": 0.0603,
+      "lai_std": 0.4742,
+      "proxy_relieve_m": 178.5
+    },
+    "AGC_142": {
+      "rendimiento_t_ha": 4.653,
+      "nivel_potencial": "alto",
+      "diagnostico": "Alto potencial productivo (óptima conservación de humedad, buen drenaje y confort térmico).",
+      "vi6t_max": -0.503,
+      "ndwi_mean": -0.0391,
+      "evi_std": 0.0511,
+      "lai_std": 0.3759,
+      "proxy_relieve_m": 252.4
+    },
+    "AGC_197": {
+      "rendimiento_t_ha": 4.372,
+      "nivel_potencial": "alto",
+      "diagnostico": "Alto potencial productivo (óptima conservación de humedad, buen drenaje y confort térmico).",
+      "vi6t_max": -0.519,
+      "ndwi_mean": -0.1066,
+      "evi_std": 0.0274,
+      "lai_std": 0.449,
+      "proxy_relieve_m": 699.3
+    },
+    "AGC_028": {
+      "rendimiento_t_ha": 4.609,
+      "nivel_potencial": "alto",
+      "diagnostico": "Alto potencial productivo (óptima conservación de humedad, buen drenaje y confort térmico).",
+      "vi6t_max": -0.543,
+      "ndwi_mean": -0.0357,
+      "evi_std": 0.0478,
+      "lai_std": 0.3824,
+      "proxy_relieve_m": 319.2
+    },
+    "AGC_073": {
+      "rendimiento_t_ha": 4.395,
+      "nivel_potencial": "alto",
+      "diagnostico": "Alto potencial productivo (óptima conservación de humedad, buen drenaje y confort térmico).",
+      "vi6t_max": -0.53,
+      "ndwi_mean": -0.0605,
+      "evi_std": 0.0462,
+      "lai_std": 0.3721,
+      "proxy_relieve_m": 592.3
+    },
+    "AGC_031": {
+      "rendimiento_t_ha": 4.562,
+      "nivel_potencial": "alto",
+      "diagnostico": "Alto potencial productivo (óptima conservación de humedad, buen drenaje y confort térmico).",
+      "vi6t_max": -0.517,
+      "ndwi_mean": -0.0258,
+      "evi_std": 0.0805,
+      "lai_std": 0.5252,
+      "proxy_relieve_m": 477.7
+    },
+    "AGC_171": {
+      "rendimiento_t_ha": 4.063,
+      "nivel_potencial": "medio",
+      "diagnostico": "Rendimiento comercial estable dentro del potencial agroclimático regional.",
+      "vi6t_max": -0.525,
+      "ndwi_mean": -0.1057,
+      "evi_std": 0.0282,
+      "lai_std": 0.4975,
+      "proxy_relieve_m": 693.5
+    },
+    "AGC_111": {
+      "rendimiento_t_ha": 4.721,
+      "nivel_potencial": "alto",
+      "diagnostico": "Alto potencial productivo (óptima conservación de humedad, buen drenaje y confort térmico).",
+      "vi6t_max": -0.502,
+      "ndwi_mean": -0.0268,
+      "evi_std": 0.044,
+      "lai_std": 0.5622,
+      "proxy_relieve_m": 288.9
+    },
+    "AGC_015": {
+      "rendimiento_t_ha": 4.237,
+      "nivel_potencial": "medio",
+      "diagnostico": "Rendimiento comercial estable dentro del potencial agroclimático regional.",
+      "vi6t_max": -0.528,
+      "ndwi_mean": -0.0681,
+      "evi_std": 0.0478,
+      "lai_std": 0.5373,
+      "proxy_relieve_m": 370.0
+    },
+    "AGC_063": {
+      "rendimiento_t_ha": 4.389,
+      "nivel_potencial": "alto",
+      "diagnostico": "Alto potencial productivo (óptima conservación de humedad, buen drenaje y confort térmico).",
+      "vi6t_max": -0.511,
+      "ndwi_mean": -0.0976,
+      "evi_std": 0.0358,
+      "lai_std": 0.532,
+      "proxy_relieve_m": 712.5
+    },
+    "AGC_110": {
+      "rendimiento_t_ha": 4.291,
+      "nivel_potencial": "medio",
+      "diagnostico": "Rendimiento comercial estable dentro del potencial agroclimático regional.",
+      "vi6t_max": -0.51,
+      "ndwi_mean": -0.0906,
+      "evi_std": 0.0354,
+      "lai_std": 0.5129,
+      "proxy_relieve_m": 527.8
+    },
+    "AGC_032": {
+      "rendimiento_t_ha": 4.451,
+      "nivel_potencial": "alto",
+      "diagnostico": "Alto potencial productivo (óptima conservación de humedad, buen drenaje y confort térmico).",
+      "vi6t_max": -0.545,
+      "ndwi_mean": -0.0674,
+      "evi_std": 0.0397,
+      "lai_std": 0.6472,
+      "proxy_relieve_m": 254.5
+    },
+    "AGC_024": {
+      "rendimiento_t_ha": 4.116,
+      "nivel_potencial": "medio",
+      "diagnostico": "Rendimiento comercial estable dentro del potencial agroclimático regional.",
+      "vi6t_max": -0.527,
+      "ndwi_mean": -0.0989,
+      "evi_std": 0.0305,
+      "lai_std": 0.7292,
+      "proxy_relieve_m": 699.5
+    },
+    "AGC_045": {
+      "rendimiento_t_ha": 4.477,
+      "nivel_potencial": "alto",
+      "diagnostico": "Alto potencial productivo (óptima conservación de humedad, buen drenaje y confort térmico).",
+      "vi6t_max": -0.528,
+      "ndwi_mean": -0.0888,
+      "evi_std": 0.0385,
+      "lai_std": 0.5601,
+      "proxy_relieve_m": 258.5
+    },
+    "AGC_195": {
+      "rendimiento_t_ha": 4.202,
+      "nivel_potencial": "medio",
+      "diagnostico": "Rendimiento comercial estable dentro del potencial agroclimático regional.",
+      "vi6t_max": -0.522,
+      "ndwi_mean": -0.0786,
+      "evi_std": 0.0377,
+      "lai_std": 0.5447,
+      "proxy_relieve_m": 392.3
+    },
+    "AGC_088": {
+      "rendimiento_t_ha": 4.279,
+      "nivel_potencial": "medio",
+      "diagnostico": "Rendimiento comercial estable dentro del potencial agroclimático regional.",
+      "vi6t_max": -0.467,
+      "ndwi_mean": -0.0356,
+      "evi_std": 0.0358,
+      "lai_std": 0.6979,
+      "proxy_relieve_m": 599.1
+    },
+    "AGC_005": {
+      "rendimiento_t_ha": 4.8,
+      "nivel_potencial": "alto",
+      "diagnostico": "Alto potencial productivo (óptima conservación de humedad, buen drenaje y confort térmico).",
+      "vi6t_max": -0.54,
+      "ndwi_mean": -0.125,
+      "evi_std": 0.0474,
+      "lai_std": 0.7076,
+      "proxy_relieve_m": 267.0
+    },
+    "AGC_102": {
+      "rendimiento_t_ha": 4.432,
+      "nivel_potencial": "alto",
+      "diagnostico": "Alto potencial productivo (óptima conservación de humedad, buen drenaje y confort térmico).",
+      "vi6t_max": -0.519,
+      "ndwi_mean": -0.11,
+      "evi_std": 0.0309,
+      "lai_std": 0.5118,
+      "proxy_relieve_m": 718.3
+    },
+    "AGC_127": {
+      "rendimiento_t_ha": 4.8,
+      "nivel_potencial": "alto",
+      "diagnostico": "Alto potencial productivo (óptima conservación de humedad, buen drenaje y confort térmico).",
+      "vi6t_max": -0.572,
+      "ndwi_mean": 0.0338,
+      "evi_std": 0.0727,
+      "lai_std": 0.4331,
+      "proxy_relieve_m": 189.7
+    },
+    "AGC_101": {
+      "rendimiento_t_ha": 4.369,
+      "nivel_potencial": "alto",
+      "diagnostico": "Alto potencial productivo (óptima conservación de humedad, buen drenaje y confort térmico).",
+      "vi6t_max": -0.523,
+      "ndwi_mean": -0.1158,
+      "evi_std": 0.0313,
+      "lai_std": 0.4603,
+      "proxy_relieve_m": 721.3
+    },
+    "AGC_095": {
+      "rendimiento_t_ha": 4.471,
+      "nivel_potencial": "alto",
+      "diagnostico": "Alto potencial productivo (óptima conservación de humedad, buen drenaje y confort térmico).",
+      "vi6t_max": -0.539,
+      "ndwi_mean": -0.0715,
+      "evi_std": 0.037,
+      "lai_std": 0.4903,
+      "proxy_relieve_m": 264.3
+    },
+    "AGC_017": {
+      "rendimiento_t_ha": 4.8,
+      "nivel_potencial": "alto",
+      "diagnostico": "Alto potencial productivo (óptima conservación de humedad, buen drenaje y confort térmico).",
+      "vi6t_max": -0.519,
+      "ndwi_mean": -0.0656,
+      "evi_std": 0.0412,
+      "lai_std": 0.6099,
+      "proxy_relieve_m": 295.2
+    },
+    "AGC_192": {
+      "rendimiento_t_ha": 4.64,
+      "nivel_potencial": "alto",
+      "diagnostico": "Alto potencial productivo (óptima conservación de humedad, buen drenaje y confort térmico).",
+      "vi6t_max": -0.535,
+      "ndwi_mean": -0.0365,
+      "evi_std": 0.0513,
+      "lai_std": 0.5435,
+      "proxy_relieve_m": 266.7
+    },
+    "AGC_072": {
+      "rendimiento_t_ha": 4.448,
+      "nivel_potencial": "alto",
+      "diagnostico": "Alto potencial productivo (óptima conservación de humedad, buen drenaje y confort térmico).",
+      "vi6t_max": -0.502,
+      "ndwi_mean": -0.0381,
+      "evi_std": 0.0348,
+      "lai_std": 0.7428,
+      "proxy_relieve_m": 482.3
+    },
+    "AGC_159": {
+      "rendimiento_t_ha": 4.681,
+      "nivel_potencial": "alto",
+      "diagnostico": "Alto potencial productivo (óptima conservación de humedad, buen drenaje y confort térmico).",
+      "vi6t_max": -0.523,
+      "ndwi_mean": -0.0636,
+      "evi_std": 0.0501,
+      "lai_std": 0.637,
+      "proxy_relieve_m": 261.5
+    },
+    "AGC_158": {
+      "rendimiento_t_ha": 4.398,
+      "nivel_potencial": "alto",
+      "diagnostico": "Alto potencial productivo (óptima conservación de humedad, buen drenaje y confort térmico).",
+      "vi6t_max": -0.532,
+      "ndwi_mean": -0.1043,
+      "evi_std": 0.0292,
+      "lai_std": 0.4771,
+      "proxy_relieve_m": 657.6
+    },
+    "AGC_011": {
+      "rendimiento_t_ha": 4.775,
+      "nivel_potencial": "alto",
+      "diagnostico": "Alto potencial productivo (óptima conservación de humedad, buen drenaje y confort térmico).",
+      "vi6t_max": -0.525,
+      "ndwi_mean": -0.0779,
+      "evi_std": 0.0439,
+      "lai_std": 0.4603,
+      "proxy_relieve_m": 475.9
+    },
+    "AGC_076": {
+      "rendimiento_t_ha": 4.642,
+      "nivel_potencial": "alto",
+      "diagnostico": "Alto potencial productivo (óptima conservación de humedad, buen drenaje y confort térmico).",
+      "vi6t_max": -0.534,
+      "ndwi_mean": -0.0641,
+      "evi_std": 0.036,
+      "lai_std": 0.5724,
+      "proxy_relieve_m": 253.0
+    },
+    "AGC_168": {
+      "rendimiento_t_ha": 4.642,
+      "nivel_potencial": "alto",
+      "diagnostico": "Alto potencial productivo (óptima conservación de humedad, buen drenaje y confort térmico).",
+      "vi6t_max": -0.532,
+      "ndwi_mean": -0.0828,
+      "evi_std": 0.0386,
+      "lai_std": 0.5896,
+      "proxy_relieve_m": 295.5
+    },
+    "AGC_132": {
+      "rendimiento_t_ha": 4.382,
+      "nivel_potencial": "alto",
+      "diagnostico": "Alto potencial productivo (óptima conservación de humedad, buen drenaje y confort térmico).",
+      "vi6t_max": -0.502,
+      "ndwi_mean": -0.0208,
+      "evi_std": 0.0537,
+      "lai_std": 0.6675,
+      "proxy_relieve_m": 539.2
+    },
+    "AGC_062": {
+      "rendimiento_t_ha": 4.349,
+      "nivel_potencial": "medio",
+      "diagnostico": "Rendimiento comercial estable dentro del potencial agroclimático regional.",
+      "vi6t_max": -0.521,
+      "ndwi_mean": -0.0718,
+      "evi_std": 0.0441,
+      "lai_std": 0.3912,
+      "proxy_relieve_m": 524.8
+    },
+    "AGC_056": {
+      "rendimiento_t_ha": 4.758,
+      "nivel_potencial": "alto",
+      "diagnostico": "Alto potencial productivo (óptima conservación de humedad, buen drenaje y confort térmico).",
+      "vi6t_max": -0.524,
+      "ndwi_mean": -0.0769,
+      "evi_std": 0.039,
+      "lai_std": 0.5186,
+      "proxy_relieve_m": 317.0
+    },
+    "AGC_055": {
+      "rendimiento_t_ha": 4.8,
+      "nivel_potencial": "alto",
+      "diagnostico": "Alto potencial productivo (óptima conservación de humedad, buen drenaje y confort térmico).",
+      "vi6t_max": -0.551,
+      "ndwi_mean": -0.0843,
+      "evi_std": 0.0436,
+      "lai_std": 0.4857,
+      "proxy_relieve_m": 277.9
+    },
+    "AGC_179": {
+      "rendimiento_t_ha": 4.476,
+      "nivel_potencial": "alto",
+      "diagnostico": "Alto potencial productivo (óptima conservación de humedad, buen drenaje y confort térmico).",
+      "vi6t_max": -0.534,
+      "ndwi_mean": -0.0441,
+      "evi_std": 0.0515,
+      "lai_std": 0.5654,
+      "proxy_relieve_m": 498.1
+    },
+    "AGC_139": {
+      "rendimiento_t_ha": 4.447,
+      "nivel_potencial": "alto",
+      "diagnostico": "Alto potencial productivo (óptima conservación de humedad, buen drenaje y confort térmico).",
+      "vi6t_max": -0.521,
+      "ndwi_mean": -0.0685,
+      "evi_std": 0.0425,
+      "lai_std": 0.5019,
+      "proxy_relieve_m": 578.3
+    },
+    "AGC_133": {
+      "rendimiento_t_ha": 4.351,
+      "nivel_potencial": "alto",
+      "diagnostico": "Alto potencial productivo (óptima conservación de humedad, buen drenaje y confort térmico).",
+      "vi6t_max": -0.532,
+      "ndwi_mean": -0.0468,
+      "evi_std": 0.0467,
+      "lai_std": 0.6892,
+      "proxy_relieve_m": 456.6
+    },
+    "AGC_013": {
+      "rendimiento_t_ha": 4.369,
+      "nivel_potencial": "alto",
+      "diagnostico": "Alto potencial productivo (óptima conservación de humedad, buen drenaje y confort térmico).",
+      "vi6t_max": -0.491,
+      "ndwi_mean": -0.0326,
+      "evi_std": 0.0393,
+      "lai_std": 0.7578,
+      "proxy_relieve_m": 587.6
+    },
+    "AGC_189": {
+      "rendimiento_t_ha": 4.326,
+      "nivel_potencial": "medio",
+      "diagnostico": "Rendimiento comercial estable dentro del potencial agroclimático regional.",
+      "vi6t_max": -0.536,
+      "ndwi_mean": -0.0864,
+      "evi_std": 0.0334,
+      "lai_std": 0.4994,
+      "proxy_relieve_m": 352.4
+    },
+    "AGC_094": {
+      "rendimiento_t_ha": 4.8,
+      "nivel_potencial": "alto",
+      "diagnostico": "Alto potencial productivo (óptima conservación de humedad, buen drenaje y confort térmico).",
+      "vi6t_max": -0.533,
+      "ndwi_mean": -0.1032,
+      "evi_std": 0.0285,
+      "lai_std": 0.4751,
+      "proxy_relieve_m": 328.0
+    },
+    "AGC_160": {
+      "rendimiento_t_ha": 4.206,
+      "nivel_potencial": "medio",
+      "diagnostico": "Rendimiento comercial estable dentro del potencial agroclimático regional.",
+      "vi6t_max": -0.525,
+      "ndwi_mean": -0.0371,
+      "evi_std": 0.0528,
+      "lai_std": 0.5698,
+      "proxy_relieve_m": 626.4
+    },
+    "AGC_124": {
+      "rendimiento_t_ha": 4.8,
+      "nivel_potencial": "alto",
+      "diagnostico": "Alto potencial productivo (óptima conservación de humedad, buen drenaje y confort térmico).",
+      "vi6t_max": -0.549,
+      "ndwi_mean": -0.0339,
+      "evi_std": 0.0474,
+      "lai_std": 0.5342,
+      "proxy_relieve_m": 308.9
+    },
+    "AGC_172": {
+      "rendimiento_t_ha": 4.754,
+      "nivel_potencial": "alto",
+      "diagnostico": "Alto potencial productivo (óptima conservación de humedad, buen drenaje y confort térmico).",
+      "vi6t_max": -0.471,
+      "ndwi_mean": -0.0155,
+      "evi_std": 0.0484,
+      "lai_std": 0.581,
+      "proxy_relieve_m": 359.1
+    },
+    "AGC_026": {
+      "rendimiento_t_ha": 4.12,
+      "nivel_potencial": "medio",
+      "diagnostico": "Rendimiento comercial estable dentro del potencial agroclimático regional.",
+      "vi6t_max": -0.506,
+      "ndwi_mean": -0.0708,
+      "evi_std": 0.0357,
+      "lai_std": 0.6264,
+      "proxy_relieve_m": 425.0
+    },
+    "AGC_175": {
+      "rendimiento_t_ha": 4.6,
+      "nivel_potencial": "alto",
+      "diagnostico": "Alto potencial productivo (óptima conservación de humedad, buen drenaje y confort térmico).",
+      "vi6t_max": -0.507,
+      "ndwi_mean": -0.055,
+      "evi_std": 0.0375,
+      "lai_std": 0.6592,
+      "proxy_relieve_m": 251.6
+    },
+    "AGC_010": {
+      "rendimiento_t_ha": 4.118,
+      "nivel_potencial": "medio",
+      "diagnostico": "Rendimiento comercial estable dentro del potencial agroclimático regional.",
+      "vi6t_max": -0.512,
+      "ndwi_mean": -0.0693,
+      "evi_std": 0.0295,
+      "lai_std": 0.6152,
+      "proxy_relieve_m": 576.0
+    },
+    "AGC_008": {
+      "rendimiento_t_ha": 4.436,
+      "nivel_potencial": "alto",
+      "diagnostico": "Alto potencial productivo (óptima conservación de humedad, buen drenaje y confort térmico).",
+      "vi6t_max": -0.534,
+      "ndwi_mean": -0.0976,
+      "evi_std": 0.0314,
+      "lai_std": 0.5497,
+      "proxy_relieve_m": 793.2
+    },
+    "AGC_154": {
+      "rendimiento_t_ha": 4.8,
+      "nivel_potencial": "alto",
+      "diagnostico": "Alto potencial productivo (óptima conservación de humedad, buen drenaje y confort térmico).",
+      "vi6t_max": -0.55,
+      "ndwi_mean": -0.1222,
+      "evi_std": 0.0337,
+      "lai_std": 0.7121,
+      "proxy_relieve_m": 271.1
+    },
+    "AGC_012": {
+      "rendimiento_t_ha": 4.728,
+      "nivel_potencial": "alto",
+      "diagnostico": "Alto potencial productivo (óptima conservación de humedad, buen drenaje y confort térmico).",
+      "vi6t_max": -0.54,
+      "ndwi_mean": -0.0056,
+      "evi_std": 0.0591,
+      "lai_std": 0.6367,
+      "proxy_relieve_m": 455.3
+    },
+    "AGC_049": {
+      "rendimiento_t_ha": 4.8,
+      "nivel_potencial": "alto",
+      "diagnostico": "Alto potencial productivo (óptima conservación de humedad, buen drenaje y confort térmico).",
+      "vi6t_max": -0.529,
+      "ndwi_mean": -0.0286,
+      "evi_std": 0.0413,
+      "lai_std": 0.516,
+      "proxy_relieve_m": 209.0
+    },
+    "AGC_090": {
+      "rendimiento_t_ha": 4.524,
+      "nivel_potencial": "alto",
+      "diagnostico": "Alto potencial productivo (óptima conservación de humedad, buen drenaje y confort térmico).",
+      "vi6t_max": -0.526,
+      "ndwi_mean": -0.1005,
+      "evi_std": 0.0347,
+      "lai_std": 0.5599,
+      "proxy_relieve_m": 673.6
+    },
+    "AGC_131": {
+      "rendimiento_t_ha": 4.785,
+      "nivel_potencial": "alto",
+      "diagnostico": "Alto potencial productivo (óptima conservación de humedad, buen drenaje y confort térmico).",
+      "vi6t_max": -0.57,
+      "ndwi_mean": -0.1334,
+      "evi_std": 0.0322,
+      "lai_std": 0.5954,
+      "proxy_relieve_m": 258.9
+    },
+    "AGC_022": {
+      "rendimiento_t_ha": 4.454,
+      "nivel_potencial": "alto",
+      "diagnostico": "Alto potencial productivo (óptima conservación de humedad, buen drenaje y confort térmico).",
+      "vi6t_max": -0.517,
+      "ndwi_mean": -0.1234,
+      "evi_std": 0.0319,
+      "lai_std": 0.4764,
+      "proxy_relieve_m": 602.5
+    },
+    "AGC_014": {
+      "rendimiento_t_ha": 4.407,
+      "nivel_potencial": "alto",
+      "diagnostico": "Alto potencial productivo (óptima conservación de humedad, buen drenaje y confort térmico).",
+      "vi6t_max": -0.523,
+      "ndwi_mean": -0.0909,
+      "evi_std": 0.0229,
+      "lai_std": 0.7106,
+      "proxy_relieve_m": 583.3
+    },
+    "AGC_016": {
+      "rendimiento_t_ha": 4.393,
+      "nivel_potencial": "alto",
+      "diagnostico": "Alto potencial productivo (óptima conservación de humedad, buen drenaje y confort térmico).",
+      "vi6t_max": -0.537,
+      "ndwi_mean": -0.0733,
+      "evi_std": 0.0419,
+      "lai_std": 0.6623,
+      "proxy_relieve_m": 540.3
+    },
+    "AGC_161": {
+      "rendimiento_t_ha": 4.686,
+      "nivel_potencial": "alto",
+      "diagnostico": "Alto potencial productivo (óptima conservación de humedad, buen drenaje y confort térmico).",
+      "vi6t_max": -0.538,
+      "ndwi_mean": -0.0488,
+      "evi_std": 0.0433,
+      "lai_std": 0.6555,
+      "proxy_relieve_m": 471.9
+    },
+    "AGC_069": {
+      "rendimiento_t_ha": 4.8,
+      "nivel_potencial": "alto",
+      "diagnostico": "Alto potencial productivo (óptima conservación de humedad, buen drenaje y confort térmico).",
+      "vi6t_max": -0.535,
+      "ndwi_mean": -0.0953,
+      "evi_std": 0.0444,
+      "lai_std": 0.598,
+      "proxy_relieve_m": 126.5
+    },
+    "AGC_165": {
+      "rendimiento_t_ha": 4.381,
+      "nivel_potencial": "alto",
+      "diagnostico": "Alto potencial productivo (óptima conservación de humedad, buen drenaje y confort térmico).",
+      "vi6t_max": -0.479,
+      "ndwi_mean": -0.0418,
+      "evi_std": 0.0368,
+      "lai_std": 0.633,
+      "proxy_relieve_m": 593.7
+    },
+    "AGC_021": {
+      "rendimiento_t_ha": 4.796,
+      "nivel_potencial": "alto",
+      "diagnostico": "Alto potencial productivo (óptima conservación de humedad, buen drenaje y confort térmico).",
+      "vi6t_max": -0.529,
+      "ndwi_mean": -0.0804,
+      "evi_std": 0.0408,
+      "lai_std": 0.5418,
+      "proxy_relieve_m": 502.6
+    },
+    "AGC_193": {
+      "rendimiento_t_ha": 4.512,
+      "nivel_potencial": "alto",
+      "diagnostico": "Alto potencial productivo (óptima conservación de humedad, buen drenaje y confort térmico).",
+      "vi6t_max": -0.522,
+      "ndwi_mean": -0.1177,
+      "evi_std": 0.0281,
+      "lai_std": 0.5439,
+      "proxy_relieve_m": 728.9
+    },
+    "AGC_098": {
+      "rendimiento_t_ha": 2.949,
+      "nivel_potencial": "bajo",
+      "diagnostico": "Rendimiento limitado por estrés termo-hídrico, helada reproductiva o baja retención edáfica.",
+      "vi6t_max": -0.551,
+      "ndwi_mean": -0.015,
+      "evi_std": 0.05,
+      "lai_std": 0.6344,
+      "proxy_relieve_m": 623.4
+    },
+    "AGC_187": {
+      "rendimiento_t_ha": 2.944,
+      "nivel_potencial": "bajo",
+      "diagnostico": "Rendimiento limitado por estrés termo-hídrico, helada reproductiva o baja retención edáfica.",
+      "vi6t_max": -0.513,
+      "ndwi_mean": -0.1097,
+      "evi_std": 0.0276,
+      "lai_std": 0.6179,
+      "proxy_relieve_m": 510.2
+    },
+    "AGC_040": {
+      "rendimiento_t_ha": 2.959,
+      "nivel_potencial": "bajo",
+      "diagnostico": "Rendimiento limitado por estrés termo-hídrico, helada reproductiva o baja retención edáfica.",
+      "vi6t_max": -0.551,
+      "ndwi_mean": -0.078,
+      "evi_std": 0.032,
+      "lai_std": 0.6418,
+      "proxy_relieve_m": 543.1
+    },
+    "AGC_025": {
+      "rendimiento_t_ha": 2.978,
+      "nivel_potencial": "bajo",
+      "diagnostico": "Rendimiento limitado por estrés termo-hídrico, helada reproductiva o baja retención edáfica.",
+      "vi6t_max": -0.55,
+      "ndwi_mean": -0.0767,
+      "evi_std": 0.0319,
+      "lai_std": 0.5334,
+      "proxy_relieve_m": 400.9
+    },
+    "AGC_050": {
+      "rendimiento_t_ha": 2.968,
+      "nivel_potencial": "bajo",
+      "diagnostico": "Rendimiento limitado por estrés termo-hídrico, helada reproductiva o baja retención edáfica.",
+      "vi6t_max": -0.544,
+      "ndwi_mean": -0.0578,
+      "evi_std": 0.0337,
+      "lai_std": 0.7041,
+      "proxy_relieve_m": 331.5
+    },
+    "AGC_039": {
+      "rendimiento_t_ha": 2.968,
+      "nivel_potencial": "bajo",
+      "diagnostico": "Rendimiento limitado por estrés termo-hídrico, helada reproductiva o baja retención edáfica.",
+      "vi6t_max": -0.509,
+      "ndwi_mean": -0.0448,
+      "evi_std": 0.0358,
+      "lai_std": 0.6535,
+      "proxy_relieve_m": 579.5
+    },
+    "AGC_099": {
+      "rendimiento_t_ha": 3.044,
+      "nivel_potencial": "bajo",
+      "diagnostico": "Rendimiento limitado por estrés termo-hídrico, helada reproductiva o baja retención edáfica.",
+      "vi6t_max": -0.548,
+      "ndwi_mean": -0.1064,
+      "evi_std": 0.0246,
+      "lai_std": 0.5685,
+      "proxy_relieve_m": 259.0
+    },
+    "AGC_048": {
+      "rendimiento_t_ha": 2.983,
+      "nivel_potencial": "bajo",
+      "diagnostico": "Rendimiento limitado por estrés termo-hídrico, helada reproductiva o baja retención edáfica.",
+      "vi6t_max": -0.556,
+      "ndwi_mean": -0.0479,
+      "evi_std": 0.0521,
+      "lai_std": 0.6996,
+      "proxy_relieve_m": 785.2
+    },
+    "AGC_120": {
+      "rendimiento_t_ha": 2.986,
+      "nivel_potencial": "bajo",
+      "diagnostico": "Rendimiento limitado por estrés termo-hídrico, helada reproductiva o baja retención edáfica.",
+      "vi6t_max": -0.55,
+      "ndwi_mean": -0.0209,
+      "evi_std": 0.077,
+      "lai_std": 0.8005,
+      "proxy_relieve_m": 963.5
+    },
+    "AGC_112": {
+      "rendimiento_t_ha": 2.951,
+      "nivel_potencial": "bajo",
+      "diagnostico": "Rendimiento limitado por estrés termo-hídrico, helada reproductiva o baja retención edáfica.",
+      "vi6t_max": -0.545,
+      "ndwi_mean": -0.0955,
+      "evi_std": 0.0386,
+      "lai_std": 0.7125,
+      "proxy_relieve_m": 504.8
+    },
+    "AGC_138": {
+      "rendimiento_t_ha": 3.01,
+      "nivel_potencial": "bajo",
+      "diagnostico": "Rendimiento limitado por estrés termo-hídrico, helada reproductiva o baja retención edáfica.",
+      "vi6t_max": -0.568,
+      "ndwi_mean": -0.0867,
+      "evi_std": 0.0358,
+      "lai_std": 0.528,
+      "proxy_relieve_m": 621.7
+    },
+    "AGC_029": {
+      "rendimiento_t_ha": 3.03,
+      "nivel_potencial": "bajo",
+      "diagnostico": "Rendimiento limitado por estrés termo-hídrico, helada reproductiva o baja retención edáfica.",
+      "vi6t_max": -0.541,
+      "ndwi_mean": -0.0448,
+      "evi_std": 0.0338,
+      "lai_std": 0.6512,
+      "proxy_relieve_m": 471.9
+    },
+    "AGC_122": {
+      "rendimiento_t_ha": 3.02,
+      "nivel_potencial": "bajo",
+      "diagnostico": "Rendimiento limitado por estrés termo-hídrico, helada reproductiva o baja retención edáfica.",
+      "vi6t_max": -0.522,
+      "ndwi_mean": 0.0016,
+      "evi_std": 0.0434,
+      "lai_std": 0.6495,
+      "proxy_relieve_m": 568.0
+    },
+    "AGC_023": {
+      "rendimiento_t_ha": 2.956,
+      "nivel_potencial": "bajo",
+      "diagnostico": "Rendimiento limitado por estrés termo-hídrico, helada reproductiva o baja retención edáfica.",
+      "vi6t_max": -0.539,
+      "ndwi_mean": -0.1131,
+      "evi_std": 0.0274,
+      "lai_std": 0.5919,
+      "proxy_relieve_m": 576.7
+    },
+    "AGC_004": {
+      "rendimiento_t_ha": 2.944,
+      "nivel_potencial": "bajo",
+      "diagnostico": "Rendimiento limitado por estrés termo-hídrico, helada reproductiva o baja retención edáfica.",
+      "vi6t_max": -0.547,
+      "ndwi_mean": -0.09,
+      "evi_std": 0.0532,
+      "lai_std": 0.5529,
+      "proxy_relieve_m": 634.4
+    },
+    "AGC_144": {
+      "rendimiento_t_ha": 2.983,
+      "nivel_potencial": "bajo",
+      "diagnostico": "Rendimiento limitado por estrés termo-hídrico, helada reproductiva o baja retención edáfica.",
+      "vi6t_max": -0.511,
+      "ndwi_mean": -0.0376,
+      "evi_std": 0.0322,
+      "lai_std": 0.6664,
+      "proxy_relieve_m": 597.0
+    },
+    "AGC_147": {
+      "rendimiento_t_ha": 2.967,
+      "nivel_potencial": "bajo",
+      "diagnostico": "Rendimiento limitado por estrés termo-hídrico, helada reproductiva o baja retención edáfica.",
+      "vi6t_max": -0.495,
+      "ndwi_mean": -0.0323,
+      "evi_std": 0.0397,
+      "lai_std": 0.7304,
+      "proxy_relieve_m": 560.6
+    },
+    "AGC_075": {
+      "rendimiento_t_ha": 3.026,
+      "nivel_potencial": "bajo",
+      "diagnostico": "Rendimiento limitado por estrés termo-hídrico, helada reproductiva o baja retención edáfica.",
+      "vi6t_max": -0.546,
+      "ndwi_mean": -0.0755,
+      "evi_std": 0.0353,
+      "lai_std": 0.554,
+      "proxy_relieve_m": 349.6
+    },
+    "AGC_093": {
+      "rendimiento_t_ha": 3.025,
+      "nivel_potencial": "bajo",
+      "diagnostico": "Rendimiento limitado por estrés termo-hídrico, helada reproductiva o baja retención edáfica.",
+      "vi6t_max": -0.554,
+      "ndwi_mean": -0.0849,
+      "evi_std": 0.0335,
+      "lai_std": 0.5252,
+      "proxy_relieve_m": 348.9
+    },
+    "AGC_053": {
+      "rendimiento_t_ha": 3.045,
+      "nivel_potencial": "bajo",
+      "diagnostico": "Rendimiento limitado por estrés termo-hídrico, helada reproductiva o baja retención edáfica.",
+      "vi6t_max": -0.563,
+      "ndwi_mean": -0.0862,
+      "evi_std": 0.0301,
+      "lai_std": 0.4947,
+      "proxy_relieve_m": 625.1
+    },
+    "AGC_117": {
+      "rendimiento_t_ha": 3.069,
+      "nivel_potencial": "bajo",
+      "diagnostico": "Rendimiento limitado por estrés termo-hídrico, helada reproductiva o baja retención edáfica.",
+      "vi6t_max": -0.566,
+      "ndwi_mean": -0.1008,
+      "evi_std": 0.036,
+      "lai_std": 0.4955,
+      "proxy_relieve_m": 520.5
+    },
+    "AGC_087": {
+      "rendimiento_t_ha": 3.004,
+      "nivel_potencial": "bajo",
+      "diagnostico": "Rendimiento limitado por estrés termo-hídrico, helada reproductiva o baja retención edáfica.",
+      "vi6t_max": -0.545,
+      "ndwi_mean": -0.0606,
+      "evi_std": 0.0318,
+      "lai_std": 0.6007,
+      "proxy_relieve_m": 481.3
+    },
+    "AGC_054": {
+      "rendimiento_t_ha": 3.022,
+      "nivel_potencial": "bajo",
+      "diagnostico": "Rendimiento limitado por estrés termo-hídrico, helada reproductiva o baja retención edáfica.",
+      "vi6t_max": -0.542,
+      "ndwi_mean": -0.0474,
+      "evi_std": 0.0341,
+      "lai_std": 0.5972,
+      "proxy_relieve_m": 317.6
+    },
+    "AGC_145": {
+      "rendimiento_t_ha": 2.991,
+      "nivel_potencial": "bajo",
+      "diagnostico": "Rendimiento limitado por estrés termo-hídrico, helada reproductiva o baja retención edáfica.",
+      "vi6t_max": -0.544,
+      "ndwi_mean": -0.0414,
+      "evi_std": 0.0465,
+      "lai_std": 0.6775,
+      "proxy_relieve_m": 625.9
+    },
+    "AGC_123": {
+      "rendimiento_t_ha": 2.997,
+      "nivel_potencial": "bajo",
+      "diagnostico": "Rendimiento limitado por estrés termo-hídrico, helada reproductiva o baja retención edáfica.",
+      "vi6t_max": -0.52,
+      "ndwi_mean": -0.0253,
+      "evi_std": 0.0399,
+      "lai_std": 0.6075,
+      "proxy_relieve_m": 664.8
+    },
+    "AGC_170": {
+      "rendimiento_t_ha": 2.95,
+      "nivel_potencial": "bajo",
+      "diagnostico": "Rendimiento limitado por estrés termo-hídrico, helada reproductiva o baja retención edáfica.",
+      "vi6t_max": -0.523,
+      "ndwi_mean": -0.1325,
+      "evi_std": 0.0248,
+      "lai_std": 0.4547,
+      "proxy_relieve_m": 622.7
+    },
+    "AGC_086": {
+      "rendimiento_t_ha": 3.004,
+      "nivel_potencial": "bajo",
+      "diagnostico": "Rendimiento limitado por estrés termo-hídrico, helada reproductiva o baja retención edáfica.",
+      "vi6t_max": -0.523,
+      "ndwi_mean": -0.0811,
+      "evi_std": 0.0269,
+      "lai_std": 0.5595,
+      "proxy_relieve_m": 449.1
+    },
+    "AGC_183": {
+      "rendimiento_t_ha": 2.98,
+      "nivel_potencial": "bajo",
+      "diagnostico": "Rendimiento limitado por estrés termo-hídrico, helada reproductiva o baja retención edáfica.",
+      "vi6t_max": -0.552,
+      "ndwi_mean": -0.0668,
+      "evi_std": 0.0492,
+      "lai_std": 0.563,
+      "proxy_relieve_m": 539.3
+    },
+    "AGC_164": {
+      "rendimiento_t_ha": 3.093,
+      "nivel_potencial": "bajo",
+      "diagnostico": "Rendimiento limitado por estrés termo-hídrico, helada reproductiva o baja retención edáfica.",
+      "vi6t_max": -0.521,
+      "ndwi_mean": -0.0988,
+      "evi_std": 0.0437,
+      "lai_std": 0.5928,
+      "proxy_relieve_m": 728.9
+    },
+    "AGC_173": {
+      "rendimiento_t_ha": 2.982,
+      "nivel_potencial": "bajo",
+      "diagnostico": "Rendimiento limitado por estrés termo-hídrico, helada reproductiva o baja retención edáfica.",
+      "vi6t_max": -0.562,
+      "ndwi_mean": -0.0077,
+      "evi_std": 0.101,
+      "lai_std": 0.7612,
+      "proxy_relieve_m": 370.3
+    },
+    "AGC_027": {
+      "rendimiento_t_ha": 2.976,
+      "nivel_potencial": "bajo",
+      "diagnostico": "Rendimiento limitado por estrés termo-hídrico, helada reproductiva o baja retención edáfica.",
+      "vi6t_max": -0.557,
+      "ndwi_mean": -0.0674,
+      "evi_std": 0.0482,
+      "lai_std": 0.757,
+      "proxy_relieve_m": 652.9
+    },
+    "AGC_169": {
+      "rendimiento_t_ha": 3.001,
+      "nivel_potencial": "bajo",
+      "diagnostico": "Rendimiento limitado por estrés termo-hídrico, helada reproductiva o baja retención edáfica.",
+      "vi6t_max": -0.553,
+      "ndwi_mean": -0.0812,
+      "evi_std": 0.0353,
+      "lai_std": 0.7181,
+      "proxy_relieve_m": 339.4
+    },
+    "AGC_163": {
+      "rendimiento_t_ha": 2.984,
+      "nivel_potencial": "bajo",
+      "diagnostico": "Rendimiento limitado por estrés termo-hídrico, helada reproductiva o baja retención edáfica.",
+      "vi6t_max": -0.549,
+      "ndwi_mean": -0.0916,
+      "evi_std": 0.0365,
+      "lai_std": 0.6455,
+      "proxy_relieve_m": 299.0
+    },
+    "AGC_157": {
+      "rendimiento_t_ha": 3.014,
+      "nivel_potencial": "bajo",
+      "diagnostico": "Rendimiento limitado por estrés termo-hídrico, helada reproductiva o baja retención edáfica.",
+      "vi6t_max": -0.545,
+      "ndwi_mean": -0.0963,
+      "evi_std": 0.0276,
+      "lai_std": 0.6824,
+      "proxy_relieve_m": 264.9
+    },
+    "AGC_141": {
+      "rendimiento_t_ha": 3.027,
+      "nivel_potencial": "bajo",
+      "diagnostico": "Rendimiento limitado por estrés termo-hídrico, helada reproductiva o baja retención edáfica.",
+      "vi6t_max": -0.524,
+      "ndwi_mean": -0.0835,
+      "evi_std": 0.0341,
+      "lai_std": 0.6907,
+      "proxy_relieve_m": 386.7
+    },
+    "AGC_061": {
+      "rendimiento_t_ha": 2.98,
+      "nivel_potencial": "bajo",
+      "diagnostico": "Rendimiento limitado por estrés termo-hídrico, helada reproductiva o baja retención edáfica.",
+      "vi6t_max": -0.504,
+      "ndwi_mean": 0.0106,
+      "evi_std": 0.054,
+      "lai_std": 0.5659,
+      "proxy_relieve_m": 845.6
+    },
+    "AGC_066": {
+      "rendimiento_t_ha": 2.954,
+      "nivel_potencial": "bajo",
+      "diagnostico": "Rendimiento limitado por estrés termo-hídrico, helada reproductiva o baja retención edáfica.",
+      "vi6t_max": -0.531,
+      "ndwi_mean": -0.086,
+      "evi_std": 0.0312,
+      "lai_std": 0.4572,
+      "proxy_relieve_m": 688.3
+    },
+    "AGC_068": {
+      "rendimiento_t_ha": 2.966,
+      "nivel_potencial": "bajo",
+      "diagnostico": "Rendimiento limitado por estrés termo-hídrico, helada reproductiva o baja retención edáfica.",
+      "vi6t_max": -0.547,
+      "ndwi_mean": -0.0778,
+      "evi_std": 0.0436,
+      "lai_std": 0.6893,
+      "proxy_relieve_m": 543.8
+    },
+    "AGC_071": {
+      "rendimiento_t_ha": 3.06,
+      "nivel_potencial": "bajo",
+      "diagnostico": "Rendimiento limitado por estrés termo-hídrico, helada reproductiva o baja retención edáfica.",
+      "vi6t_max": -0.569,
+      "ndwi_mean": -0.0814,
+      "evi_std": 0.0402,
+      "lai_std": 0.5846,
+      "proxy_relieve_m": 473.6
+    },
+    "AGC_037": {
+      "rendimiento_t_ha": 3.053,
+      "nivel_potencial": "bajo",
+      "diagnostico": "Rendimiento limitado por estrés termo-hídrico, helada reproductiva o baja retención edáfica.",
+      "vi6t_max": -0.563,
+      "ndwi_mean": -0.0887,
+      "evi_std": 0.0337,
+      "lai_std": 0.6057,
+      "proxy_relieve_m": 344.2
+    },
+    "AGC_058": {
+      "rendimiento_t_ha": 2.988,
+      "nivel_potencial": "bajo",
+      "diagnostico": "Rendimiento limitado por estrés termo-hídrico, helada reproductiva o baja retención edáfica.",
+      "vi6t_max": -0.568,
+      "ndwi_mean": -0.0871,
+      "evi_std": 0.0365,
+      "lai_std": 0.682,
+      "proxy_relieve_m": 596.3
+    },
+    "AGC_114": {
+      "rendimiento_t_ha": 3.006,
+      "nivel_potencial": "bajo",
+      "diagnostico": "Rendimiento limitado por estrés termo-hídrico, helada reproductiva o baja retención edáfica.",
+      "vi6t_max": -0.546,
+      "ndwi_mean": -0.029,
+      "evi_std": 0.0409,
+      "lai_std": 0.6431,
+      "proxy_relieve_m": 539.9
+    },
+    "AGC_074": {
+      "rendimiento_t_ha": 2.996,
+      "nivel_potencial": "bajo",
+      "diagnostico": "Rendimiento limitado por estrés termo-hídrico, helada reproductiva o baja retención edáfica.",
+      "vi6t_max": -0.509,
+      "ndwi_mean": -0.0035,
+      "evi_std": 0.0462,
+      "lai_std": 0.7887,
+      "proxy_relieve_m": 612.1
+    },
+    "AGC_019": {
+      "rendimiento_t_ha": 2.955,
+      "nivel_potencial": "bajo",
+      "diagnostico": "Rendimiento limitado por estrés termo-hídrico, helada reproductiva o baja retención edáfica.",
+      "vi6t_max": -0.55,
+      "ndwi_mean": -0.0605,
+      "evi_std": 0.0375,
+      "lai_std": 0.7034,
+      "proxy_relieve_m": 469.7
+    },
+    "AGC_103": {
+      "rendimiento_t_ha": 2.947,
+      "nivel_potencial": "bajo",
+      "diagnostico": "Rendimiento limitado por estrés termo-hídrico, helada reproductiva o baja retención edáfica.",
+      "vi6t_max": -0.566,
+      "ndwi_mean": -0.0341,
+      "evi_std": 0.0466,
+      "lai_std": 0.7651,
+      "proxy_relieve_m": 308.8
+    },
+    "AGC_046": {
+      "rendimiento_t_ha": 3.034,
+      "nivel_potencial": "bajo",
+      "diagnostico": "Rendimiento limitado por estrés termo-hídrico, helada reproductiva o baja retención edáfica.",
+      "vi6t_max": -0.532,
+      "ndwi_mean": -0.0422,
+      "evi_std": 0.0393,
+      "lai_std": 0.6971,
+      "proxy_relieve_m": 518.7
+    },
+    "AGC_001": {
+      "rendimiento_t_ha": 3.059,
+      "nivel_potencial": "bajo",
+      "diagnostico": "Rendimiento limitado por estrés termo-hídrico, helada reproductiva o baja retención edáfica.",
+      "vi6t_max": -0.531,
+      "ndwi_mean": -0.0135,
+      "evi_std": 0.0423,
+      "lai_std": 0.7365,
+      "proxy_relieve_m": 577.8
+    }
+  }
 }

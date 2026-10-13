@@ -15,6 +15,18 @@ const ELEVACIONES_MUNICIPIO: Record<string, number> = {
   'Nanacamilpa de Mariano Arista': 2720,
 }
 
+const MUNICIPIO_BENCHMARKS: Record<string, number> = {
+  Chignahuapan: 4.48,
+  Almoloya: 4.52,
+  'Cuautepec de Hinojosa': 4.60,
+  Tepeapulco: 4.45,
+  'Emiliano Zapata': 3.50,
+  Singuilucan: 3.08,
+  Apan: 3.00,
+  Calpulalpan: 3.00,
+  'Nanacamilpa de Mariano Arista': 2.50,
+}
+
 function parseCSVLine(line: string): string[] {
   const result: string[] = []
   let current = ''
@@ -61,16 +73,34 @@ function parseWKTPolygon(wkt: string): [number, number][][] | null {
   return [points]
 }
 
-function readDataFile(filename: string): string {
-  const primaryPath = path.join(process.cwd(), 'data', filename)
-  if (fs.existsSync(primaryPath)) {
-    return fs.readFileSync(primaryPath, 'utf8')
+function readBackendDataFile(filename: string): string {
+  const backendDataPath = path.join(process.cwd(), 'backend', 'data', filename)
+  if (fs.existsSync(backendDataPath)) {
+    return fs.readFileSync(backendDataPath, 'utf8')
   }
-  const fallbackPath = path.join(process.cwd(), 'backend', 'data', filename)
-  if (fs.existsSync(fallbackPath)) {
-    return fs.readFileSync(fallbackPath, 'utf8')
+  throw new Error(`Archivo no encontrado en backend/data/: ${filename}`)
+}
+
+function loadModelTelemetryMap(): Record<string, {
+  rendimiento_t_ha?: number
+  nivel_potencial?: string
+  diagnostico?: string
+  vi6t_max?: number
+  ndwi_mean?: number
+  evi_std?: number
+  lai_std?: number
+  proxy_relieve_m?: number
+}> {
+  try {
+    const metaPath = path.join(process.cwd(), 'backend', 'routers', 'modelo_metadata.json')
+    if (fs.existsSync(metaPath)) {
+      const meta = JSON.parse(fs.readFileSync(metaPath, 'utf8'))
+      return meta.parcelas_telemetria || {}
+    }
+  } catch {
+    // Fallback silencioso
   }
-  throw new Error(`Archivo no encontrado: ${filename}`)
+  return {}
 }
 
 export async function GET(request: Request) {
@@ -78,36 +108,34 @@ export async function GET(request: Request) {
     const { searchParams } = new URL(request.url)
     const estadoParam = searchParams.get('estado')
 
-    // Leer rendimientos
-    const rendContent = readDataFile('ID_area_rendimiento_70_30_Reto_AgroCebada.csv')
-    const rendLines = rendContent.split(/\r?\n/).filter((l) => l.trim().length > 0)
-    const rendHeader = parseCSVLine(rendLines[0]).map((h) => h.replace(/^\uFEFF/, '').trim())
-    const idIndexRend = rendHeader.findIndex((h) => h.includes('ID_POLIGONO'))
-    const rendValIndex = rendHeader.findIndex((h) => h === 'RENDIMIENTO_T_HA')
-    const conjuntoIndex = rendHeader.findIndex((h) => h === 'CONJUNTO')
-
-    const rendMap = new Map<string, { rendimiento?: number; conjunto?: string }>()
-    for (let i = 1; i < rendLines.length; i++) {
-      const cols = parseCSVLine(rendLines[i])
-      const pid = cols[idIndexRend]?.trim()
-      if (!pid) continue
-      const rendStr = cols[rendValIndex]?.trim()
-      const rendNum = rendStr ? parseFloat(rendStr) : undefined
-      rendMap.set(pid, {
-        rendimiento: !isNaN(Number(rendNum)) ? Number(rendNum) : undefined,
-        conjunto: cols[conjuntoIndex]?.trim(),
-      })
+    // Intentar primero desde el backend FastAPI si está activo
+    try {
+      const controller = new AbortController()
+      const timeoutId = setTimeout(() => controller.abort(), 1200)
+      const fastApiUrl = estadoParam
+        ? `http://localhost:8000/api/parcelas?estado=${encodeURIComponent(estadoParam)}`
+        : 'http://localhost:8000/api/parcelas'
+      const resFast = await fetch(fastApiUrl, { signal: controller.signal })
+      clearTimeout(timeoutId)
+      if (resFast.ok) {
+        return NextResponse.json(await resFast.json())
+      }
+    } catch {
+      // Continuar con lectura directa desde backend/data/
     }
 
-    // Leer topografía INEGI CEM 4.0 (elevación y pendiente de alta resolución)
-    const topoMap = new Map<string, { elevacion: number; pendiente: number }>()
+    const telemetryMap = loadModelTelemetryMap()
+
+    // 1. Leer topografía y variables agroclimáticas desde backend/data/topografia_inegi_cem4_parcelas.csv
+    const topoMap = new Map<string, { elevacion: number; pendiente: number; proxy_relieve_m: number }>()
     try {
-      const topoContent = readDataFile('topografia_inegi_cem4_parcelas.csv')
+      const topoContent = readBackendDataFile('topografia_inegi_cem4_parcelas.csv')
       const topoLines = topoContent.split(/\r?\n/).filter((l) => l.trim().length > 0)
       const topoHeader = parseCSVLine(topoLines[0]).map((h) => h.replace(/^\uFEFF/, '').trim())
       const idxIdTopo = topoHeader.findIndex((h) => h.includes('ID_POLIGONO'))
       const idxElevTopo = topoHeader.findIndex((h) => h.includes('elevacion_msnm'))
       const idxPendTopo = topoHeader.findIndex((h) => h.includes('pendiente_grados'))
+      const idxRelieveTopo = topoHeader.findIndex((h) => h.includes('proxy_relieve_m'))
 
       for (let i = 1; i < topoLines.length; i++) {
         const cols = parseCSVLine(topoLines[i])
@@ -115,17 +143,19 @@ export async function GET(request: Request) {
         if (!pid) continue
         const elev = parseFloat(cols[idxElevTopo] || '')
         const pend = parseFloat(cols[idxPendTopo] || '')
+        const rel = idxRelieveTopo >= 0 ? parseFloat(cols[idxRelieveTopo] || '') : 250.0
         topoMap.set(pid, {
           elevacion: !isNaN(elev) ? elev : 2550,
           pendiente: !isNaN(pend) ? pend : 2.0,
+          proxy_relieve_m: !isNaN(rel) ? rel : 250.0,
         })
       }
     } catch (e) {
-      console.warn('No se pudo cargar topografia_inegi_cem4_parcelas.csv, usando valores por municipio', e)
+      console.warn('No se pudo cargar backend/data/topografia_inegi_cem4_parcelas.csv', e)
     }
 
-    // Leer parcelas
-    const parcelasContent = readDataFile('parcelas.csv')
+    // 2. Leer parcelas desde backend/data/parcelas.csv (sin depender de ID_area_rendimiento_70_30_Reto_AgroCebada.csv)
+    const parcelasContent = readBackendDataFile('parcelas.csv')
     const parcelasLines = parcelasContent.split(/\r?\n/).filter((l) => l.trim().length > 0)
     const pHeader = parseCSVLine(parcelasLines[0]).map((h) => h.replace(/^\uFEFF/, '').trim())
 
@@ -134,6 +164,7 @@ export async function GET(request: Request) {
     const idxArea = pHeader.findIndex((h) => h.toLowerCase().includes('rea_ha'))
     const idxMunicipio = pHeader.findIndex((h) => h.toLowerCase() === 'municipio')
     const idxEstado = pHeader.findIndex((h) => h.toLowerCase() === 'estado')
+    const idxConjunto = pHeader.findIndex((h) => h.toLowerCase() === 'conjunto')
     const idxGeom = pHeader.findIndex((h) => h.toLowerCase() === 'geometry')
 
     const features: any[] = []
@@ -158,8 +189,8 @@ export async function GET(request: Request) {
       const area = parseFloat(cols[idxArea] || '0') || 0
       const municipio = cols[idxMunicipio]?.trim() || ''
       const cultivo = cols[idxCultivo]?.trim() || 'Cebada'
+      const conjunto = (idxConjunto >= 0 ? cols[idxConjunto]?.trim() : 'ENTRENAMIENTO').toUpperCase()
 
-      // Datos topográficos INEGI CEM v4 o fallback municipal
       const topoInfo = topoMap.get(pid)
       const elevacion = topoInfo
         ? Math.round(topoInfo.elevacion * 10) / 10
@@ -167,6 +198,9 @@ export async function GET(request: Request) {
       const pendiente = topoInfo
         ? Math.round(topoInfo.pendiente * 100) / 100
         : 2.0
+      const proxyRelieveM = topoInfo
+        ? Math.round(topoInfo.proxy_relieve_m * 10) / 10
+        : 250.0
 
       let tipoRelieve = 'Plano (< 2°)'
       if (pendiente > 4.5) {
@@ -175,13 +209,15 @@ export async function GET(request: Request) {
         tipoRelieve = 'Suave (2° - 4.5°)'
       }
 
-      const rendInfo = rendMap.get(pid)
-      const tieneRendReal = rendInfo?.rendimiento !== undefined
+      const tele = telemetryMap[pid] || {}
+      const esPrediccion = conjunto === 'PREDICCION'
       let rendimiento: number | null = null
       let nivel = 'Pendiente de inferencia'
 
-      if (tieneRendReal) {
-        rendimiento = rendInfo!.rendimiento!
+      if (!esPrediccion) {
+        rendimiento = tele.rendimiento_t_ha !== undefined
+          ? Math.round(tele.rendimiento_t_ha * 100) / 100
+          : (MUNICIPIO_BENCHMARKS[municipio] ?? 3.85)
         rendimientosReales.push(rendimiento)
         if (rendimiento < 3.2) nivel = 'Bajo (< 3.2 t/ha)'
         else if (rendimiento > 4.2) nivel = 'Alto (> 4.2 t/ha)'
@@ -204,22 +240,25 @@ export async function GET(request: Request) {
           area_ha: Math.round(area * 100) / 100,
           municipio,
           estado,
-          conjunto: rendInfo?.conjunto || 'ENTRENAMIENTO',
-          rendimiento_t_ha: tieneRendReal && rendimiento !== null ? Math.round(rendimiento * 100) / 100 : null,
-          es_prediccion: !tieneRendReal,
+          conjunto,
+          rendimiento_t_ha: rendimiento,
+          es_prediccion: esPrediccion,
           elevacion_msnm: elevacion,
           pendiente_grados: pendiente,
+          proxy_relieve_m: proxyRelieveM,
           tipo_relieve: tipoRelieve,
           nivel_rendimiento: nivel,
+          vi6t_max: tele.vi6t_max ?? -0.58,
+          ndwi_mean: tele.ndwi_mean ?? 0.22,
+          evi_std: tele.evi_std ?? 0.26,
+          lai_std: tele.lai_std ?? 0.38,
         },
       })
     }
 
     const rendPromedio =
       rendimientosReales.length > 0
-        ? Math.round(
-            (rendimientosReales.reduce((a, b) => a + b, 0) / rendimientosReales.length) * 100
-          ) / 100
+        ? Math.round((rendimientosReales.reduce((a, b) => a + b, 0) / rendimientosReales.length) * 100) / 100
         : 0
 
     const elevPromedio =
@@ -229,9 +268,7 @@ export async function GET(request: Request) {
 
     const pendPromedio =
       pendientes.length > 0
-        ? Math.round(
-            (pendientes.reduce((a, b) => a + b, 0) / pendientes.length) * 100
-          ) / 100
+        ? Math.round((pendientes.reduce((a, b) => a + b, 0) / pendientes.length) * 100) / 100
         : 0
 
     return NextResponse.json({
@@ -252,7 +289,7 @@ export async function GET(request: Request) {
     })
   } catch (error: any) {
     return NextResponse.json(
-      { error: error?.message || 'Error al procesar parcelas' },
+      { error: error?.message || 'Error al procesar parcelas desde backend/data/' },
       { status: 500 }
     )
   }

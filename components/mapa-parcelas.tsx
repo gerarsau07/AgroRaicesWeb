@@ -49,8 +49,13 @@ export interface ParcelaProperties {
   es_prediccion: boolean
   elevacion_msnm: number
   pendiente_grados: number
+  proxy_relieve_m?: number
   tipo_relieve: string
   nivel_rendimiento: string
+  vi6t_max?: number
+  ndwi_mean?: number
+  evi_std?: number
+  lai_std?: number
 }
 
 export interface ParcelaFeature {
@@ -235,7 +240,7 @@ export interface ArchivosRequeridosState {
 }
 
 const initialArchivosState: ArchivosRequeridosState = {
-  parcelas: { file: null, nombre: '', cargado: false },
+  parcelas: { file: null, nombre: 'parcelas.csv (backend/data/)', cargado: true, tamanoKb: '742.5' },
   basico: { file: null, nombre: '', cargado: false },
   pro: { file: null, nombre: '', cargado: false },
   topografia: { file: null, nombre: '', cargado: false },
@@ -564,6 +569,14 @@ export default function MapaParcelas() {
             },
             click: () => {
               selectParcela(props, false)
+              setAnalistaValues({
+                plot: props.id_poligono,
+                area: props.area_ha.toString(),
+                temp: (props.vi6t_max ?? -0.58).toString(),
+                ndwi: (props.ndwi_mean ?? 0.22).toString(),
+                evi: (props.evi_std ?? 0.26).toString(),
+                lai: (props.lai_std ?? 0.38).toString(),
+              })
 
               if (perfilActivo === 'agricultor') {
                 setEstadoAgricultor(props.estado)
@@ -978,13 +991,59 @@ export default function MapaParcelas() {
     setAnalistaValues({
       plot: selectedParcela.id_poligono,
       area: selectedParcela.area_ha.toString(),
-      temp: '-0.58',
-      ndwi: '0.22',
-      evi: '0.26',
-      lai: '0.38',
+      temp: (selectedParcela.vi6t_max ?? -0.58).toString(),
+      ndwi: (selectedParcela.ndwi_mean ?? 0.22).toString(),
+      evi: (selectedParcela.evi_std ?? 0.26).toString(),
+      lai: (selectedParcela.lai_std ?? 0.38).toString(),
     })
     setAnalistaResult(null)
     setAnalistaError('')
+  }
+
+  // Sincronizar las predicciones del lote del Analista directamente sobre el Mapa Interactivo
+  const aplicarPrediccionesAlMapa = (res: BatchResultResponse) => {
+    const predMap = new Map<string, PrediccionItem>()
+    for (const p of res.predicciones) {
+      predMap.set(p.plot, p)
+    }
+
+    setData((prev) => {
+      if (!prev) return prev
+      const updatedFeatures = prev.geojson.features.map((feat) => {
+        const match = predMap.get(feat.properties.id_poligono)
+        if (!match) return feat
+        const rVal = Math.round(match.rendimiento_t_ha * 100) / 100
+        const niv =
+          rVal < 3.2
+            ? 'Bajo (< 3.2 t/ha)'
+            : rVal > 4.2
+            ? 'Alto (> 4.2 t/ha)'
+            : 'Promedio (3.2 - 4.2 t/ha)'
+        return {
+          ...feat,
+          properties: {
+            ...feat.properties,
+            rendimiento_t_ha: rVal,
+            nivel_rendimiento: niv,
+          },
+        }
+      })
+      return {
+        ...prev,
+        geojson: {
+          ...prev.geojson,
+          features: updatedFeatures,
+        },
+      }
+    })
+  }
+
+  const handleFocalizarParcelaEnMapa = (plotId: string) => {
+    const feat = data?.geojson?.features.find((f) => f.properties.id_poligono === plotId)
+    if (feat) {
+      selectParcela(feat.properties, true)
+      handleVerEnMapa()
+    }
   }
 
   // Clasificar y asignar archivos arrastrados o seleccionados a sus ranuras correspondientes
@@ -1000,13 +1059,25 @@ export default function MapaParcelas() {
 
         let slot: keyof ArchivosRequeridosState | null = null
 
-        if (firstLine.includes('elevacion') || firstLine.includes('pendiente') || fname.includes('topografia')) {
+        if (
+          fname.includes('topografia') ||
+          fname.includes('cem4') ||
+          fname.includes('temperatura') ||
+          firstLine.includes('elevacion') ||
+          firstLine.includes('pendiente')
+        ) {
           slot = 'topografia'
         } else if (firstLine.includes('vi6t') || (firstLine.includes('sensor') && firstLine.includes('dswi')) || fname.includes('basico')) {
           slot = 'basico'
         } else if (firstLine.includes('msavi') || (firstLine.includes('lai') && !firstLine.includes('vi6t')) || fname.includes('pro')) {
           slot = 'pro'
-        } else if (firstLine.includes('conjunto') || firstLine.includes('area_ha') || firstLine.includes('área_ha') || fname.includes('parcelas') || fname.includes('rendimiento')) {
+        } else if (
+          fname.includes('parcelas') ||
+          firstLine.includes('geometry') ||
+          firstLine.includes('conjunto') ||
+          firstLine.includes('area_ha') ||
+          firstLine.includes('área_ha')
+        ) {
           slot = 'parcelas'
         }
 
@@ -1042,10 +1113,10 @@ export default function MapaParcelas() {
   const conteoCargados = Object.values(archivosState).filter((s) => s.cargado).length
   const todosListos = conteoCargados === 4
 
-  // Inferencia por lotes con los 4 archivos verificados
+  // Inferencia por lotes con los archivos verificados
   const handleProcesarArchivoLote = async () => {
     if (!todosListos) {
-      setBatchError('Debes subir los 4 archivos requeridos para que el modelo pueda ejecutar la inferencia.')
+      setBatchError('Debes subir los archivos requeridos para que el modelo pueda ejecutar la inferencia.')
       return
     }
 
@@ -1054,7 +1125,7 @@ export default function MapaParcelas() {
 
     try {
       const formData = new FormData()
-      Object.entries(archivosState).forEach(([key, slot]) => {
+      Object.entries(archivosState).forEach(([, slot]) => {
         if (slot.file) {
           formData.append('files', slot.file, slot.nombre)
         }
@@ -1073,6 +1144,7 @@ export default function MapaParcelas() {
 
       const json: BatchResultResponse = await res.json()
       setBatchResult(json)
+      aplicarPrediccionesAlMapa(json)
     } catch (err: any) {
       setBatchError(err.message || 'No se pudieron procesar los archivos.')
     } finally {
@@ -1080,27 +1152,28 @@ export default function MapaParcelas() {
     }
   }
 
-  // Cargar dataset oficial de muestra (las 4 fuentes oficiales)
+  // Cargar las fuentes base (.zip GeoTIFFs y .csv) desde backend/data/
   const handleCargarDemoDataset = async () => {
     setBatchLoading(true)
     setBatchError('')
 
     setArchivosState({
-      parcelas: { file: null, nombre: 'ID_area_rendimiento_70_30_Reto_AgroCebada.csv', cargado: true, tamanoKb: '4.8' },
-      basico: { file: null, nombre: 'Conjunto_datos_BASICO_AgroCebada2026.csv', cargado: true, tamanoKb: '14,240' },
-      pro: { file: null, nombre: 'Conjunto_datos_PRO_AgroCebada.csv', cargado: true, tamanoKb: '5,620' },
-      topografia: { file: null, nombre: 'topografia_inegi_cem4_parcelas.csv', cargado: true, tamanoKb: '8.2' },
+      parcelas: { file: null, nombre: 'parcelas.csv (backend/data/)', cargado: true, tamanoKb: '742.5' },
+      basico: { file: null, nombre: 'Conjunto_datos_BASICO_AgroCebada2026.csv', cargado: true, tamanoKb: '32,879.3' },
+      pro: { file: null, nombre: 'Conjunto_datos_PRO_AgroCebada.csv', cargado: true, tamanoKb: '4,883.1' },
+      topografia: { file: null, nombre: 'Reto_AgroCebada_Topografia_INEGI_CEM4.zip', cargado: true, tamanoKb: '17,290.7' },
     })
 
     try {
       const res = await fetch('/api/predict?demo=true')
       if (!res.ok) {
-        throw new Error('No se pudo cargar el dataset oficial de muestra.')
+        throw new Error('No se pudieron procesar las fuentes base desde backend/data/.')
       }
       const json: BatchResultResponse = await res.json()
       setBatchResult(json)
+      aplicarPrediccionesAlMapa(json)
     } catch (err: any) {
-      setBatchError(err.message || 'Error cargando dataset demo.')
+      setBatchError(err.message || 'Error cargando las fuentes base de backend/data/.')
     } finally {
       setBatchLoading(false)
     }
@@ -2467,11 +2540,11 @@ export default function MapaParcelas() {
                     <div className="flex items-center gap-2">
                       <Layers className="w-4 h-4 text-sky-400" />
                       <h4 className="font-bold text-white text-base">
-                        Matriz de Ingesta Obligatoria (4 Fuentes Requeridas)
+                        Matriz de Ingesta Obligatoria (4 Fuentes sin Etiquetas en backend/data/)
                       </h4>
                     </div>
                     <p className="text-xs text-[#c9b7aa] mt-1 leading-relaxed max-w-2xl">
-                      El Pipeline Oficial AgroRaíces requiere estrictamente las 4 fuentes de datos para ejecutar la inferencia. Puedes subir los archivos juntos, seleccionarlos uno a uno o usar el dataset oficial.
+                      El Pipeline Oficial AgroRaíces requiere únicamente las 4 fuentes de datos (sin etiquetas de rendimiento) para extraer las 323 variables e inferir el rendimiento en el mapa.
                     </p>
                   </div>
 
@@ -2512,9 +2585,9 @@ export default function MapaParcelas() {
                           {archivosState.parcelas.cargado ? '✓ Listo' : 'Pendiente'}
                         </span>
                       </div>
-                      <h5 className="font-bold text-white text-xs mt-2.5">1. Parcelas y Superficie</h5>
+                      <h5 className="font-bold text-white text-xs mt-2.5">1. Geometría Base (parcelas.csv)</h5>
                       <p className="text-[11px] text-[#c9b7aa] mt-1 leading-snug">
-                        ID_area_rendimiento...csv o parcelas.csv (Superficie, Estado y Municipio)
+                        parcelas.csv en backend/data/ (Geometría WKT, área_ha, Estado y Municipio — sin rendimiento)
                       </p>
                     </div>
 
@@ -2522,7 +2595,7 @@ export default function MapaParcelas() {
                       <input
                         type="file"
                         id="slot-parcelas"
-                        accept=".csv"
+                        accept=".csv,.zip"
                         onChange={(e) => {
                           const f = e.target.files?.[0]
                           if (f) asignarSlotIndividual('parcelas', f)
@@ -2533,7 +2606,7 @@ export default function MapaParcelas() {
                         htmlFor="slot-parcelas"
                         className="w-full py-1.5 px-2.5 rounded-lg bg-white/5 hover:bg-white/10 text-[11px] text-[#e2b957] font-semibold text-center block cursor-pointer transition truncate"
                       >
-                        {archivosState.parcelas.cargado ? archivosState.parcelas.nombre : '+ Subir Parcelas'}
+                        {archivosState.parcelas.cargado ? archivosState.parcelas.nombre : '+ Subir parcelas.csv'}
                       </label>
                     </div>
                   </div>
@@ -2561,7 +2634,7 @@ export default function MapaParcelas() {
                       </div>
                       <h5 className="font-bold text-white text-xs mt-2.5">2. Satélite BÁSICO</h5>
                       <p className="text-[11px] text-[#c9b7aa] mt-1 leading-snug">
-                        Conjunto_datos_BASICO...csv (Sentinel-2 y Landsat: vi6t, ndwi, dswi2)
+                        Conjunto_datos_BASICO_AgroCebada2026.csv (Sentinel-2 y Landsat: vi6t, ndwi, dswi2, sti, mra)
                       </p>
                     </div>
 
@@ -2608,7 +2681,7 @@ export default function MapaParcelas() {
                       </div>
                       <h5 className="font-bold text-white text-xs mt-2.5">3. Satélite PRO</h5>
                       <p className="text-[11px] text-[#c9b7aa] mt-1 leading-snug">
-                        Conjunto_datos_PRO...csv (PlanetScope: lai_mean, lai_std, msavi)
+                        Conjunto_datos_PRO_AgroCebada.csv (PlanetScope: lai_mean, lai_std, ndvi, msavi)
                       </p>
                     </div>
 
@@ -2632,7 +2705,7 @@ export default function MapaParcelas() {
                     </div>
                   </div>
 
-                  {/* Slot 4: Topografía INEGI */}
+                  {/* Slot 4: Topografía INEGI + CHIRTS-ERA5 */}
                   <div
                     className={`p-4 rounded-2xl border transition-all flex flex-col justify-between ${
                       archivosState.topografia.cargado
@@ -2653,9 +2726,9 @@ export default function MapaParcelas() {
                           {archivosState.topografia.cargado ? '✓ Listo' : 'Pendiente'}
                         </span>
                       </div>
-                      <h5 className="font-bold text-white text-xs mt-2.5">4. Topografía INEGI CEM 4.0</h5>
+                      <h5 className="font-bold text-white text-xs mt-2.5">4. Topografía y Clima (.zip / .csv)</h5>
                       <p className="text-[11px] text-[#c9b7aa] mt-1 leading-snug">
-                        Reto_...Topografia_INEGI_CEM4.zip (Archivos .tif de 120m) o .csv
+                        Reto_AgroCebada_Topografia_INEGI_CEM4.zip (.tif) o topografia_inegi_cem4_parcelas.csv (incluye Estado y Municipio)
                       </p>
                     </div>
 
@@ -2663,7 +2736,7 @@ export default function MapaParcelas() {
                       <input
                         type="file"
                         id="slot-topografia"
-                        accept=".zip,.tif,.tiff,.csv"
+                        accept=".zip,.csv,.tif,.tiff"
                         onChange={(e) => {
                           const f = e.target.files?.[0]
                           if (f) asignarSlotIndividual('topografia', f)
@@ -2674,7 +2747,7 @@ export default function MapaParcelas() {
                         htmlFor="slot-topografia"
                         className="w-full py-1.5 px-2.5 rounded-lg bg-white/5 hover:bg-white/10 text-[11px] text-indigo-300 font-semibold text-center block cursor-pointer transition truncate"
                       >
-                        {archivosState.topografia.cargado ? archivosState.topografia.nombre : '+ Subir .zip o .tif INEGI'}
+                        {archivosState.topografia.cargado ? archivosState.topografia.nombre : '+ Subir Topografía (.zip / .csv)'}
                       </label>
                     </div>
                   </div>
@@ -2730,17 +2803,17 @@ export default function MapaParcelas() {
                     </button>
                   </div>
 
-                  {/* Tarjeta de Carga Rápida Oficial (Las 4 fuentes juntas) */}
+                  {/* Tarjeta de Carga Rápida Oficial (Las 4 fuentes juntas desde backend/data/) */}
                   <div className="p-5 rounded-2xl bg-[#1e1713] border border-white/10 flex flex-col justify-between">
                     <div>
                       <div className="flex items-center gap-2 text-xs font-bold text-[#e2b957] uppercase tracking-wider">
-                        <Sparkles className="w-4 h-4" /> Reto Oficial AgroCebada
+                        <Sparkles className="w-4 h-4" /> Fuentes en backend/data/
                       </div>
                       <h4 className="text-base font-bold text-white mt-1">
                         Cargar las 4 fuentes oficiales
                       </h4>
                       <p className="text-xs text-[#c9b7aa] mt-1.5 leading-relaxed">
-                        Carga automáticamente los 4 archivos del proyecto (<code className="text-[#e2b957]">ID_area_rendimiento</code>, <code className="text-[#e2b957]">BASICO</code>, <code className="text-sky-400">PRO</code> y <code className="text-indigo-400">Topografía</code>) y predice las <b>59 parcelas sin rendimiento</b>.
+                        Carga directamente desde <code className="text-[#e2b957]">backend/data/</code> los 4 archivos necesarios (<code className="text-[#e2b957]">parcelas.csv</code>, <code className="text-[#e2b957]">BASICO</code>, <code className="text-sky-400">PRO</code> y <code className="text-indigo-400">topografia_inegi_cem4_parcelas.csv</code>) y proyecta en el mapa las <b>59 parcelas de predicción</b>.
                       </p>
                     </div>
 
@@ -2760,7 +2833,7 @@ export default function MapaParcelas() {
                   <div className="p-8 rounded-2xl bg-[#1e1713]/80 border border-white/10 flex flex-col items-center justify-center gap-3">
                     <div className="w-10 h-10 border-3 border-sky-400 border-t-transparent rounded-full animate-spin" />
                     <span className="text-sm font-semibold text-white">
-                      Validando y cruzando las 4 fuentes de datos con el Pipeline Oficial AgroRaíces...
+                      Validando y cruzando las 4 fuentes de backend/data/ con el Pipeline Oficial AgroRaíces...
                     </span>
                   </div>
                 )}
@@ -2783,7 +2856,7 @@ export default function MapaParcelas() {
                       <div className="bg-[#1e1713] p-4 rounded-2xl border border-white/10">
                         <span className="text-xs text-[#c9b7aa] uppercase tracking-wider block">Parcelas Evaluadas</span>
                         <div className="text-2xl font-black text-white mt-1">{batchResult.total_parcelas}</div>
-                        <span className="text-[10px] text-white/50">Predios sin rendimiento previo</span>
+                        <span className="text-[10px] text-white/50">Sincronizadas con el mapa</span>
                       </div>
 
                       <div className="bg-[#1e1713] p-4 rounded-2xl border border-white/10">
@@ -2823,7 +2896,7 @@ export default function MapaParcelas() {
                         <div className="flex items-center gap-2">
                           <Table className="w-4 h-4 text-sky-400" />
                           <h4 className="font-bold text-white text-sm">
-                            Predicciones Oficiales del Reto ({batchResult.total_parcelas} Parcelas)
+                            Predicciones Oficiales del Reto ({batchResult.total_parcelas} Parcelas · Clic para localizar en Mapa)
                           </h4>
                         </div>
 
@@ -2847,11 +2920,16 @@ export default function MapaParcelas() {
                               <th className="py-2.5 px-4">Rendimiento (kg/ha)</th>
                               <th className="py-2.5 px-4">Producción (t)</th>
                               <th className="py-2.5 px-4">Nivel Potencial</th>
+                              <th className="py-2.5 px-4 text-right">Mapa</th>
                             </tr>
                           </thead>
                           <tbody className="divide-y divide-white/5">
                             {batchResult.predicciones.map((p, idx) => (
-                              <tr key={idx} className="hover:bg-white/5 transition">
+                              <tr
+                                key={idx}
+                                onClick={() => handleFocalizarParcelaEnMapa(p.plot)}
+                                className="hover:bg-white/5 transition cursor-pointer"
+                              >
                                 <td className="py-2.5 px-4 font-mono font-bold text-white">{p.plot}</td>
                                 <td className="py-2.5 px-4">
                                   {p.estado} {p.municipio ? `· ${p.municipio}` : ''}
@@ -2870,6 +2948,11 @@ export default function MapaParcelas() {
                                     }`}
                                   >
                                     {p.nivel_potencial.toUpperCase()}
+                                  </span>
+                                </td>
+                                <td className="py-2.5 px-4 text-right">
+                                  <span className="inline-flex items-center gap-1 text-[11px] text-sky-400 hover:text-sky-300 font-semibold">
+                                    <MapPin className="w-3 h-3" /> Ver
                                   </span>
                                 </td>
                               </tr>

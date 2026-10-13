@@ -1,8 +1,19 @@
 'use client'
 
 import { useState } from 'react'
+import { motion, Variants } from 'framer-motion'
 import Link from 'next/link'
 import Image from 'next/image'
+
+const containerVariants: Variants = {
+  hidden: { opacity: 0 },
+  visible: { opacity: 1, transition: { staggerChildren: 0.1 } },
+}
+
+const itemVariants: Variants = {
+  hidden: { opacity: 0, y: 20 },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.5 } },
+}
 import { usePathname } from 'next/navigation'
 import {
   ArrowRight,
@@ -175,23 +186,37 @@ export function Navbar() {
 
 export function Hero() {
   return (
-    <section className="relative overflow-hidden bg-[#382d25] pt-32 pb-20 text-white lg:pt-36 lg:pb-28">
+    <motion.section
+      initial="hidden"
+      animate="visible"
+      variants={containerVariants}
+      className="relative overflow-hidden bg-[#382d25] pt-32 pb-20 text-white lg:pt-36 lg:pb-28"
+    >
       <div className="absolute -right-32 top-20 size-96 rounded-full bg-[#b85c38]/15 blur-3xl" />
       <div className="absolute -left-40 bottom-0 size-80 rounded-full bg-[#d87a52]/10 blur-3xl" />
 
       <div className="relative mx-auto max-w-7xl px-5 lg:px-8">
         <div className="mx-auto max-w-4xl text-center">
-          <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-[#b85c38]/30 bg-[#2b211a] px-4 py-2 text-xs font-medium text-[#f0ded3]">
+          <motion.div
+            variants={itemVariants}
+            className="mb-6 inline-flex items-center gap-2 rounded-full border border-[#b85c38]/30 bg-[#2b211a] px-4 py-2 text-xs font-medium text-[#f0ded3]"
+          >
             <span className="size-2 rounded-full bg-[#d87a52] animate-pulse" /> Pipeline Oficial AgroRaíces · AgroCebada 2026
-          </div>
-          <h1 className="text-balance text-5xl font-semibold leading-[1.04] tracking-[-0.04em] sm:text-6xl lg:text-8xl">
+          </motion.div>
+          <motion.h1
+            variants={itemVariants}
+            className="text-balance text-5xl font-semibold leading-[1.04] tracking-[-0.04em] sm:text-6xl lg:text-8xl"
+          >
             Lee el campo.<br />
             <span className="text-[#d87a52]">Anticipa la cosecha.</span>
-          </h1>
-          <p className="mx-auto mt-7 max-w-2xl text-pretty text-base leading-7 text-[#dcd2c9] sm:text-lg">
+          </motion.h1>
+          <motion.p
+            variants={itemVariants}
+            className="mx-auto mt-7 max-w-2xl text-pretty text-base leading-7 text-[#dcd2c9] sm:text-lg"
+          >
             Estimamos el rendimiento de cebada maltera con telemetría de Sentinel-2, Landsat, PlanetScope y topografía INEGI CEM 4.0. Del satélite a la decisión agronómica.
-          </p>
-          <div className="mt-9 flex flex-col justify-center gap-4 sm:flex-row">
+          </motion.p>
+          <motion.div variants={itemVariants} className="mt-9 flex flex-col justify-center gap-4 sm:flex-row">
             <Link
               href="/mapa#asistente-modelo"
               className="inline-flex h-12 items-center justify-center gap-2 rounded-full bg-[#b85c38] px-7 text-sm font-semibold text-white shadow-lg shadow-[#b85c38]/25 transition hover:bg-[#c96a45]"
@@ -204,10 +229,10 @@ export function Hero() {
             >
               Arquitectura y Tecnología
             </Link>
-          </div>
+          </motion.div>
         </div>
       </div>
-    </section>
+    </motion.section>
   )
 }
 
@@ -223,19 +248,25 @@ export function Metric({ value, label }: { value: string; label: string }) {
 
 export function HomeCards() {
   return (
-    <section className="bg-[#f9f7f2] py-20 text-[#302620] lg:py-24">
+    <motion.section
+      initial="hidden"
+      whileInView="visible"
+      viewport={{ once: true }}
+      variants={containerVariants}
+      className="bg-[#f9f7f2] py-20 text-[#302620] lg:py-24"
+    >
       <div className="mx-auto max-w-7xl px-5 lg:px-8">
-        <div className="mb-12 text-center">
+        <motion.div variants={itemVariants} className="mb-12 text-center">
           <p className="eyebrow">Explora la plataforma</p>
           <h2 className="section-title mt-3">Tecnología de punta para el cultivo de cebada</h2>
           <p className="mx-auto mt-4 max-w-2xl text-[#6e5d53]">
             Descubre cada módulo de AgroRaíces diseñado para transformar señales satelitales en rentabilidad agronómica.
           </p>
-        </div>
+        </motion.div>
 
-        <div className="grid gap-6 md:grid-cols-3">
+        <motion.div variants={containerVariants} className="grid gap-6 md:grid-cols-3">
           {/* Card 1: Nosotros */}
-          <div className="flex flex-col justify-between rounded-3xl border border-[#ded5cb] bg-white p-7 shadow-sm transition hover:shadow-md">
+          <motion.div variants={itemVariants} className="flex flex-col justify-between rounded-3xl border border-[#ded5cb] bg-white p-7 shadow-sm transition hover:shadow-md">
             <div>
               <div className="mb-6 flex size-12 items-center justify-center rounded-2xl bg-[#f5ede6] text-[#b85c38]">
                 <Satellite className="size-6" />
@@ -252,10 +283,10 @@ export function HomeCards() {
             >
               Ver arquitectura <ChevronRight className="size-4" />
             </Link>
-          </div>
+          </motion.div>
 
           {/* Card 2: Modelo */}
-          <div className="flex flex-col justify-between rounded-3xl border border-[#4a3b30] bg-[#27201b] p-7 text-white shadow-md transition hover:shadow-lg">
+          <motion.div variants={itemVariants} className="flex flex-col justify-between rounded-3xl border border-[#4a3b30] bg-[#27201b] p-7 text-white shadow-md transition hover:shadow-lg">
             <div>
               <div className="mb-6 flex size-12 items-center justify-center rounded-2xl bg-[#382d25] text-[#d87a52]">
                 <Zap className="size-6" />
@@ -272,10 +303,10 @@ export function HomeCards() {
             >
               Usar el modelo <ChevronRight className="size-4" />
             </Link>
-          </div>
+          </motion.div>
 
           {/* Card 3: Mapa */}
-          <div className="flex flex-col justify-between rounded-3xl border border-[#ded5cb] bg-white p-7 shadow-sm transition hover:shadow-md">
+          <motion.div variants={itemVariants} className="flex flex-col justify-between rounded-3xl border border-[#ded5cb] bg-white p-7 shadow-sm transition hover:shadow-md">
             <div>
               <div className="mb-6 flex size-12 items-center justify-center rounded-2xl bg-[#f5ede6] text-[#b85c38]">
                 <MapPin className="size-6" />
@@ -292,19 +323,25 @@ export function HomeCards() {
             >
               Explorar mapa <ChevronRight className="size-4" />
             </Link>
-          </div>
-        </div>
+          </motion.div>
+        </motion.div>
       </div>
-    </section>
+    </motion.section>
   )
 }
 
 export function About() {
   return (
-    <section className="bg-[#faf7f2] pt-32 pb-24 text-[#241810] lg:pt-36 lg:pb-32">
+    <motion.section
+      initial="hidden"
+      whileInView="visible"
+      viewport={{ once: true }}
+      variants={containerVariants}
+      className="bg-[#faf7f2] pt-32 pb-24 text-[#241810] lg:pt-36 lg:pb-32"
+    >
       <div className="mx-auto max-w-7xl px-5 lg:px-8">
         <div className="grid gap-14 lg:grid-cols-[0.9fr_1.1fr] lg:items-end">
-          <div>
+          <motion.div variants={itemVariants}>
             <p className="text-xs font-bold uppercase tracking-[0.2em] text-[#b85c38]">01 / Quiénes somos y Metodología</p>
             <h2 className="text-balance text-4xl font-extrabold leading-tight tracking-[-0.035em] text-[#241810] sm:text-5xl mt-4">
               Ciencia de datos y satélites con raíces en el territorio.
@@ -326,8 +363,8 @@ export function About() {
                 Ver parcelas en el mapa <ChevronRight className="size-4 text-[#d87a52]" />
               </Link>
             </div>
-          </div>
-          <div className="grid gap-4 sm:grid-cols-3">
+          </motion.div>
+          <motion.div variants={containerVariants} className="grid gap-4 sm:grid-cols-3">
             <Sensor
               icon={<Satellite className="size-5" />}
               title="PlanetScope (3 m)"
@@ -343,11 +380,14 @@ export function About() {
               title="Landsat Térmico"
               copy="Temperatura superficial del suelo (VI6T), choque calórico y riesgo térmico."
             />
-          </div>
+          </motion.div>
         </div>
 
         {/* Sección complementaria: Propósito */}
-        <div className="mt-20 rounded-3xl border border-[#4d392c] bg-[#1e1713] p-8 text-white sm:p-12 shadow-xl">
+        <motion.div
+          variants={itemVariants}
+          className="mt-20 rounded-3xl border border-[#4d392c] bg-[#1e1713] p-8 text-white sm:p-12 shadow-xl"
+        >
           <div className="max-w-3xl">
             <span className="inline-flex rounded-full bg-[#e2b957] px-3.5 py-1 text-[11px] font-bold uppercase tracking-[0.14em] text-[#1e1713]">
               Propósito AgroCebada 2026
@@ -359,21 +399,24 @@ export function About() {
               Nuestra metodología combina calibración agronómica en campo con series de tiempo multiespectrales. Mediante el Pipeline Oficial AgroRaíces, predecimos el rendimiento antes de la cosecha, permitiendo planificar la logística de acopio, liquidación y decisiones de manejo intrapredial.
             </p>
           </div>
-        </div>
+        </motion.div>
       </div>
-    </section>
+    </motion.section>
   )
 }
 
 function Sensor({ icon, title, copy }: { icon: React.ReactNode; title: string; copy: string }) {
   return (
-    <div className="rounded-2xl border border-[#ded4c6] bg-white p-5 shadow-sm transition hover:border-[#b85c38] hover:shadow-md">
+    <motion.div
+      variants={itemVariants}
+      className="rounded-2xl border border-[#ded4c6] bg-white p-5 shadow-sm transition hover:border-[#b85c38] hover:shadow-md"
+    >
       <div className="mb-6 flex size-10 items-center justify-center rounded-xl bg-[#2e2017] text-[#d87a52]">
         {icon}
       </div>
       <h3 className="font-bold text-[#241810]">{title}</h3>
       <p className="mt-2 text-sm leading-6 text-[#6e5a4d]">{copy}</p>
-    </div>
+    </motion.div>
   )
 }
 
@@ -599,9 +642,12 @@ export function ModelSpecs() {
                     <span className="font-bold text-[#e2b957] text-sm shrink-0">{item.porcentaje}% peso</span>
                   </div>
                   <div className="h-2 rounded-full bg-[#2e2017] overflow-hidden">
-                    <div
-                      className="h-full rounded-full bg-gradient-to-r from-[#b85c38] to-[#e2b957] transition-all duration-700"
-                      style={{ width: `${item.porcentaje}%` }}
+                    <motion.div
+                      initial={{ width: 0 }}
+                      whileInView={{ width: `${item.porcentaje}%` }}
+                      transition={{ duration: 1, ease: 'easeOut' }}
+                      viewport={{ once: true }}
+                      className="h-full rounded-full bg-gradient-to-r from-[#b85c38] to-[#e2b957]"
                     />
                   </div>
                 </div>
