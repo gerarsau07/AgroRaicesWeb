@@ -396,7 +396,7 @@ export function About() {
               Cerrando la brecha entre la telemetría espacial y el rendimiento en tolva.
             </h3>
             <p className="mt-4 text-sm leading-7 text-[#c9b7aa] sm:text-base">
-              Nuestra metodología combina calibración agronómica en campo con series de tiempo multiespectrales. Mediante el Pipeline Oficial AgroRaíces, predecimos el rendimiento antes de la cosecha, permitiendo planificar la logística de acopio, liquidación y decisiones de manejo intrapredial.
+              Nuestra metodología combina calibración agronómica en campo con series de tiempo multiespectrales. Mediante el Pipeline Oficial AgroRaíces, predecimos el rendimiento antes de la cosecha, permitiendo planificar la logística de acopio, liquidación y decisiones del manejo de parcelas.
             </p>
           </div>
         </motion.div>

@@ -42,15 +42,15 @@ export function HeroSection() {
         <div className="mx-auto max-w-4xl text-center">
           {/* Gran Titular Editorial */}
           <h1 className="text-balance text-4xl font-extrabold leading-[1.08] tracking-[-0.04em] text-white sm:text-6xl lg:text-7xl">
-            De la órbita satelital al{' '}
-            <span className="bg-gradient-to-r from-[#e2b957] via-[#d87a52] to-[#b85c38] bg-clip-text text-transparent">
-              surco de malta.
+            Lee el campo
+            <span className="block bg-gradient-to-r from-[#e2b957] via-[#d87a52] to-[#b85c38] bg-clip-text text-transparent">
+              Anticipa la cosecha
             </span>
           </h1>
 
           {/* Subtítulo descriptivo */}
           <p className="mx-auto mt-6 max-w-2xl text-pretty text-base leading-relaxed text-[#dcd2c9] sm:text-lg">
-            Estimamos con rigor científico el rendimiento de cebada maltera en el Altiplano Central fusionando telemetría de <strong className="text-white font-medium">PlanetScope (3m)</strong>, <strong className="text-white font-medium">Sentinel-2</strong>, <strong className="text-white font-medium">Landsat</strong> y topografía <strong className="text-white font-medium">INEGI CEM 4.0</strong>. Del espacio a la tolva del productor.
+            Estimamos el rendimiento de cebada con datos en el Altiplano Central fusionando telemetría de <strong className="text-white font-medium">PlanetScope (3m)</strong>, <strong className="text-white font-medium">Sentinel-2</strong>, <strong className="text-white font-medium">Landsat</strong> y topografía <strong className="text-white font-medium">INEGI CEM 4.0</strong>, e inteligencia artificial. Del satélite a la decisión agronómica.
           </p>
 
           {/* Acciones principales (CTAs) */}
@@ -205,7 +205,7 @@ export function TriadaSection() {
 }
 
 // =========================================================================
-// 3. LAS TRES CUENCAS DE LA CEBADA MALTERA
+// 3. LAS TRES CUENCAS DE LA CEBADA
 // =========================================================================
 export function CuencasSection() {
   return (
@@ -377,7 +377,7 @@ export function ComparativaSection() {
               </li>
               <li className="flex items-start gap-2.5">
                 <CheckCircle2 className="size-4 text-[#e2b957] shrink-0 mt-0.5" />
-                <span><strong>Previsión semanas antes de cosecha:</strong> Planificación anticipada de tolvas, liquidaciones y contratos industriales.</span>
+                <span><strong>Previsión semanas antes de cosecha:</strong> Planificación anticipada de liquidaciones y contratos industriales.</span>
               </li>
             </ul>
           </div>
@@ -485,7 +485,7 @@ export function CierreSection() {
           <Wheat className="size-7" />
         </div>
         <h2 className="text-balance text-3xl font-extrabold tracking-tight text-white sm:text-5xl">
-          La cebada maltera del mañana se cultiva con precisión hoy.
+          La cebada del mañana se cultiva con precisión hoy.
         </h2>
         <p className="mx-auto mt-4 max-w-2xl text-sm leading-relaxed text-[#c7b4a6] sm:text-base">
           Accede al visor de mapas interactivo, consulta la estimación de tu parcela o prueba los especialistas de Puebla, Hidalgo y Tlaxcala.
