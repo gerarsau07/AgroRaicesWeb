@@ -474,9 +474,11 @@ export default function MapaParcelas() {
   const [analistaFullPred, setAnalistaFullPred] = useState<PrediccionItem | null>(null)
   const [analistaError, setAnalistaError] = useState('')
 
-  // Estado del Analista — Análisis por Grupos de Parcelas (backend/data/agrocebada/) + SHAP Grupal
+  // Estado del Analista — Análisis por Grupos de Parcelas + SHAP Grupal
   const [modoGrupoAnalista, setModoGrupoAnalista] = useState<'PREDICCION' | 'CASOS_PASO6' | 'ENTRENAMIENTO' | 'TODOS'>('PREDICCION')
   const [filtroEstadoGrupo, setFiltroEstadoGrupo] = useState<string>('todos')
+  const [filtroMunicipioGrupo, setFiltroMunicipioGrupo] = useState<string>('todos')
+  const [filtroRendimientoGrupo, setFiltroRendimientoGrupo] = useState<string>('todos')
   const [filtroGrupoHomogeneo, setFiltroGrupoHomogeneo] = useState<string>('todos')
   const [parcelaDetalleGrupo, setParcelaDetalleGrupo] = useState<PrediccionItem | null>(null)
   const [mostrarSubidaManual, setMostrarSubidaManual] = useState<boolean>(false)
@@ -1549,16 +1551,20 @@ export default function MapaParcelas() {
     }
   }
 
-  // Analizar cualquier grupo de parcelas del dataset original en backend/data/agrocebada/ con SHAP Grupal + Individual
+  // Analizar cualquier grupo de parcelas con SHAP Grupal + Individual
   const handleAnalizarGrupoParcelas = async (
     modo: 'PREDICCION' | 'CASOS_PASO6' | 'ENTRENAMIENTO' | 'TODOS' = modoGrupoAnalista,
     estFiltro: string = filtroEstadoGrupo,
+    munFiltro: string = filtroMunicipioGrupo,
+    rendFiltro: string = filtroRendimientoGrupo,
     grupoHomFiltro: string = filtroGrupoHomogeneo
   ) => {
     setBatchLoading(true)
     setBatchError('')
     setModoGrupoAnalista(modo)
     setFiltroEstadoGrupo(estFiltro)
+    setFiltroMunicipioGrupo(munFiltro)
+    setFiltroRendimientoGrupo(rendFiltro)
     setFiltroGrupoHomogeneo(grupoHomFiltro)
 
     setArchivosState({
@@ -1571,11 +1577,13 @@ export default function MapaParcelas() {
     try {
       const qs = new URLSearchParams({ demo: 'true', modo_grupo: modo })
       if (estFiltro && estFiltro !== 'todos') qs.set('estado', estFiltro)
+      if (munFiltro && munFiltro !== 'todos') qs.set('municipio', munFiltro)
+      if (rendFiltro && rendFiltro !== 'todos') qs.set('nivel_rendimiento', rendFiltro)
       if (grupoHomFiltro && grupoHomFiltro !== 'todos') qs.set('grupo_homogeneo', grupoHomFiltro)
 
       const res = await fetch(`/api/predict?${qs.toString()}`)
       if (!res.ok) {
-        throw new Error('No se pudieron procesar las fuentes base desde backend/data/agrocebada/.')
+        throw new Error('No se pudieron procesar los datos del grupo de parcelas.')
       }
       const json: BatchResultResponse = await res.json()
       setBatchResult(json)
@@ -1586,14 +1594,14 @@ export default function MapaParcelas() {
       }
       aplicarPrediccionesAlMapa(json)
     } catch (err: any) {
-      setBatchError(err.message || 'Error cargando las fuentes base de backend/data/agrocebada/.')
+      setBatchError(err.message || 'Error cargando el grupo de parcelas.')
     } finally {
       setBatchLoading(false)
     }
   }
 
   const handleCargarDemoDataset = async () => {
-    await handleAnalizarGrupoParcelas(modoGrupoAnalista, filtroEstadoGrupo, filtroGrupoHomogeneo)
+    await handleAnalizarGrupoParcelas(modoGrupoAnalista, filtroEstadoGrupo, filtroMunicipioGrupo, filtroRendimientoGrupo, filtroGrupoHomogeneo)
   }
 
   // Descargar CSV con auditoría SHAP + DF-QuAD (Paso 6 NB)
@@ -2893,7 +2901,7 @@ export default function MapaParcelas() {
                   Laboratorio del Analista · Casos Particulares y Grupos de Parcelas
                 </h3>
                 <p className="text-xs text-[#c9b7aa] mt-0.5">
-                  Audita qué variables impulsaron o frenaron la predicción del modelo mediante valores de Shapley (<code className="text-[#e2b957]">SHAP</code>) y deliberación gradual <code className="text-sky-300">DF-QuAD</code> sobre el dataset original en <code className="text-[#e2b957]">backend/data/agrocebada/</code>.
+                  Audita qué variables impulsaron o frenaron la predicción del modelo mediante valores de Shapley y deliberación gradual sobre el conjunto de datos original.
                 </p>
               </div>
 
@@ -2908,8 +2916,8 @@ export default function MapaParcelas() {
                   }}
                   className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-gradient-to-r from-[#b85c38] to-[#c96a45] hover:from-[#c96a45] hover:to-[#d87a52] text-white text-xs font-bold shadow-lg transition cursor-pointer"
                 >
-                  <Sparkles className="w-4 h-4 text-[#e2b957]" />
-                  <span>Generar Predicción Próximo Año (2026)</span>
+                  <Sparkles className="w-4 h-4 text-[#e2b957]" aria-hidden="true" />
+                  <span>Generar Predicción Próximo Año</span>
                 </button>
 
                 {selectedParcela && (
@@ -2918,13 +2926,13 @@ export default function MapaParcelas() {
                     onClick={cargarTelemetriaSeleccionadaAnalista}
                     className="inline-flex items-center gap-1.5 px-3.5 py-2.5 rounded-xl bg-sky-500/20 hover:bg-sky-500/30 border border-sky-500/40 text-sky-200 text-xs font-semibold transition cursor-pointer"
                   >
-                    <MapPin className="w-3.5 h-3.5" /> Auditar {selectedParcela.id_poligono} ({selectedParcela.estado})
+                    <MapPin className="w-3.5 h-3.5" aria-hidden="true" /> Auditar {selectedParcela.id_poligono}
                   </button>
                 )}
               </div>
             </div>
 
-            {/* Selector de Sub-Pestañas: Casos Particulares vs Grupos de Parcelas vs Predicción Próximo Año 2026 */}
+            {/* Selector de Sub-Pestañas: Casos Particulares vs Grupos de Parcelas vs Predicción Próximo Año */}
             <div className="flex flex-wrap border-b border-white/10 mb-6 gap-2">
               <button
                 type="button"
@@ -2936,7 +2944,7 @@ export default function MapaParcelas() {
                 }`}
               >
                 <Sliders className="w-4 h-4 text-sky-400" aria-hidden="true" />
-                <span>1. Casos Particulares y Simulación en Vivo (SHAP Individual)</span>
+                <span>1. Casos Particulares y Simulación en Vivo</span>
               </button>
 
               <button
@@ -2949,7 +2957,7 @@ export default function MapaParcelas() {
                 }`}
               >
                 <Layers className="w-4 h-4 text-sky-400" aria-hidden="true" />
-                <span>2. Análisis con Grupos de Parcelas (SHAP Grupal + Dataset AgroCebada)</span>
+                <span>2. Análisis con Grupos de Parcelas</span>
               </button>
 
               <button
@@ -2967,7 +2975,7 @@ export default function MapaParcelas() {
                 }`}
               >
                 <Calendar className="w-4 h-4 text-[#e2b957]" aria-hidden="true" />
-                <span>3. Predicción Próximo Año (Campaña 2026 · 197 Parcelas)</span>
+                <span>3. Predicción Próximo Año</span>
               </button>
             </div>
 
@@ -2981,10 +2989,10 @@ export default function MapaParcelas() {
                   <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                     <div>
                       <span className="text-[11px] font-bold uppercase tracking-wider text-[#e2b957] flex items-center gap-1.5">
-                        <Sparkles className="w-3.5 h-3.5" /> Casos Particulares Oficiales del Paso 6 (SHAP + DF-QuAD)
+                        <Sparkles className="w-3.5 h-3.5" aria-hidden="true" /> Casos Particulares Destacados
                       </span>
                       <p className="text-xs text-[#c9b7aa] mt-0.5">
-                        Selecciona cualquiera de los 9 casos particulares de prueba ciega (3 por Estado) o elige cualquier polígono de <code className="text-white">backend/data/agrocebada/</code> para descomponer su predicción con SHAP:
+                        Selecciona cualquiera de los 9 casos particulares de prueba ciega (3 por Estado) o elige cualquier polígono del catálogo para descomponer su predicción con SHAP:
                       </p>
                     </div>
 
@@ -3382,7 +3390,6 @@ export default function MapaParcelas() {
                       <span>
                         Fórmula Aditiva SHAP: <b>φ₀ + Σ φᵢ = ŷ</b> · Explicabilidad exacta del Árbitro QBAF
                       </span>
-                      <span className="text-sky-300">Paso 6 · SHAP + DF-QuAD</span>
                     </div>
                   </div>
                 </div>
@@ -3394,18 +3401,18 @@ export default function MapaParcelas() {
             =========================================================================== */}
             {subPestanaAnalista === 'archivos' && (
               <div className="space-y-6">
-                {/* Panel de Selección de Grupos de Parcelas desde backend/data/agrocebada/ */}
+                {/* Panel de Selección de Grupos de Parcelas */}
                 <div className="p-5 rounded-2xl bg-[#1e1713]/95 border border-white/10 space-y-4">
                   <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
                     <div>
                       <div className="flex items-center gap-2">
-                        <Layers className="w-4 h-4 text-[#e2b957]" />
+                        <Layers className="w-4 h-4 text-[#e2b957]" aria-hidden="true" />
                         <h4 className="font-bold text-white text-base">
-                          Explorador de Grupos de Parcelas con SHAP (Dataset Original en <code className="text-[#e2b957]">backend/data/agrocebada/</code>)
+                          Explorador de Grupos de Parcelas con SHAP
                         </h4>
                       </div>
                       <p className="text-xs text-[#c9b7aa] mt-1 leading-relaxed max-w-3xl">
-                        Selecciona qué subconjunto o Grupo Homogéneo QBAF deseas auditar. El motor calcula el <b>Ranking de Importancia SHAP Grupal</b> (qué variables dominan en ese grupo) y el desglose individual de cada predio.
+                        Filtra por subconjunto, estado, municipio o nivel de rendimiento (alto o bajo) para calcular el <b>Ranking de Importancia SHAP Grupal</b> y el desglose individual de cada predio.
                       </p>
                     </div>
 
@@ -3414,76 +3421,111 @@ export default function MapaParcelas() {
                       onClick={() => setMostrarSubidaManual(!mostrarSubidaManual)}
                       className="px-3.5 py-2 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 text-xs text-sky-300 font-semibold transition cursor-pointer self-start lg:self-auto shrink-0 flex items-center gap-1.5"
                     >
-                      <Upload className="w-3.5 h-3.5" />
-                      <span>{mostrarSubidaManual ? 'Ocultar subida manual (.csv/.zip)' : 'Subir lote externo (.csv / .zip)'}</span>
+                      <Upload className="w-3.5 h-3.5" aria-hidden="true" />
+                      <span>{mostrarSubidaManual ? 'Ocultar subida manual' : 'Subir lote externo'}</span>
                     </button>
                   </div>
 
-                  {/* Botones de Modo de Grupo + Filtros por Estado y Grupo Homogéneo QBAF */}
-                  <div className="grid grid-cols-1 md:grid-cols-12 gap-3 pt-1">
-                    <div className="md:col-span-7 flex flex-wrap gap-2">
-                      {[
-                        { id: 'PREDICCION', label: 'Prueba Ciega (59 Parcelas)', badge: 'Reto' },
-                        { id: 'CASOS_PASO6', label: '9 Casos Particulares (Paso 6 NB)', badge: '3×Estado' },
-                        { id: 'ENTRENAMIENTO', label: 'Entrenamiento (138 Parcelas)', badge: 'OOF' },
-                        { id: 'TODOS', label: 'Catálogo Completo (197 Parcelas)', badge: 'Total' },
-                      ].map((m) => {
-                        const active = modoGrupoAnalista === m.id
-                        return (
-                          <button
-                            key={m.id}
-                            type="button"
-                            onClick={() =>
-                              handleAnalizarGrupoParcelas(
-                                m.id as 'PREDICCION' | 'CASOS_PASO6' | 'ENTRENAMIENTO' | 'TODOS',
-                                filtroEstadoGrupo,
-                                filtroGrupoHomogeneo
-                              )
-                            }
-                            className={`px-3 py-2 rounded-xl text-xs font-bold border transition cursor-pointer flex items-center gap-1.5 ${
-                              active
-                                ? 'bg-sky-500/20 border-sky-400 text-white shadow-md'
-                                : 'bg-white/5 border-white/10 text-[#c9b7aa] hover:bg-white/10 hover:text-white'
-                            }`}
-                          >
-                            <span>{m.label}</span>
-                            <span className="text-[9px] px-1.5 py-0.2 rounded bg-black/40 text-[#e2b957]">{m.badge}</span>
-                          </button>
+                  {/* Botones de Modo de Grupo */}
+                  <div className="flex flex-wrap gap-2 pt-1">
+                    {[
+                      { id: 'PREDICCION', label: 'Prueba Ciega · 59 Parcelas' },
+                      { id: 'ENTRENAMIENTO', label: 'Entrenamiento · 138 Parcelas' },
+                      { id: 'TODOS', label: 'Catálogo Completo · 197 Parcelas' },
+                    ].map((m) => {
+                      const active = modoGrupoAnalista === m.id
+                      return (
+                        <button
+                          key={m.id}
+                          type="button"
+                          onClick={() =>
+                            handleAnalizarGrupoParcelas(
+                              m.id as 'PREDICCION' | 'CASOS_PASO6' | 'ENTRENAMIENTO' | 'TODOS',
+                              filtroEstadoGrupo,
+                              filtroMunicipioGrupo,
+                              filtroRendimientoGrupo,
+                              filtroGrupoHomogeneo
+                            )
+                          }
+                          className={`px-3.5 py-2 rounded-xl text-xs font-bold border transition cursor-pointer flex items-center gap-1.5 ${
+                            active
+                              ? 'bg-sky-500/20 border-sky-400 text-white shadow-md'
+                              : 'bg-white/5 border-white/10 text-[#c9b7aa] hover:bg-white/10 hover:text-white'
+                          }`}
+                        >
+                          <span>{m.label}</span>
+                        </button>
+                      )
+                    })}
+                  </div>
+
+                  {/* Filtros por Estado, Municipio y Nivel de Rendimiento (Alto / Bajo) */}
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-1">
+                    <select
+                      aria-label="Filtrar grupo por Estado"
+                      value={filtroEstadoGrupo}
+                      onChange={(e) => {
+                        const nuevoEst = e.target.value
+                        handleAnalizarGrupoParcelas(
+                          modoGrupoAnalista,
+                          nuevoEst,
+                          'todos',
+                          filtroRendimientoGrupo,
+                          filtroGrupoHomogeneo
                         )
-                      })}
-                    </div>
+                      }}
+                      className="h-9 rounded-xl border border-white/15 bg-[#291e17] px-3 text-xs text-white outline-none focus:border-sky-400"
+                    >
+                      <option value="todos">Estado: Todos</option>
+                      <option value="Puebla">Puebla</option>
+                      <option value="Hidalgo">Hidalgo</option>
+                      <option value="Tlaxcala">Tlaxcala</option>
+                    </select>
 
-                    {/* Filtros de Estado y Grupo Homogéneo QBAF */}
-                    <div className="md:col-span-5 grid grid-cols-1 sm:grid-cols-2 gap-2">
-                      <select
-                        aria-label="Filtrar grupo por Estado"
-                        value={filtroEstadoGrupo}
-                        onChange={(e) =>
-                          handleAnalizarGrupoParcelas(modoGrupoAnalista, e.target.value, filtroGrupoHomogeneo)
-                        }
-                        className="h-9 rounded-xl border border-white/15 bg-[#291e17] px-3 text-xs text-white outline-none focus:border-sky-400"
-                      >
-                        <option value="todos">Estado: Todos (Hidalgo, Puebla, Tlaxcala)</option>
-                        <option value="Hidalgo">Árbitro Hidalgo (GradientBoosting + SVR)</option>
-                        <option value="Puebla">Árbitro Puebla (SVR + Huber + GPR + PLS)</option>
-                        <option value="Tlaxcala">Árbitro Tlaxcala (Ancla Modal + SVC)</option>
-                      </select>
+                    <select
+                      aria-label="Filtrar grupo por Municipio"
+                      value={filtroMunicipioGrupo}
+                      onChange={(e) =>
+                        handleAnalizarGrupoParcelas(
+                          modoGrupoAnalista,
+                          filtroEstadoGrupo,
+                          e.target.value,
+                          filtroRendimientoGrupo,
+                          filtroGrupoHomogeneo
+                        )
+                      }
+                      className="h-9 rounded-xl border border-white/15 bg-[#291e17] px-3 text-xs text-white outline-none focus:border-sky-400"
+                    >
+                      <option value="todos">Municipio: Todos</option>
+                      {(filtroEstadoGrupo !== 'todos'
+                        ? MUNICIPIOS_POR_ESTADO[filtroEstadoGrupo] || []
+                        : Object.keys(MUNICIPIOS_DATA)
+                      ).map((mun) => (
+                        <option key={mun} value={mun}>
+                          {mun}
+                        </option>
+                      ))}
+                    </select>
 
-                      <select
-                        aria-label="Filtrar por Grupo Homogéneo QBAF"
-                        value={filtroGrupoHomogeneo}
-                        onChange={(e) =>
-                          handleAnalizarGrupoParcelas(modoGrupoAnalista, filtroEstadoGrupo, e.target.value)
-                        }
-                        className="h-9 rounded-xl border border-white/15 bg-[#291e17] px-3 text-xs text-white outline-none focus:border-sky-400"
-                      >
-                        {GRUPOS_HOMOGENEOS_QBAF.map((gh) => (
-                          <option key={gh.id} value={gh.id}>
-                            {gh.label}
-                          </option>
-                        ))}
-                      </select>
-                    </div>
+                    <select
+                      aria-label="Filtrar por nivel de rendimiento"
+                      value={filtroRendimientoGrupo}
+                      onChange={(e) =>
+                        handleAnalizarGrupoParcelas(
+                          modoGrupoAnalista,
+                          filtroEstadoGrupo,
+                          filtroMunicipioGrupo,
+                          e.target.value,
+                          filtroGrupoHomogeneo
+                        )
+                      }
+                      className="h-9 rounded-xl border border-white/15 bg-[#291e17] px-3 text-xs text-white outline-none focus:border-sky-400"
+                    >
+                      <option value="todos">Rendimiento: Todos</option>
+                      <option value="alto">Alto Rendimiento (&gt; 4.35 t/ha)</option>
+                      <option value="medio">Rendimiento Medio (3.30 – 4.35 t/ha)</option>
+                      <option value="bajo">Bajo Rendimiento (&lt; 3.30 t/ha)</option>
+                    </select>
                   </div>
                 </div>
 
@@ -3633,9 +3675,6 @@ export default function MapaParcelas() {
                               Variables que tuvieron mayor magnitud de impacto sobre las {batchResult.total_parcelas} parcelas del grupo seleccionado
                             </span>
                           </div>
-                          <span className="text-[10px] px-2.5 py-1 rounded-lg bg-sky-500/20 text-sky-300 font-semibold">
-                            SHAP Grupal · Paso 6 NB
-                          </span>
                         </div>
 
                         {!batchResult.shap_resumen_grupal || batchResult.shap_resumen_grupal.length === 0 ? (
@@ -4268,9 +4307,6 @@ export default function MapaParcelas() {
                               Variables que dominan la proyección 2026 en los {campana2026Data.total_parcelas} predios
                             </span>
                           </div>
-                          <span className="text-[10px] px-2 py-0.5 rounded bg-white/10 text-white font-mono">
-                            Paso 6 · SHAP 2026
-                          </span>
                         </div>
 
                         <div className="space-y-2 max-h-[340px] overflow-y-auto pr-1">

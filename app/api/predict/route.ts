@@ -983,6 +983,8 @@ export async function GET(request: Request) {
   const isDemo = searchParams.get('demo') === 'true'
   const modoGrupo = (searchParams.get('modo_grupo') || 'PREDICCION').trim().toUpperCase()
   const filtroEstado = (searchParams.get('estado') || '').trim()
+  const filtroMunicipio = (searchParams.get('municipio') || '').trim()
+  const filtroRendimiento = (searchParams.get('nivel_rendimiento') || '').trim().toLowerCase()
   const filtroGrupoHomogeneo = (searchParams.get('grupo_homogeneo') || '').trim()
 
   if (isCampana2026) {
@@ -1002,24 +1004,30 @@ export async function GET(request: Request) {
   }
 
   if (isDemo) {
-    try {
-      const controller = new AbortController()
-      const timeoutId = setTimeout(() => controller.abort(), 1500)
+    const usaFiltrosLocales =
+      (filtroMunicipio && filtroMunicipio.toLowerCase() !== 'todos') ||
+      (filtroRendimiento && filtroRendimiento !== 'todos')
 
-      const qs = new URLSearchParams()
-      qs.set('modo_grupo', modoGrupo)
-      if (filtroEstado && filtroEstado.toLowerCase() !== 'todos') qs.set('estado', filtroEstado)
-      if (filtroGrupoHomogeneo && filtroGrupoHomogeneo.toLowerCase() !== 'todos') {
-        qs.set('grupo_homogeneo', filtroGrupoHomogeneo)
-      }
+    if (!usaFiltrosLocales) {
+      try {
+        const controller = new AbortController()
+        const timeoutId = setTimeout(() => controller.abort(), 1500)
 
-      const resFast = await fetch(`${BACKEND_URL}/predict/demo-dataset?${qs.toString()}`, { signal: controller.signal })
-      clearTimeout(timeoutId)
-      if (resFast.ok) {
-        return NextResponse.json(await resFast.json())
+        const qs = new URLSearchParams()
+        qs.set('modo_grupo', modoGrupo)
+        if (filtroEstado && filtroEstado.toLowerCase() !== 'todos') qs.set('estado', filtroEstado)
+        if (filtroGrupoHomogeneo && filtroGrupoHomogeneo.toLowerCase() !== 'todos') {
+          qs.set('grupo_homogeneo', filtroGrupoHomogeneo)
+        }
+
+        const resFast = await fetch(`${BACKEND_URL}/predict/demo-dataset?${qs.toString()}`, { signal: controller.signal })
+        clearTimeout(timeoutId)
+        if (resFast.ok) {
+          return NextResponse.json(await resFast.json())
+        }
+      } catch {
+        // Continuar leyendo desde backend/routers/modelo_metadata.json
       }
-    } catch {
-      // Continuar leyendo desde backend/routers/modelo_metadata.json y backend/data/agrocebada/
     }
 
     try {
@@ -1044,6 +1052,12 @@ export async function GET(request: Request) {
 
       if (filtroEstado && filtroEstado.toLowerCase() !== 'todos') {
         candidateList = candidateList.filter((t) => t.estado.toLowerCase() === filtroEstado.toLowerCase())
+      }
+      if (filtroMunicipio && filtroMunicipio.toLowerCase() !== 'todos') {
+        candidateList = candidateList.filter((t) => (t.municipio || '').toLowerCase() === filtroMunicipio.toLowerCase())
+      }
+      if (filtroRendimiento && filtroRendimiento !== 'todos') {
+        candidateList = candidateList.filter((t) => (t.nivel_potencial || '').toLowerCase() === filtroRendimiento)
       }
       if (filtroGrupoHomogeneo && filtroGrupoHomogeneo.toLowerCase() !== 'todos') {
         candidateList = candidateList.filter(
