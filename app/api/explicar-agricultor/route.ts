@@ -113,6 +113,9 @@ Devuelve ÚNICAMENTE un objeto JSON válido con esta estructura exacta:
         generationConfig: {
           temperature: 0.35,
           responseMimeType: 'application/json',
+          thinkingConfig: {
+            thinkingBudget: 0,
+          },
         },
       }),
     })
