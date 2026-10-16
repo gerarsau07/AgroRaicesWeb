@@ -3,7 +3,6 @@ import {
   TriadaSection,
   CuencasSection,
   ComparativaSection,
-  SuiteSection,
   CierreSection,
 } from '@/components/home-page-rebuild'
 import { ScrollWorld } from '@/components/scroll-world'
@@ -16,7 +15,6 @@ export default function HomePage() {
       <TriadaSection />
       <CuencasSection />
       <ComparativaSection />
-      <SuiteSection />
       <CierreSection />
     </main>
   )

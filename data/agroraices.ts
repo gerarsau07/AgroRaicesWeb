@@ -4,48 +4,31 @@ export interface WorldStation {
   subtitle: string
   badge: string
   description: string
-  range: [number, number]
-  metrics: { label: string; value: string }[]
 }
 
 export const scrollWorldStations: WorldStation[] = [
   {
     id: 'orbital',
-    title: 'Teledetección Orbital y Clima 2026',
-    subtitle: 'Sentinel-2 · Landsat · PlanetScope 3m · GEE & Clima API',
-    badge: '01 · Satélites y Pronóstico Climático',
+    title: 'Observamos el desarrollo de cada cultivo',
+    subtitle: 'Seguimiento continuo durante toda la temporada',
+    badge: '01 · Vista desde el Cielo',
     description:
-      'Desde la constelación orbital (Sentinel-2, PlanetScope 3m y Landsat) y conectores climáticos para el ciclo 2026, AgroRaíces captura humedad foliar, emisión térmica y vigor del dosel sobre las 197 parcelas del Altiplano Central.',
-    range: [0, 0.35],
-    metrics: [
-      { label: 'Resolución', value: '3m – 10m + GEE' },
-      { label: 'Cobertura', value: '197 Parcelas (2022–2026)' },
-    ],
+      'Acompañamos el crecimiento de la cebada desde la siembra hasta la cosecha mediante imágenes satelitales para conocer la humedad de la planta y el vigor del follaje en cada etapa.',
   },
   {
-    id: 'multiespectral',
-    title: 'Fisiografía Fija INEGI y Deliberación QBAF',
-    subtitle: 'Topografía INEGI CEM 4.0 · DF-QuAD · Undercutting Capa 0',
-    badge: '02 · Arquitectura Neuro-Simbólica',
+    id: 'territorio',
+    title: 'Entendemos la tierra y el clima de tu región',
+    subtitle: 'Puebla, Hidalgo y Tlaxcala',
+    badge: '02 · Conocimiento del Terreno',
     description:
-      'Separamos la fisiografía invariante del terreno (altitud, pendiente y rugosidad INEGI CEM 4.0) de las señales dinámicas del ciclo agrícola, deliberando mediante un Árbitro Bipolar Cuantitativo (QBAF + DF-QuAD) especializado por estado.',
-    range: [0.35, 0.72],
-    metrics: [
-      { label: 'Arquitectura', value: 'QBAF + DF-QuAD + SHAP' },
-      { label: 'Precisión OOF', value: 'r = 0.8584 · R² = 73.6%' },
-    ],
+      'Tomamos en cuenta la altura, la inclinación natural de cada terreno y el pronóstico de lluvias y temperaturas de tu municipio para evaluar las condiciones reales de tu parcela.',
   },
   {
     id: 'surco',
-    title: 'Explicabilidad SHAP e IA con Google Gemini',
-    subtitle: 'A pie de parcela con el Agricultor y Laboratorio del Analista',
-    badge: '03 · De SHAP al Lenguaje del Productor',
+    title: 'Explicaciones claras para decidir en el campo',
+    subtitle: 'De los datos a la tranquilidad del productor',
+    badge: '03 · A Pie de Parcela',
     description:
-      'Descomponemos cada predicción en kilos por hectárea con valores de Shapley (SHAP) para el analista, mientras que Google Gemini (3.8 Flash) traduce esos pesos en explicaciones claras y sin tecnicismos para el agricultor.',
-    range: [0.72, 1.0],
-    metrics: [
-      { label: 'Error Medio (MAE)', value: '± 296.3 kg/ha' },
-      { label: 'Asesor IA', value: 'SHAP + Google Gemini' },
-    ],
+      'Convertimos toda la información del terreno y del clima en un diagnóstico sencillo que te dice cuánto puedes cosechar, qué favorece a tu cultivo y qué aspectos conviene cuidar.',
   },
 ]

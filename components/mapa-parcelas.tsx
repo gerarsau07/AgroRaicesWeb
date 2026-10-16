@@ -1709,6 +1709,7 @@ export default function MapaParcelas() {
                 return (
                   <button
                     key={cfg.id}
+                    type="button"
                     onClick={() => {
                       setEstado(cfg.id)
                       setSelectedParcela(null)
@@ -2486,99 +2487,6 @@ export default function MapaParcelas() {
                         </div>
                       </div>
                     )}
-
-                    {/* 3. Selector rápido y limpio solo por hectáreas (sin datos técnicos) */}
-                    <div className="p-5 rounded-2xl bg-[#1e1713]/60 border border-white/10 space-y-4">
-                      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-                        <div>
-                          <span className="text-xs font-bold text-white block">
-                            ¿Prefieres buscarla rápido por sus hectáreas?
-                          </span>
-                          <span className="text-[11px] text-[#c9b7aa]">
-                            Elige el tamaño aproximado de tu terreno en {municipioAgricultor}:
-                          </span>
-                        </div>
-
-                        <div className="flex flex-wrap gap-1.5">
-                          {[
-                            { id: 'todos', label: 'Todas' },
-                            { id: 'pequenas', label: 'Pequeñas (< 5 ha)' },
-                            { id: 'medianas', label: 'Medianas (5 a 15 ha)' },
-                            { id: 'grandes', label: 'Grandes (> 15 ha)' },
-                          ].map((t) => (
-                            <button
-                              key={t.id}
-                              type="button"
-                              onClick={() => setFiltroTamano(t.id as any)}
-                              className={`px-3 py-1.5 rounded-xl text-xs font-medium border transition cursor-pointer ${
-                                filtroTamano === t.id
-                                  ? 'bg-[#e2b957] text-[#1e1713] font-bold border-[#e2b957]'
-                                  : 'bg-white/5 border-white/10 text-[#c9b7aa] hover:text-white'
-                              }`}
-                            >
-                              {t.label}
-                            </button>
-                          ))}
-                        </div>
-                      </div>
-
-                      {/* Buscador simple por número de hectáreas */}
-                      <div className="relative">
-                        <Search className="w-3.5 h-3.5 absolute left-3 top-1/2 -translate-y-1/2 text-white/40" />
-                        <input
-                          type="text"
-                          value={filtroTextoParcela}
-                          onChange={(e) => setFiltroTextoParcela(e.target.value)}
-                          placeholder="Escribe cuántas hectáreas mide tu parcela (ej. 5 o 2.3)..."
-                          className="w-full pl-8 pr-3 py-2 bg-[#1e1713] border border-white/10 rounded-xl text-xs text-white placeholder-white/40 focus:outline-none focus:ring-1 focus:ring-[#e2b957]"
-                        />
-                      </div>
-
-                      {/* Tarjetas minimalistas (Solo Identidad y Tamaño en Hectáreas, 0% ruido técnico) */}
-                      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2.5 max-h-72 overflow-y-auto pr-1">
-                        {parcelasFiltradasAmigables.map((p, idx) => {
-                          const isSelected = selectedParcela?.id_poligono === p.id_poligono
-                          return (
-                            <div
-                              key={p.id_poligono}
-                              onClick={() => {
-                                selectParcela(p, true)
-                              }}
-                              className={`p-3.5 rounded-2xl border transition-colors cursor-pointer flex items-center justify-between gap-3 ${
-                                isSelected
-                                  ? 'bg-[#1e1713] border-[#e2b957] ring-2 ring-[#e2b957]/40 shadow-lg'
-                                  : 'bg-[#1e1713]/70 border-white/10 hover:border-white/30 hover:bg-[#1e1713]'
-                              }`}
-                            >
-                              <div className="flex items-center gap-3">
-                                <div className="w-9 h-9 rounded-xl bg-[#b85c38]/20 border border-[#d87a52]/30 flex items-center justify-center text-[#e2b957] shrink-0">
-                                  <Wheat className="w-4 h-4" aria-hidden="true" />
-                                </div>
-                                <div>
-                                  <h4 className="font-extrabold text-white text-sm tabular-nums">
-                                    {p.area_ha} hectáreas
-                                  </h4>
-                                  <span className="text-[11px] text-[#c9b7aa] block">
-                                    Parcela #{idx + 1} en {p.municipio}
-                                  </span>
-                                </div>
-                              </div>
-
-                              <button
-                                type="button"
-                                onClick={(e) => {
-                                  e.stopPropagation()
-                                  handleSeleccionarParcelaCaminoA(p)
-                                }}
-                                className="px-3 py-1.5 rounded-xl bg-[#b85c38] hover:bg-[#c96a45] text-white text-xs font-bold shrink-0 cursor-pointer transition-colors"
-                              >
-                                Elegir
-                              </button>
-                            </div>
-                          )
-                        })}
-                      </div>
-                    </div>
                   </div>
                 )}
 
@@ -2981,9 +2889,6 @@ export default function MapaParcelas() {
             {/* Cabecera y Sub-Pestañas del Analista */}
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-white/10 pb-5 mb-6">
               <div>
-                <div className="inline-flex items-center gap-2 px-2.5 py-0.5 rounded-md bg-sky-500/20 text-sky-300 text-xs font-medium mb-1">
-                  <Sliders className="w-3.5 h-3.5" /> Arquitectura Neuro-Simbólica QBAF + DF-QuAD + SHAP (Paso 6 NB)
-                </div>
                 <h3 className="text-xl sm:text-2xl font-bold text-white">
                   Laboratorio del Analista · Casos Particulares y Grupos de Parcelas
                 </h3>
@@ -3030,9 +2935,8 @@ export default function MapaParcelas() {
                     : 'border-transparent text-[#c9b7aa] hover:text-white'
                 }`}
               >
-                <Sliders className="w-4 h-4 text-sky-400" />
+                <Sliders className="w-4 h-4 text-sky-400" aria-hidden="true" />
                 <span>1. Casos Particulares y Simulación en Vivo (SHAP Individual)</span>
-                <span className="px-1.5 py-0.5 rounded text-[9px] bg-[#e2b957]/20 text-[#e2b957]">Paso 6 NB</span>
               </button>
 
               <button
@@ -3044,9 +2948,8 @@ export default function MapaParcelas() {
                     : 'border-transparent text-[#c9b7aa] hover:text-white'
                 }`}
               >
-                <Layers className="w-4 h-4 text-sky-400" />
+                <Layers className="w-4 h-4 text-sky-400" aria-hidden="true" />
                 <span>2. Análisis con Grupos de Parcelas (SHAP Grupal + Dataset AgroCebada)</span>
-                <span className="px-1.5 py-0.5 rounded text-[9px] bg-sky-500/20 text-sky-300">197 Predios</span>
               </button>
 
               <button
@@ -3063,9 +2966,8 @@ export default function MapaParcelas() {
                     : 'border-transparent text-[#c9b7aa] hover:text-white'
                 }`}
               >
-                <Calendar className="w-4 h-4 text-[#e2b957]" />
+                <Calendar className="w-4 h-4 text-[#e2b957]" aria-hidden="true" />
                 <span>3. Predicción Próximo Año (Campaña 2026 · 197 Parcelas)</span>
-                <span className="px-1.5 py-0.5 rounded text-[9px] bg-[#b85c38]/30 text-[#f5e3d7]">Clima API + GEE</span>
               </button>
             </div>
 
