@@ -50,9 +50,9 @@ export function HeroSection() {
 
           {/* Gran Titular Editorial */}
           <h1 className="text-balance text-4xl font-extrabold leading-[1.08] tracking-[-0.04em] text-white sm:text-6xl lg:text-7xl">
-            De la órbita satelital al{' '}
-            <span className="bg-gradient-to-r from-[#e2b957] via-[#d87a52] to-[#b85c38] bg-clip-text text-transparent">
-              surco de malta.
+            Lee el campo
+            <span className="block bg-gradient-to-r from-[#e2b957] via-[#d87a52] to-[#b85c38] bg-clip-text text-transparent">
+              Anticipa la cosecha
             </span>
           </h1>
 
@@ -213,7 +213,7 @@ export function TriadaSection() {
 }
 
 // =========================================================================
-// 3. LAS TRES CUENCAS DE LA CEBADA MALTERA
+// 3. LAS TRES CUENCAS DE LA CEBADA
 // =========================================================================
 export function CuencasSection() {
   return (
@@ -495,7 +495,7 @@ export function CierreSection() {
           <Wheat className="size-7" />
         </div>
         <h2 className="text-balance text-3xl font-extrabold tracking-tight text-white sm:text-5xl">
-          La cebada maltera del mañana se cultiva con precisión hoy.
+          La cebada del mañana se cultiva con precisión hoy.
         </h2>
         <p className="mx-auto mt-4 max-w-2xl text-sm leading-relaxed text-[#c7b4a6] sm:text-base">
           Consulta la explicación en lenguaje claro de tu parcela con Google Gemini o audita la proyección 2026 de las 197 parcelas con el motor QBAF + DF-QuAD + SHAP.
