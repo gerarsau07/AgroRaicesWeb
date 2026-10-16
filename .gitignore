@@ -9,9 +9,10 @@ venv/
 Thumbs.db
 .vscode/
 
-# Secretos y variables de entorno locales
+# Secretos y variables de entorno locales (NUNCA se suben a GitHub)
 .env
-.env*.local
+.env.*
+!.env.example
 *.key
 
 # Common Next.js / Node

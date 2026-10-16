@@ -342,12 +342,12 @@ export function About() {
       <div className="mx-auto max-w-7xl px-5 lg:px-8">
         <div className="grid gap-14 lg:grid-cols-[0.9fr_1.1fr] lg:items-end">
           <motion.div variants={itemVariants}>
-            <p className="text-xs font-bold uppercase tracking-[0.2em] text-[#b85c38]">01 / Quiénes somos y Metodología</p>
+            <p className="text-xs font-bold uppercase tracking-[0.2em] text-[#b85c38]">01 / Quiénes somos y Metodología 2026</p>
             <h2 className="text-balance text-4xl font-extrabold leading-tight tracking-[-0.035em] text-[#241810] sm:text-5xl mt-4">
-              Ciencia de datos y satélites con raíces en el territorio.
+              Inteligencia neuro-simbólica, satélites e IA generativa con raíces en el campo.
             </h2>
             <p className="mt-6 max-w-lg text-base leading-7 text-[#6e5a4d]">
-              Nacimos para transformar la cadena agroindustrial de la cebada maltera. Integramos señales satelitales multiespectrales (PlanetScope, Sentinel-2, Landsat) con topografía de alta precisión INEGI CEM 4.0 para predecir con certeza el rendimiento antes de la cosecha.
+              Nacimos para transformar la cadena productiva de la cebada maltera en el Altiplano Central. Combinamos fisiografía invariante <strong>INEGI CEM 4.0</strong>, señales satelitales y climáticas dinámicas (<strong>PlanetScope 3m, Sentinel-2, Landsat, GEE y APIs meteorológicas 2026</strong>), un árbitro neuro-simbólico <strong>QBAF + DF-QuAD</strong>, explicabilidad matemática <strong>SHAP</strong> y traducción en lenguaje natural mediante <strong>Google Gemini</strong>.
             </p>
             <div className="mt-8 flex flex-wrap gap-4">
               <Link
@@ -360,25 +360,25 @@ export function About() {
                 href="/mapa"
                 className="inline-flex items-center gap-2 rounded-full border border-[#c4b1a1] bg-white px-6 py-3 text-sm font-semibold text-[#241810] shadow-sm transition hover:bg-[#ede5dc]"
               >
-                Ver parcelas en el mapa <ChevronRight className="size-4 text-[#d87a52]" />
+                Explorar las 197 parcelas <ChevronRight className="size-4 text-[#d87a52]" />
               </Link>
             </div>
           </motion.div>
           <motion.div variants={containerVariants} className="grid gap-4 sm:grid-cols-3">
             <Sensor
               icon={<Satellite className="size-5" />}
-              title="PlanetScope (3 m)"
-              copy="Textura foliar de alta resolución, área foliar (LAI) y verdor persistente en maduración."
+              title="Satélite + GEE 2026"
+              copy="PlanetScope (3m), Sentinel-2 (NDWI, DSWI2, STI) y Landsat térmico (VI6T) acoplados a proyecciones 2026."
             />
             <Sensor
-              icon={<Droplets className="size-5" />}
-              title="Sentinel-2 (10-20 m)"
-              copy="Estrés hídrico (NDWI), absorción de agua en suelo (DSWI) y vigor multiespectral."
+              icon={<Network className="size-5" />}
+              title="QBAF + DF-QuAD + SHAP"
+              copy="Deliberación gradual por estado con Undercutting en Capa 0 y descomposición aditiva exacta (φ₀ + Σφᵢ = ŷ)."
             />
             <Sensor
-              icon={<ThermometerSun className="size-5" />}
-              title="Landsat Térmico"
-              copy="Temperatura superficial del suelo (VI6T), choque calórico y riesgo térmico."
+              icon={<Sparkles className="size-5" />}
+              title="IA Google Gemini"
+              copy="Traduce los pesos matemáticos de SHAP en diagnósticos y consejos agronómicos claros sin tecnicismos para el productor."
             />
           </motion.div>
         </div>
@@ -390,13 +390,13 @@ export function About() {
         >
           <div className="max-w-3xl">
             <span className="inline-flex rounded-full bg-[#e2b957] px-3.5 py-1 text-[11px] font-bold uppercase tracking-[0.14em] text-[#1e1713]">
-              Propósito AgroCebada 2026
+              Propósito AgroCebada 2026 · 197 Parcelas
             </span>
             <h3 className="mt-4 text-2xl font-bold sm:text-3xl text-white">
-              Cerrando la brecha entre la telemetría espacial y el rendimiento en tolva.
+              Doble puente tecnológico: rigor SHAP para el analista y claridad con Google Gemini para el agricultor.
             </h3>
             <p className="mt-4 text-sm leading-7 text-[#c9b7aa] sm:text-base">
-              Nuestra metodología combina calibración agronómica en campo con series de tiempo multiespectrales. Mediante el Pipeline Oficial AgroRaíces, predecimos el rendimiento antes de la cosecha, permitiendo planificar la logística de acopio, liquidación y decisiones de manejo intrapredial.
+              Para proyectar la campaña Abril–Octubre 2026 sobre la totalidad de las 197 parcelas (138 de entrenamiento con cosecha 2025 conocida y 59 de prueba ciega), nuestro motor preserva la topografía fija de cada polígono (INEGI CEM 4.0) y genera las covariables dinámicas climáticas y satelitales de 2026. Así, el analista audita la contribución exacta de cada variable en kg/ha con SHAP, mientras el agricultor recibe una explicación clara y accionable validada por IA.
             </p>
           </div>
         </motion.div>
@@ -423,40 +423,40 @@ function Sensor({ icon, title, copy }: { icon: React.ReactNode; title: string; c
 export function ModelSpecs() {
   const senales = [
     {
-      titulo: 'Vigor foliar y biomasa (LAI & NDVI)',
-      explicacion: 'Mide el área foliar activa y persistencia verde en maduración con PlanetScope (3m).',
+      titulo: 'Humedad foliar y balance SWIR (s2_ndwi_mean, s2_ndwi_min, s2_dswi2_mean)',
+      explicacion: 'Nodos 1 y 3 QBAF: Evalúa retención de agua en hoja y suelo sin saturación mediante Sentinel-2 y síntesis GEE 2026.',
       porcentaje: 94,
-      icono: '🌿',
+      icon: <Droplets className="size-4 text-[#d87a52] shrink-0" aria-hidden="true" />,
     },
     {
-      titulo: 'Estrés térmico de superficie (VI6T)',
-      explicacion: 'Detecta choque térmico e inversión de temperatura con banda térmica Landsat.',
-      porcentaje: 89,
-      icono: '☀️',
+      titulo: 'Anomalía térmica de abril y downscaling CEM 4.0 (bi_Tmin_anom25_04, lp_Tmin_anom25_04)',
+      explicacion: 'Nodo 1 QBAF: Cuantifica riesgo de helada en nacencia y gradiente adiabático (-0.0065 °C/m) con INEGI + APIs climáticas.',
+      porcentaje: 90,
+      icon: <ThermometerSun className="size-4 text-[#d87a52] shrink-0" aria-hidden="true" />,
     },
     {
-      titulo: 'Estrés hídrico y humedad (NDWI & DSWI2)',
-      explicacion: 'Evalúa el contenido de agua en follaje y absorción del suelo con Sentinel-2.',
-      porcentaje: 86,
-      icono: '💧',
+      titulo: 'Vigor de dosel y Undercutting Capa 0 (planet_ndvi_mean, planet_msavi_mean, planet_lai_std)',
+      explicacion: 'Capa 0 y Nodo 5 QBAF: Mide dinámica foliar 3m y activa el undercutting (σ_ET=0.001) cuando NDVI supera el percentil 75.',
+      porcentaje: 87,
+      icon: <Leaf className="size-4 text-[#d87a52] shrink-0" aria-hidden="true" />,
     },
     {
-      titulo: 'Topografía INEGI CEM 4.0',
-      explicacion: 'Malla nativa de 120m para altitud (msnm) y pendiente del terreno (grados).',
-      porcentaje: 82,
-      icono: '⛰️',
+      titulo: 'Emisión térmica superficial y VPD (landsat_vi6t_max, bi_vpd_ndwi_stress, Z1/Z2_pls_clima)',
+      explicacion: 'Nodos 3 y 4 QBAF: Detecta choque calórico en floración y demanda evaporativa atmosférica mediante Landsat y PLS (k=2).',
+      porcentaje: 84,
+      icon: <Gauge className="size-4 text-[#d87a52] shrink-0" aria-hidden="true" />,
     },
     {
-      titulo: 'Prior territorial municipal',
-      explicacion: 'Calibración bayesiana con la media histórica de cada municipio en Hidalgo, Puebla y Tlaxcala.',
-      porcentaje: 76,
-      icono: '📍',
+      titulo: 'Fisiografía invariante y labranza pre-siembra (elevacion_msnm, pendiente_grados, s2_sti_presow)',
+      explicacion: 'Nodo 2 QBAF: Altitud, pendiente y rugosidad fijas INEGI CEM 4.0 combinadas con cobertura de rastrojo pre-siembra.',
+      porcentaje: 80,
+      icon: <Mountain className="size-4 text-[#d87a52] shrink-0" aria-hidden="true" />,
     },
     {
-      titulo: 'Escala y superficie del predio (log-área)',
-      explicacion: 'Superficie en hectáreas para balancear rendimientos por efecto de escala.',
-      porcentaje: 68,
-      icono: '📐',
+      titulo: 'Anclaje Bayesiano Municipal y escala predial (prior_municipal, log_area, elongacion_bbox)',
+      explicacion: 'Nodos 1 y 5 QBAF: Prior territorial por municipio en Hidalgo, Puebla y Tlaxcala y morfometría del polígono WKT.',
+      porcentaje: 74,
+      icon: <MapPin className="size-4 text-[#d87a52] shrink-0" aria-hidden="true" />,
     },
   ]
 
@@ -465,12 +465,12 @@ export function ModelSpecs() {
       <div className="mx-auto max-w-7xl px-5 lg:px-8">
         {/* Encabezado Principal */}
         <div className="mb-14 max-w-3xl">
-          <p className="text-xs font-bold uppercase tracking-[0.2em] text-[#d87a52]">02 / Arquitectura de Machine Learning</p>
+          <p className="text-xs font-bold uppercase tracking-[0.2em] text-[#d87a52]">02 / Arquitectura Neuro-Simbólica + IA Explicable</p>
           <h2 className="mt-4 text-balance text-4xl font-extrabold leading-tight tracking-[-0.035em] text-white sm:text-5xl">
-            ¿Cómo predice el Pipeline Oficial AgroRaíces la cosecha de tu parcela?
+            ¿Cómo delibera y explica el modelo QBAF + DF-QuAD + SHAP + Google Gemini?
           </h2>
           <p className="mt-5 leading-7 text-[#c7b4a6]">
-            En lugar de usar una fórmula rígida para todo el país, AgroRaíces implementa una <strong>arquitectura multi-modelo por estado</strong>. Un coordinador territorial identifica la cuenca geográfica de tu predio y consulta a ensambles de algoritmos calibrados específicamente para esa entidad.
+            AgroRaíces implementa un <strong>Marco de Argumentación Bipolar Cuantitativa (QBAF)</strong> con semántica gradual <strong>DF-QuAD</strong>. Cada estado cuenta con su propio árbitro de especialistas, auditado matemáticamente con valores de Shapley (<strong>SHAP</strong>) para el analista y traducido por <strong>Google Gemini (3.8 Flash)</strong> para el agricultor.
           </p>
         </div>
 
@@ -479,34 +479,36 @@ export function ModelSpecs() {
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-[#3d2e24] pb-6 mb-8">
             <div>
               <span className="inline-flex rounded-full border border-[#d87a52]/40 bg-[#2b1f18] px-3.5 py-1 text-[10px] font-bold uppercase tracking-[0.14em] text-[#d87a52]">
-                Arquitectura Oficial
+                Pipeline Oficial en Producción
               </span>
               <h3 className="mt-2 text-2xl font-bold tracking-tight text-white">
-                Ensambles regionales de Machine Learning de alta precisión
+                Deliberación DF-QuAD, Descomposición Aditiva SHAP y Traducción Generativa
               </h3>
             </div>
-            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-xl bg-white/5 border border-white/10 text-xs text-[#e2b957]">
-              <span>💡</span>
-              Tecnología validada en campo
+            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-xl bg-white/5 border border-white/10 text-xs text-[#e2b957] tabular-nums">
+              <ShieldCheck className="size-4 text-[#e2b957]" aria-hidden="true" />
+              <span>r = 0.8584 · R² = 73.62% · MAE = 296.3 kg/ha</span>
             </div>
           </div>
 
           <div className="grid gap-6 md:grid-cols-2">
             <div className="rounded-2xl border border-rose-950/60 bg-[#251817] p-6">
               <div className="text-xs uppercase tracking-wider font-bold text-rose-400 flex items-center gap-1.5">
-                <span>❌</span> El método tradicional
+                <X className="size-4 shrink-0" aria-hidden="true" />
+                <span>Los modelos convencionales de caja negra</span>
               </div>
               <p className="mt-2 text-sm leading-6 text-[#d9bebd]">
-                Usa una sola regresión lineal global. Trata por igual a una parcela plana con riego en el Valle de Apan que a una parcela en ladera volcánica en Chignahuapan o temporal en Calpulalpan, provocando sesgos críticos de estimación.
+                Aplican una regresión estática sin distinguir saturación óptica del NDVI, entregan predicciones opacas que no indican qué variable afectó en contra y muestran códigos de sensores incomprensibles para el productor en campo.
               </p>
             </div>
 
             <div className="rounded-2xl border border-[#d87a52]/50 bg-[#2a1d17] p-6 shadow-inner">
               <div className="text-xs uppercase tracking-wider font-bold text-[#e2b957] flex items-center gap-1.5">
-                <span>✅</span> La arquitectura oficial de AgroRaíces
+                <CheckCircle2 className="size-4 shrink-0" aria-hidden="true" />
+                <span>La tecnología AgroRaíces 2026</span>
               </div>
               <p className="mt-2 text-sm leading-6 text-[#f0ded3]">
-                Divide la inferencia entre tres motores especializados: ExtraTrees + SVR con prior bayesiano y downscaling adiabático en Hidalgo; ensamble dual (base + PLSRegression k=2) con SVR, Huber, GPR y ExtraTrees en Puebla; y clasificador ordinal probabilístico SVC con mediana regional en Tlaxcala.
+                Combina tres árbitros regionales (GradientBoosting + SVR Bayes en Hidalgo; SVR/Huber/GPR + PLS k=2 con Undercutting DF-QuAD en Puebla; Ancla Modal + SVC Ordinal en Tlaxcala), descompone cada predicción con SHAP (φ₀ + Σφᵢ = ŷ) y usa Google Gemini para explicarlo sin tecnicismos al agricultor.
               </p>
             </div>
           </div>
@@ -515,101 +517,101 @@ export function ModelSpecs() {
         {/* 2. El proceso en 4 pasos claros */}
         <div className="mb-14">
           <div className="mb-8">
-            <p className="text-xs font-bold uppercase tracking-[0.2em] text-[#d87a52]">Pipeline Técnico</p>
-            <h3 className="mt-2 text-3xl font-extrabold text-white">Los 4 pasos de la inferencia en producción</h3>
+            <p className="text-xs font-bold uppercase tracking-[0.2em] text-[#d87a52]">Pipeline Técnico 2026</p>
+            <h3 className="mt-2 text-3xl font-extrabold text-white">Los 4 pilares tecnológicos del sistema</h3>
           </div>
 
           <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
             {/* Paso 1 */}
-            <div className="flex flex-col justify-between rounded-3xl border border-[#4a382c] bg-[#1a130f] p-6 shadow-sm hover:border-[#b85c38] transition">
+            <div className="flex flex-col justify-between rounded-3xl border border-[#4a382c] bg-[#1a130f] p-6 shadow-sm hover:border-[#b85c38] transition-colors">
               <div>
-                <div className="mb-4 flex size-12 items-center justify-center rounded-2xl bg-[#2e2017] text-2xl">
-                  🛰️
+                <div className="mb-4 flex size-12 items-center justify-center rounded-2xl bg-[#2e2017] text-[#d87a52]">
+                  <Satellite className="size-6" aria-hidden="true" />
                 </div>
-                <span className="text-xs font-bold uppercase tracking-wider text-[#d87a52]">Paso 01</span>
-                <h4 className="mt-1 text-lg font-bold text-white">Ingesta Multiespectral</h4>
+                <span className="text-xs font-bold uppercase tracking-wider text-[#d87a52]">Pilar 01</span>
+                <h4 className="mt-1 text-lg font-bold text-white">Datos Fijos + Dinámicos 2026</h4>
                 <p className="mt-2 text-xs leading-5 text-[#c7b4a6]">
-                  Fusión de 3 constelaciones satelitales y topografía nativa de 120m:
+                  Separación de covariables para proyectar las 197 parcelas:
                 </p>
                 <ul className="mt-3 space-y-2 text-xs text-[#dcd2c9]">
                   <li className="flex items-start gap-1.5">
-                    <CheckCircle2 className="size-3.5 text-[#e2b957] shrink-0 mt-0.5" />
-                    <span><strong>PlanetScope (3m):</strong> Área foliar (LAI) y textura foliar.</span>
+                    <CheckCircle2 className="size-3.5 text-[#e2b957] shrink-0 mt-0.5" aria-hidden="true" />
+                    <span><strong>Fijas (INEGI CEM 4.0):</strong> Altitud, pendiente, rugosidad y geometría WKT.</span>
                   </li>
                   <li className="flex items-start gap-1.5">
-                    <CheckCircle2 className="size-3.5 text-[#e2b957] shrink-0 mt-0.5" />
-                    <span><strong>Sentinel-2:</strong> Humedad y estrés hídrico (NDWI, DSWI2).</span>
+                    <CheckCircle2 className="size-3.5 text-[#e2b957] shrink-0 mt-0.5" aria-hidden="true" />
+                    <span><strong>Clima 2026 (API):</strong> OpenWeather / Open-Meteo + downscaling adiabático.</span>
                   </li>
                   <li className="flex items-start gap-1.5">
-                    <CheckCircle2 className="size-3.5 text-[#e2b957] shrink-0 mt-0.5" />
-                    <span><strong>Landsat & INEGI:</strong> Térmico VI6T y relieve CEM 4.0.</span>
+                    <CheckCircle2 className="size-3.5 text-[#e2b957] shrink-0 mt-0.5" aria-hidden="true" />
+                    <span><strong>Satélite 2026 (GEE):</strong> Sentinel-2, Landsat y PlanetScope acoplados.</span>
                   </li>
                 </ul>
               </div>
             </div>
 
             {/* Paso 2 */}
-            <div className="flex flex-col justify-between rounded-3xl border border-[#4a382c] bg-[#1a130f] p-6 shadow-sm hover:border-[#e2b957] transition">
+            <div className="flex flex-col justify-between rounded-3xl border border-[#4a382c] bg-[#1a130f] p-6 shadow-sm hover:border-[#e2b957] transition-colors">
               <div>
-                <div className="mb-4 flex size-12 items-center justify-center rounded-2xl bg-[#2e2017] text-2xl">
-                  🧭
+                <div className="mb-4 flex size-12 items-center justify-center rounded-2xl bg-[#2e2017] text-[#e2b957]">
+                  <Network className="size-6" aria-hidden="true" />
                 </div>
-                <span className="text-xs font-bold uppercase tracking-wider text-[#e2b957]">Paso 02</span>
-                <h4 className="mt-1 text-lg font-bold text-white">Enrutador Territorial</h4>
+                <span className="text-xs font-bold uppercase tracking-wider text-[#e2b957]">Pilar 02</span>
+                <h4 className="mt-1 text-lg font-bold text-white">Árbitro QBAF + DF-QuAD</h4>
                 <p className="mt-2 text-xs leading-5 text-[#c7b4a6]">
-                  Identifica la cuenca territorial y el estado (Puebla, Hidalgo o Tlaxcala) de tu predio.
+                  Deliberación gradual entre nodos biofísicos y especialistas regionales:
                 </p>
                 <div className="mt-3 rounded-xl bg-[#251b15] border border-[#4a382c] p-3 text-xs text-[#c7b4a6]">
-                  <span className="font-semibold text-white block mb-1">Calibración Territorial:</span>
-                  Aplica prior bayesiano municipal y selecciona los modelos de Machine Learning calibrados específicamente para esa entidad.
+                  <span className="font-semibold text-white block mb-1">Undercutting en Capa 0:</span>
+                  Cuando el dosel supera el umbral de saturación óptica (NDVI &gt; P75 en Puebla), el árbitro reduce el peso de árboles ópticos (σ=0.001) y prioriza humedad SWIR y clima PLS.
                 </div>
               </div>
             </div>
 
             {/* Paso 3 */}
-            <div className="flex flex-col justify-between rounded-3xl border border-[#4a382c] bg-[#1a130f] p-6 shadow-sm hover:border-[#d87a52] transition">
+            <div className="flex flex-col justify-between rounded-3xl border border-[#4a382c] bg-[#1a130f] p-6 shadow-sm hover:border-[#d87a52] transition-colors">
               <div>
-                <div className="mb-4 flex size-12 items-center justify-center rounded-2xl bg-[#2e2017] text-2xl">
-                  🤖
+                <div className="mb-4 flex size-12 items-center justify-center rounded-2xl bg-[#2e2017] text-[#d87a52]">
+                  <BarChart3 className="size-6" aria-hidden="true" />
                 </div>
-                <span className="text-xs font-bold uppercase tracking-wider text-[#d87a52]">Paso 03</span>
-                <h4 className="mt-1 text-lg font-bold text-white">Especialistas Oficiales</h4>
+                <span className="text-xs font-bold uppercase tracking-wider text-[#d87a52]">Pilar 03</span>
+                <h4 className="mt-1 text-lg font-bold text-white">Explicabilidad Aditiva SHAP</h4>
                 <p className="mt-2 text-xs leading-5 text-[#c7b4a6]">
-                  Ensambles optimizados para cada realidad productiva:
+                  Descomposición exacta para el Laboratorio del Analista:
                 </p>
                 <ul className="mt-3 space-y-2 text-xs text-[#dcd2c9]">
                   <li className="flex items-start gap-1.5">
-                    <CheckCircle2 className="size-3.5 text-[#d87a52] shrink-0 mt-0.5" />
-                    <span><strong>Hidalgo:</strong> ExtraTrees (75%) + SVR RBF (25%).</span>
+                    <CheckCircle2 className="size-3.5 text-[#d87a52] shrink-0 mt-0.5" aria-hidden="true" />
+                    <span><strong>Ecuación exacta:</strong> Base regional φ₀ + Σφᵢ = Predicción ŷ.</span>
                   </li>
                   <li className="flex items-start gap-1.5">
-                    <CheckCircle2 className="size-3.5 text-[#d87a52] shrink-0 mt-0.5" />
-                    <span><strong>Puebla:</strong> Dual Base + PLS (k=2).</span>
+                    <CheckCircle2 className="size-3.5 text-[#d87a52] shrink-0 mt-0.5" aria-hidden="true" />
+                    <span><strong>Casos y Grupos:</strong> Auditoría individual y ranking grupal (mean |SHAP|).</span>
                   </li>
                   <li className="flex items-start gap-1.5">
-                    <CheckCircle2 className="size-3.5 text-[#d87a52] shrink-0 mt-0.5" />
-                    <span><strong>Tlaxcala:</strong> SVC ordinal + mediana regional.</span>
+                    <CheckCircle2 className="size-3.5 text-[#d87a52] shrink-0 mt-0.5" aria-hidden="true" />
+                    <span><strong>Campaña 2026:</strong> Simulación de escenarios para las 197 parcelas.</span>
                   </li>
                 </ul>
               </div>
             </div>
 
             {/* Paso 4 */}
-            <div className="flex flex-col justify-between rounded-3xl border border-[#b85c38]/40 bg-gradient-to-b from-[#2a1d16] to-[#1c130e] p-6 text-white shadow-xl hover:border-[#d87a52] transition">
+            <div className="flex flex-col justify-between rounded-3xl border border-[#b85c38]/40 bg-gradient-to-b from-[#2a1d16] to-[#1c130e] p-6 text-white shadow-xl hover:border-[#d87a52] transition-colors">
               <div>
-                <div className="mb-4 flex size-12 items-center justify-center rounded-2xl bg-[#3d271c] text-2xl">
-                  ⚖️
+                <div className="mb-4 flex size-12 items-center justify-center rounded-2xl bg-[#3d271c] text-[#e2b957]">
+                  <Sparkles className="size-6" aria-hidden="true" />
                 </div>
-                <span className="text-xs font-bold uppercase tracking-wider text-[#e2b957]">Paso 04</span>
-                <h4 className="mt-1 text-lg font-bold text-white">Veredicto y Acotamiento</h4>
+                <span className="text-xs font-bold uppercase tracking-wider text-[#e2b957]">Pilar 04</span>
+                <h4 className="mt-1 text-lg font-bold text-white">Asesor IA Google Gemini</h4>
                 <p className="mt-2 text-xs leading-5 text-[#c7b4a6]">
-                  Combina el ensamble y acota biológicamente el rendimiento entre <strong>1.50 y 4.80 t/ha</strong>.
+                  Valida los resultados SHAP y los traduce en lenguaje claro para el productor:
                 </p>
                 <div className="my-3 rounded-xl bg-black/40 border border-white/10 p-2.5 text-center text-xs text-[#e2b957] font-semibold">
-                  Rendimiento Calibrado para Campo
+                  0% Tecnicismos · 100% Accionable en Campo
                 </div>
                 <p className="text-[11px] leading-4 text-[#a69284]">
-                  Garantiza estimaciones fidedignas para tolva, liquidaciones y conteo de bultos de 50 kg.
+                  Explica qué condiciones de humedad o clima impulsaron la cosecha y qué factores en contra pueden causar problemas en la espiga.
                 </p>
               </div>
             </div>
@@ -625,7 +627,7 @@ export function ModelSpecs() {
                 <p className="text-xs font-bold uppercase tracking-[0.2em] text-[#d87a52]">Factores Biofísicos</p>
                 <h3 className="mt-1 text-xl font-bold text-white">¿Qué señales procesa el Modelo AgroRaíces?</h3>
               </div>
-              <Mountain className="size-6 text-[#d87a52]" />
+              <Mountain className="size-6 text-[#d87a52]" aria-hidden="true" />
             </div>
 
             <div className="space-y-4">
@@ -633,13 +635,13 @@ export function ModelSpecs() {
                 <div key={item.titulo}>
                   <div className="mb-1.5 flex justify-between items-baseline gap-3 text-xs">
                     <div>
-                      <span className="font-bold text-[#f0ded3] flex items-center gap-1.5 text-sm">
-                        <span>{item.icono}</span>
+                      <span className="font-bold text-[#f0ded3] flex items-center gap-2 text-sm">
+                        {item.icon}
                         {item.titulo}
                       </span>
                       <span className="block text-[11px] text-[#9e8b7d] mt-0.5">{item.explicacion}</span>
                     </div>
-                    <span className="font-bold text-[#e2b957] text-sm shrink-0">{item.porcentaje}% peso</span>
+                    <span className="font-bold text-[#e2b957] text-sm shrink-0 tabular-nums">{item.porcentaje}% peso</span>
                   </div>
                   <div className="h-2 rounded-full bg-[#2e2017] overflow-hidden">
                     <motion.div
@@ -693,8 +695,8 @@ export function ModelSpecs() {
               </div>
 
               <div className="mt-6 pt-5 border-t border-[#3d2e24] flex items-center justify-between text-xs text-[#a69284]">
-                <span>Adaptado a temporal y riego</span>
-                <span className="font-semibold text-[#e2b957]">Versión Final Producción (R² 72.8% · r 0.85)</span>
+                <span>QBAF + DF-QuAD + SHAP + Google Gemini</span>
+                <span className="font-semibold text-[#e2b957]">OOF Oficial (R² 73.62% · r 0.8584 · MAE 296.3 kg/ha)</span>
               </div>
             </div>
 

@@ -82,6 +82,7 @@ function readBackendDataFile(filename: string): string {
 }
 
 function loadModelTelemetryMap(): Record<string, {
+  rendimiento_real_t_ha?: number | null
   rendimiento_t_ha?: number
   nivel_potencial?: string
   diagnostico?: string
@@ -89,7 +90,19 @@ function loadModelTelemetryMap(): Record<string, {
   ndwi_mean?: number
   evi_std?: number
   lai_std?: number
+  ndvi_mean?: number
+  msavi_mean?: number
+  dswi2_mean?: number
+  sti_presow?: number
+  mra_mean?: number
   proxy_relieve_m?: number
+  grupo_homogeneo?: string
+  deliberacion_qbaf?: string
+  undercutting_activo?: boolean
+  base_regional_t_ha?: number
+  suma_shap_kg_ha?: number
+  top_impulsores?: string
+  top_frenadores?: string
 }> {
   try {
     const metaPath = path.join(process.cwd(), 'backend', 'routers', 'modelo_metadata.json')
@@ -101,6 +114,34 @@ function loadModelTelemetryMap(): Record<string, {
     // Fallback silencioso
   }
   return {}
+}
+
+function loadCampana2026Meta(): {
+  parcelas_2026: Record<string, any>
+  pronostico_municipal_2026: Record<string, any>
+  resumen_estatal_2026: Record<string, any>
+  estrategia_datos_2026: Record<string, any>
+} {
+  try {
+    const p2026Path = path.join(process.cwd(), 'backend', 'routers', 'predicciones_2026_meta.json')
+    if (fs.existsSync(p2026Path)) {
+      const parsed = JSON.parse(fs.readFileSync(p2026Path, 'utf8'))
+      return {
+        parcelas_2026: parsed.parcelas_2026 || {},
+        pronostico_municipal_2026: parsed.pronostico_municipal_2026 || {},
+        resumen_estatal_2026: parsed.resumen_estatal_2026 || {},
+        estrategia_datos_2026: parsed.estrategia_datos_2026 || {},
+      }
+    }
+  } catch {
+    // Fallback silencioso
+  }
+  return {
+    parcelas_2026: {},
+    pronostico_municipal_2026: {},
+    resumen_estatal_2026: {},
+    estrategia_datos_2026: {},
+  }
 }
 
 const BACKEND_URL = process.env.BACKEND_URL || 'http://localhost:8000'
@@ -127,6 +168,8 @@ export async function GET(request: Request) {
     }
 
     const telemetryMap = loadModelTelemetryMap()
+    const campana2026 = loadCampana2026Meta()
+    const parcelas2026Map = campana2026.parcelas_2026
 
     // 1. Leer topografía y variables agroclimáticas desde backend/data/topografia_inegi_cem4_parcelas.csv
     const topoMap = new Map<string, { elevacion: number; pendiente: number; proxy_relieve_m: number }>()
@@ -212,13 +255,15 @@ export async function GET(request: Request) {
       }
 
       const tele = telemetryMap[pid] || {}
+      const tele26 = parcelas2026Map[pid] || {}
       const esPrediccion = conjunto === 'PREDICCION'
       let rendimiento: number | null = null
       let nivel = 'Pendiente de inferencia'
 
       if (!esPrediccion) {
-        rendimiento = tele.rendimiento_t_ha !== undefined
-          ? Math.round(tele.rendimiento_t_ha * 100) / 100
+        const refVal = tele.rendimiento_real_t_ha ?? tele.rendimiento_t_ha
+        rendimiento = refVal !== undefined && refVal !== null
+          ? Math.round(refVal * 100) / 100
           : (MUNICIPIO_BENCHMARKS[municipio] ?? 3.85)
         rendimientosReales.push(rendimiento)
         if (rendimiento < 3.2) nivel = 'Bajo (< 3.2 t/ha)'
@@ -244,6 +289,24 @@ export async function GET(request: Request) {
           estado,
           conjunto,
           rendimiento_t_ha: rendimiento,
+          rendimiento_predicho_t_ha: tele.rendimiento_t_ha ?? null,
+          rendimiento_2026_t_ha: tele26.RENDIMIENTO_2026_PROYECTADO_T_HA ?? tele.rendimiento_t_ha ?? null,
+          produccion_2026_t: tele26.PRODUCCION_2026_ESTIMADA_T ?? null,
+          cambio_2026_vs_2025_kg_ha: tele26.CAMBIO_2026_VS_2025_KG_HA ?? 0,
+          anom_tmin_abril_2026_c: tele26.anom_tmin_abril_2026_c ?? -1.72,
+          tmean_pv_2026_c: tele26.tmean_pv_2026_c ?? 18.5,
+          gdd_cardinales_pv_2026: tele26.gdd_cardinales_pv_2026 ?? 2950,
+          vpd_pv_2026_kpa: tele26.vpd_pv_2026_kpa ?? 0.66,
+          lluvia_proyectada_pv_2026_mm: tele26.lluvia_proyectada_pv_2026_mm ?? 590,
+          s2_ndwi_mean_2026: tele26.s2_ndwi_mean_2026 ?? tele.ndwi_mean ?? -0.15,
+          s2_ndwi_min_2026: tele26.s2_ndwi_min_2026 ?? tele.ndwi_mean ?? -0.18,
+          s2_dswi2_mean_2026: tele26.s2_dswi2_mean_2026 ?? tele.dswi2_mean ?? 2.15,
+          landsat_vi6t_max_2026: tele26.landsat_vi6t_max_2026 ?? tele.vi6t_max ?? -0.55,
+          planet_ndvi_mean_2026: tele26.planet_ndvi_mean_2026 ?? tele.ndvi_mean ?? 0.36,
+          planet_lai_mean_2026: tele26.planet_lai_mean_2026 ?? 1.25,
+          top_impulsores_shap_2026: tele26.top_impulsores_shap_2026 ?? tele.top_impulsores ?? null,
+          top_frenadores_shap_2026: tele26.top_frenadores_shap_2026 ?? tele.top_frenadores ?? null,
+          shap_variables_2026: tele26.shap_variables ?? [],
           es_prediccion: esPrediccion,
           elevacion_msnm: elevacion,
           pendiente_grados: pendiente,
@@ -251,9 +314,21 @@ export async function GET(request: Request) {
           tipo_relieve: tipoRelieve,
           nivel_rendimiento: nivel,
           vi6t_max: tele.vi6t_max ?? -0.58,
-          ndwi_mean: tele.ndwi_mean ?? 0.22,
-          evi_std: tele.evi_std ?? 0.26,
+          ndwi_mean: tele.ndwi_mean ?? -0.15,
+          evi_std: tele.evi_std ?? 0.06,
           lai_std: tele.lai_std ?? 0.38,
+          ndvi_mean: tele.ndvi_mean ?? 0.34,
+          msavi_mean: tele.msavi_mean ?? 0.44,
+          dswi2_mean: tele.dswi2_mean ?? -0.42,
+          sti_presow: tele.sti_presow ?? 1.18,
+          mra_mean: tele.mra_mean ?? 0.38,
+          grupo_homogeneo: tele.grupo_homogeneo ?? null,
+          deliberacion_qbaf: tele.deliberacion_qbaf ?? null,
+          undercutting_activo: tele.undercutting_activo ?? false,
+          base_regional_t_ha: tele.base_regional_t_ha ?? null,
+          suma_shap_kg_ha: tele.suma_shap_kg_ha ?? null,
+          top_impulsores: tele.top_impulsores ?? null,
+          top_frenadores: tele.top_frenadores ?? null,
         },
       })
     }
@@ -283,6 +358,11 @@ export async function GET(request: Request) {
         pendiente_promedio_grados: pendPromedio,
         parcelas_con_rendimiento_real: rendimientosReales.length,
         parcelas_para_prediccion: features.length - rendimientosReales.length,
+      },
+      campana_2026: {
+        pronostico_municipal_2026: campana2026.pronostico_municipal_2026,
+        resumen_estatal_2026: campana2026.resumen_estatal_2026,
+        estrategia_datos_2026: campana2026.estrategia_datos_2026,
       },
       geojson: {
         type: 'FeatureCollection',

@@ -13,7 +13,9 @@ import {
   Mountain,
   Satellite,
   ShieldCheck,
+  Sparkles,
   Wheat,
+  XCircle,
   Zap,
 } from 'lucide-react'
 
@@ -40,6 +42,12 @@ export function HeroSection() {
 
       <div className="relative mx-auto max-w-7xl px-5 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-4xl text-center">
+          {/* Badge de Nueva Arquitectura */}
+          <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-[#d87a52]/40 bg-[#271d17]/90 px-4 py-1.5 text-xs font-semibold text-[#f0ded3] shadow-lg">
+            <Sparkles className="size-3.5 text-[#e2b957]" />
+            <span>Arquitectura QBAF + DF-QuAD · Explicabilidad SHAP · IA Google Gemini</span>
+          </div>
+
           {/* Gran Titular Editorial */}
           <h1 className="text-balance text-4xl font-extrabold leading-[1.08] tracking-[-0.04em] text-white sm:text-6xl lg:text-7xl">
             De la órbita satelital al{' '}
@@ -50,7 +58,7 @@ export function HeroSection() {
 
           {/* Subtítulo descriptivo */}
           <p className="mx-auto mt-6 max-w-2xl text-pretty text-base leading-relaxed text-[#dcd2c9] sm:text-lg">
-            Estimamos con rigor científico el rendimiento de cebada maltera en el Altiplano Central fusionando telemetría de <strong className="text-white font-medium">PlanetScope (3m)</strong>, <strong className="text-white font-medium">Sentinel-2</strong>, <strong className="text-white font-medium">Landsat</strong> y topografía <strong className="text-white font-medium">INEGI CEM 4.0</strong>. Del espacio a la tolva del productor.
+            Predecimos y explicamos el rendimiento de cebada maltera en las <strong className="text-white font-medium">197 parcelas</strong> del Altiplano Central mediante un <strong className="text-white font-medium">Árbitro Neuro-Simbólico (QBAF + DF-QuAD)</strong>, valores de Shapley (<strong className="text-white font-medium">SHAP</strong>), proyecciones climáticas y satelitales 2026 (<strong className="text-white font-medium">INEGI CEM 4.0 + GEE</strong>) y asesoría en lenguaje natural con <strong className="text-white font-medium">Google Gemini</strong>.
           </p>
 
           {/* Acciones principales (CTAs) */}
@@ -67,13 +75,13 @@ export function HeroSection() {
               className="inline-flex h-12 items-center justify-center gap-2 rounded-full border border-[#6b5343] bg-[#271d17]/80 px-7 text-sm font-semibold text-[#f0ded3] shadow-sm backdrop-blur-md transition hover:border-[#96745d] hover:bg-[#34271f] hover:text-white"
             >
               <Compass className="size-4 text-[#d87a52]" />
-              <span>Explorar mapa de parcelas</span>
+              <span>Explorar 197 parcelas</span>
             </Link>
             <Link
               href="/nosotros"
               className="inline-flex h-12 items-center justify-center gap-2 rounded-full border border-transparent px-5 text-sm font-medium text-[#c9b7aa] transition hover:text-white"
             >
-              <span>Metodología científica</span>
+              <span>Arquitectura QBAF + SHAP</span>
               <ChevronRight className="size-4 text-[#d87a52]" />
             </Link>
           </div>
@@ -92,13 +100,13 @@ export function TriadaSection() {
       <div className="mx-auto max-w-7xl px-5 sm:px-6 lg:px-8">
         <div className="max-w-3xl">
           <span className="inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-[0.2em] text-[#d87a52]">
-            <Layers className="size-4" /> La Tríada Tecnológica
+            <Layers className="size-4" /> La Tríada Tecnológica 2026
           </span>
           <h2 className="mt-3 text-balance text-3xl font-extrabold tracking-tight text-white sm:text-4xl lg:text-5xl">
-            Tres dimensiones de datos para entender cada hectárea.
+            Fisiografía fija, señales dinámicas e inteligencia explicable.
           </h2>
           <p className="mt-4 text-base leading-relaxed text-[#c7b4a6]">
-            Una sola ecuación lineal no puede explicar la diversidad del Altiplano. AgroRaíces cruza la física satelital con la topografía de cuenca y algoritmos de Machine Learning especializados.
+            AgroRaíces separa los atributos invariantes del terreno de las covariables climáticas y satelitales de cada ciclo agrícola, deliberando con un modelo neuro-simbólico transparente tanto para el analista como para el agricultor.
           </p>
         </div>
 
@@ -110,28 +118,28 @@ export function TriadaSection() {
               <div className="mb-6 flex size-13 items-center justify-center rounded-2xl bg-[#2e2017] text-[#d87a52] ring-1 ring-[#5a4130]">
                 <Satellite className="size-7" />
               </div>
-              <span className="text-xs font-bold uppercase tracking-wider text-[#d87a52]">Capa 01 · Orbital</span>
-              <h3 className="mt-2 text-xl font-bold text-white">Constelación Satelital Tri-Sensor</h3>
+              <span className="text-xs font-bold uppercase tracking-wider text-[#d87a52]">Capa 01 · Covariables Dinámicas</span>
+              <h3 className="mt-2 text-xl font-bold text-white">Satélite Tri-Sensor + GEE & Clima 2026</h3>
               <p className="mt-3 text-sm leading-relaxed text-[#c2aba0]">
-                Monitoreo continuo de 107,666 registros satelitales (2022–2025). Filtramos al 30% de nubosidad para evitar falsas depresiones en el vigor y medimos la dinámica de floración.
+                Integramos 107,666 registros históricos (Sentinel-2, Landsat y PlanetScope 3m con filtro de nubosidad ≤ 30%) con pronósticos climáticos (OpenWeather / Open-Meteo) y conector Google Earth Engine para proyectar el ciclo Abril–Octubre 2026.
               </p>
               <div className="mt-6 space-y-2.5 border-t border-[#3a2c22] pt-6 text-xs text-[#dcd2c9]">
                 <div className="flex items-center justify-between">
                   <span className="text-[#9e8b7d]">PlanetScope (3m):</span>
-                  <b className="text-white font-medium">Área foliar (LAI) & MSAVI</b>
+                  <b className="text-white font-medium">NDVI, MSAVI & Dinámica LAI</b>
                 </div>
                 <div className="flex items-center justify-between">
-                  <span className="text-[#9e8b7d]">Sentinel-2 (10m):</span>
-                  <b className="text-white font-medium">Humedad NDWI & Clorofila MRA</b>
+                  <span className="text-[#9e8b7d]">Sentinel-2 (GEE):</span>
+                  <b className="text-white font-medium">Humedad NDWI, DSWI2 & STI</b>
                 </div>
                 <div className="flex items-center justify-between">
-                  <span className="text-[#9e8b7d]">Landsat (30m):</span>
-                  <b className="text-white font-medium">Banda Térmica VI6T</b>
+                  <span className="text-[#9e8b7d]">Landsat & Clima API:</span>
+                  <b className="text-white font-medium">VI6T Térmico, GDD & VPD 2026</b>
                 </div>
               </div>
             </div>
             <div className="mt-8 rounded-xl bg-[#2a1e17] p-3 text-center text-xs font-semibold text-[#e2b957]">
-              Captura del estrés hídrico y confort del cultivo
+              Monitoreo y proyección agroclimática 2026
             </div>
           </div>
 
@@ -142,28 +150,28 @@ export function TriadaSection() {
               <div className="mb-6 flex size-13 items-center justify-center rounded-2xl bg-[#2e2017] text-[#e2b957] ring-1 ring-[#5a4130]">
                 <Mountain className="size-7" />
               </div>
-              <span className="text-xs font-bold uppercase tracking-wider text-[#e2b957]">Capa 02 · Fisiografía</span>
-              <h3 className="mt-2 text-xl font-bold text-white">Topografía INEGI & CHIRTS-ERA5</h3>
+              <span className="text-xs font-bold uppercase tracking-wider text-[#e2b957]">Capa 02 · Base Invariante</span>
+              <h3 className="mt-2 text-xl font-bold text-white">Fisiografía Fija INEGI CEM 4.0</h3>
               <p className="mt-3 text-sm leading-relaxed text-[#c2aba0]">
-                Descendemos a las microcuencas mediante el Continuo de Elevaciones Mexicano CEM 4.0. Aplicamos corrección adiabática térmica por altitud (Γ = -0.0065°C/m) para discriminar laderas frías de fondos de valle fértiles.
+                Preservamos las variables físicas que no cambian entre ciclos agrícolas (altitud, pendiente, rugosidad y geometría WKT) desde el Continuo de Elevaciones Mexicano CEM 4.0, aplicando downscaling adiabático (Γ = -0.0065°C/m).
               </p>
               <div className="mt-6 space-y-2.5 border-t border-[#3a2c22] pt-6 text-xs text-[#dcd2c9]">
                 <div className="flex items-center justify-between">
-                  <span className="text-[#9e8b7d]">Relieve CEM 4.0:</span>
-                  <b className="text-white font-medium">Altitud msnm & Pendiente en grados</b>
+                  <span className="text-[#9e8b7d]">Relieve Fijo CEM 4.0:</span>
+                  <b className="text-white font-medium">Altitud msnm & Pendiente (°)</b>
                 </div>
                 <div className="flex items-center justify-between">
-                  <span className="text-[#9e8b7d]">CHIRTS-ERA5:</span>
-                  <b className="text-white font-medium">Cubo térmico de 96 GeoTIFFs</b>
+                  <span className="text-[#9e8b7d]">Morfometría Predial:</span>
+                  <b className="text-white font-medium">Rugosidad (m) & Elongación UTM</b>
                 </div>
                 <div className="flex items-center justify-between">
-                  <span className="text-[#9e8b7d]">Riesgo Helada:</span>
-                  <b className="text-white font-medium">Diferencial dosel-aire en antesis</b>
+                  <span className="text-[#9e8b7d]">Downscaling Térmico:</span>
+                  <b className="text-white font-medium">Corrección adiabática por lote</b>
                 </div>
               </div>
             </div>
             <div className="mt-8 rounded-xl bg-[#2a1e17] p-3 text-center text-xs font-semibold text-[#e2b957]">
-              Microclima local y retención edáfica
+              Anclaje topográfico invariante en las 197 parcelas
             </div>
           </div>
 
@@ -174,28 +182,28 @@ export function TriadaSection() {
               <div className="mb-6 flex size-13 items-center justify-center rounded-2xl bg-[#2e2017] text-[#d87a52] ring-1 ring-[#5a4130]">
                 <Cpu className="size-7" />
               </div>
-              <span className="text-xs font-bold uppercase tracking-wider text-[#d87a52]">Capa 03 · Inteligencia</span>
-              <h3 className="mt-2 text-xl font-bold text-white">Especialistas Desacoplados</h3>
+              <span className="text-xs font-bold uppercase tracking-wider text-[#d87a52]">Capa 03 · Neuro-Simbólica + IA</span>
+              <h3 className="mt-2 text-xl font-bold text-white">QBAF + DF-QuAD + SHAP + Gemini</h3>
               <p className="mt-3 text-sm leading-relaxed text-[#c2aba0]">
-                Tres motores de Machine Learning calibrados de forma independiente para Puebla, Hidalgo y Tlaxcala. Cada estado procesa las covariables que verdaderamente determinan su cosecha.
+                Un Árbitro de Argumentación Bipolar Cuantitativa (DF-QuAD) pondera especialistas por estado. SHAP audita el aporte exacto de cada variable en kg/ha y Google Gemini lo traduce en consejos claros para el agricultor.
               </p>
               <div className="mt-6 space-y-2.5 border-t border-[#3a2c22] pt-6 text-xs text-[#dcd2c9]">
                 <div className="flex items-center justify-between">
-                  <span className="text-[#9e8b7d]">Hidalgo (r = 0.915):</span>
-                  <b className="text-white font-medium">ExtraTrees 75% + SVR Bayes</b>
+                  <span className="text-[#9e8b7d]">Hidalgo (51 predios):</span>
+                  <b className="text-white font-medium">GradientBoosting (0.75) + SVR (0.25)</b>
                 </div>
                 <div className="flex items-center justify-between">
-                  <span className="text-[#9e8b7d]">Puebla (r = 0.441):</span>
-                  <b className="text-white font-medium">Dual Base + PLS (k=2)</b>
+                  <span className="text-[#9e8b7d]">Puebla (100 predios):</span>
+                  <b className="text-white font-medium">Debate SVR/Huber/GPR/PLS + Undercut</b>
                 </div>
                 <div className="flex items-center justify-between">
-                  <span className="text-[#9e8b7d]">Tlaxcala (r = 0.382):</span>
-                  <b className="text-white font-medium">SVC Ordinal + Mediana 3.0 t/ha</b>
+                  <span className="text-[#9e8b7d]">Tlaxcala (46 predios):</span>
+                  <b className="text-white font-medium">Ancla Modal (0.55) + SVC (0.45)</b>
                 </div>
               </div>
             </div>
             <div className="mt-8 rounded-xl bg-[#2a1e17] p-3 text-center text-xs font-semibold text-[#e2b957]">
-              Inferencia adaptada al régimen regional
+              Explicabilidad SHAP (φ₀ + Σφᵢ = ŷ) + Google Gemini
             </div>
           </div>
         </div>
@@ -213,13 +221,13 @@ export function CuencasSection() {
       <div className="mx-auto max-w-7xl px-5 sm:px-6 lg:px-8">
         <div className="text-center max-w-3xl mx-auto mb-16">
           <span className="inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-[0.2em] text-[#d87a52]">
-            <Compass className="size-4" /> Geografía y Vocación Productiva
+            <Compass className="size-4" /> Deliberación Regional QBAF + DF-QuAD
           </span>
           <h2 className="mt-3 text-balance text-3xl font-extrabold tracking-tight text-white sm:text-4xl lg:text-5xl">
-            Las 3 cuencas cebaderas del Altiplano Central
+            Las 3 cuencas cebaderas y sus 197 parcelas
           </h2>
           <p className="mt-4 text-sm leading-relaxed text-[#c7b4a6] sm:text-base">
-            Cada estado presenta un comportamiento fisiológico único. Conoce cómo se adaptan nuestros modelos a la realidad edáfica y climática de cada territorio.
+            138 parcelas de entrenamiento (cosecha 2025 verificada) y 59 parcelas de prueba ciega, todas proyectadas hacia la campaña Abril–Octubre 2026 con árbitros especializados por estado.
           </p>
         </div>
 
@@ -227,81 +235,81 @@ export function CuencasSection() {
           {/* Puebla */}
           <div className="group rounded-3xl border border-[#4a382c] bg-[#1a130f] p-7 transition hover:border-[#b85c38] hover:bg-[#251b15]">
             <div className="flex items-center justify-between">
-              <span className="text-xs font-bold uppercase tracking-wider text-[#d87a52]">Cuenca 01</span>
+              <span className="text-xs font-bold uppercase tracking-wider text-[#d87a52]">Cuenca 01 · Árbitro Puebla</span>
               <span className="rounded-full bg-[#2e2017] px-2.5 py-0.5 text-xs font-semibold text-[#e2b957]">
-                71 parcelas
+                100 parcelas (71 Train / 29 Test)
               </span>
             </div>
             <h3 className="mt-3 text-2xl font-bold text-white">Puebla</h3>
             <p className="text-xs text-[#d87a52] font-semibold mt-0.5">Sierra Norte · Chignahuapan</p>
 
-            <div className="my-5 rounded-2xl bg-[#251a14] p-4 text-center">
-              <span className="text-xs text-[#9e8b7d]">Rendimiento promedio real:</span>
-              <div className="text-3xl font-extrabold text-[#e2b957] mt-1">4.48 t/ha</div>
-              <span className="text-[11px] text-[#b8a293]">Altitud media: 2,260 msnm</span>
+            <div className="my-5 rounded-2xl bg-[#251a14] p-4 text-center tabular-nums">
+              <span className="text-xs text-[#9e8b7d]">Base regional φ₀ (SHAP) / Proy. 2026:</span>
+              <div className="text-3xl font-extrabold text-[#e2b957] mt-1">4.53 → 4.55 t/ha</div>
+              <span className="text-[11px] text-[#b8a293]">Undercutting Capa 0 cuando NDVI &gt; P75</span>
             </div>
 
             <p className="text-xs leading-relaxed text-[#c2aba0]">
-              Suelos andosoles de ladera volcánica con excelente captación pluvial. La reflectancia del rastrojo en pre-siembra (STI) y la rugosidad topográfica son factores clave para estabilizar la inferencia contra la saturación foliar.
+              Suelos volcánicos de ladera húmeda. Cuando el verdor óptico se satura (NDVI &gt; 0.3577), el motor DF-QuAD aplica un ataque de <em>undercutting</em> al árbol ExtraTrees (σ = 0.001) y delega el veredicto en los nodos termo-hídricos SVR, Huber, GPR y PLS (k=2).
             </p>
 
             <div className="mt-6 pt-5 border-t border-[#3d2e24] text-xs text-[#9e8b7d] flex items-center justify-between">
-              <span>Ensamble:</span>
-              <b className="text-white">Dual Base + PLS (k=2)</b>
+              <span>Arquitectura:</span>
+              <b className="text-white">SVR/Huber/GPR + PLS (k=2) + Undercut</b>
             </div>
           </div>
 
           {/* Hidalgo */}
           <div className="group rounded-3xl border border-[#4a382c] bg-[#1a130f] p-7 transition hover:border-[#b85c38] hover:bg-[#251b15]">
             <div className="flex items-center justify-between">
-              <span className="text-xs font-bold uppercase tracking-wider text-[#d87a52]">Cuenca 02</span>
+              <span className="text-xs font-bold uppercase tracking-wider text-[#d87a52]">Cuenca 02 · Árbitro Hidalgo</span>
               <span className="rounded-full bg-[#2e2017] px-2.5 py-0.5 text-xs font-semibold text-[#e2b957]">
-                36 parcelas
+                51 parcelas (36 Train / 15 Test)
               </span>
             </div>
             <h3 className="mt-3 text-2xl font-bold text-white">Hidalgo</h3>
-            <p className="text-xs text-[#d87a52] font-semibold mt-0.5">Cuna Histórica · Valle de Apan</p>
+            <p className="text-xs text-[#d87a52] font-semibold mt-0.5">Valle de Apan · Singuilucan · Almoloya</p>
 
-            <div className="my-5 rounded-2xl bg-[#251a14] p-4 text-center">
-              <span className="text-xs text-[#9e8b7d]">Rendimiento promedio real:</span>
-              <div className="text-3xl font-extrabold text-[#e2b957] mt-1">3.76 t/ha</div>
-              <span className="text-[11px] text-[#b8a293]">Altitud media: 2,510 msnm</span>
+            <div className="my-5 rounded-2xl bg-[#251a14] p-4 text-center tabular-nums">
+              <span className="text-xs text-[#9e8b7d]">Base regional φ₀ (SHAP) / Proy. 2026:</span>
+              <div className="text-3xl font-extrabold text-[#e2b957] mt-1">3.77 → 3.93 t/ha</div>
+              <span className="text-[11px] text-[#b8a293]">Correlación OOF r = 0.903 · 6 municipios</span>
             </div>
 
             <p className="text-xs leading-relaxed text-[#c2aba0]">
-              Contraste marcado entre valles templados fértiles (Almoloya: 4.52 t/ha) y zonas de temporal seco (Singuilucan: 3.08 t/ha). El modelo integra prior bayesiano municipal y absorción de clorofila red-edge MRA para máxima precisión (r = 0.915).
+              Contraste entre valles húmedos (Almoloya, Cuautepec) y laderas secas (Singuilucan). El Nodo 1 combina GradientBoosting (σ = 0.75) con Prior Bayesiano Municipal, anomalía térmica de abril y absorción red-edge MRA, respaldado por SVR RBF (σ = 0.25).
             </p>
 
             <div className="mt-6 pt-5 border-t border-[#3d2e24] text-xs text-[#9e8b7d] flex items-center justify-between">
-              <span>Ensamble:</span>
-              <b className="text-white">ExtraTrees (75%) + SVR RBF (25%)</b>
+              <span>Arquitectura:</span>
+              <b className="text-white">GradientBoosting (0.75) + SVR Bayes (0.25)</b>
             </div>
           </div>
 
           {/* Tlaxcala */}
           <div className="group rounded-3xl border border-[#4a382c] bg-[#1a130f] p-7 transition hover:border-[#b85c38] hover:bg-[#251b15]">
             <div className="flex items-center justify-between">
-              <span className="text-xs font-bold uppercase tracking-wider text-[#d87a52]">Cuenca 03</span>
+              <span className="text-xs font-bold uppercase tracking-wider text-[#d87a52]">Cuenca 03 · Árbitro Tlaxcala</span>
               <span className="rounded-full bg-[#2e2017] px-2.5 py-0.5 text-xs font-semibold text-[#e2b957]">
-                31 parcelas
+                46 parcelas (31 Train / 15 Test)
               </span>
             </div>
             <h3 className="mt-3 text-2xl font-bold text-white">Tlaxcala</h3>
-            <p className="text-xs text-[#d87a52] font-semibold mt-0.5">Llanuras de Altura · Calpulalpan</p>
+            <p className="text-xs text-[#d87a52] font-semibold mt-0.5">Meseta de Altura · Calpulalpan y Nanacamilpa</p>
 
-            <div className="my-5 rounded-2xl bg-[#251a14] p-4 text-center">
-              <span className="text-xs text-[#9e8b7d]">Rendimiento promedio real:</span>
-              <div className="text-3xl font-extrabold text-[#e2b957] mt-1">2.98 t/ha</div>
-              <span className="text-[11px] text-[#b8a293]">Altitud media: 2,610 msnm</span>
+            <div className="my-5 rounded-2xl bg-[#251a14] p-4 text-center tabular-nums">
+              <span className="text-xs text-[#9e8b7d]">Base regional φ₀ (SHAP) / Proy. 2026:</span>
+              <div className="text-3xl font-extrabold text-[#e2b957] mt-1">2.99 → 2.99 t/ha</div>
+              <span className="text-[11px] text-[#b8a293]">Estabilidad modal en meseta &gt; 2,600 msnm</span>
             </div>
 
             <p className="text-xs leading-relaxed text-[#c2aba0]">
-              Meseta agrícola con régimen de temporal expuesto a heladas reproductivas. El modelo emplea un clasificador ordinal probabilístico SVC ponderado con la mediana regional robusta de 3.00 t/ha para proteger la predicción de ruidos estacionales.
+              Meseta de temporal con alta convergencia productiva en torno a 3.0 t/ha. El Nodo 5 combina un anclaje modal robusto (σ = 0.55) con un clasificador ordinal probabilístico SVC (σ = 0.45) alimentado por vigor ajustado al suelo (MSAVI) y heterogeneidad térmica.
             </p>
 
             <div className="mt-6 pt-5 border-t border-[#3d2e24] text-xs text-[#9e8b7d] flex items-center justify-between">
-              <span>Ensamble:</span>
-              <b className="text-white">SVC Ordinal (45%) + Mediana (55%)</b>
+              <span>Arquitectura:</span>
+              <b className="text-white">Ancla Modal (0.55) + SVC Ordinal (0.45)</b>
             </div>
           </div>
         </div>
@@ -322,10 +330,10 @@ export function ComparativaSection() {
             <ShieldCheck className="size-4" /> Ventaja Tecnológica
           </span>
           <h2 className="mt-3 text-balance text-3xl font-extrabold tracking-tight text-white sm:text-4xl">
-            ¿Por qué el método tradicional falla en cebada?
+            ¿Por qué nuestra arquitectura supera a los modelos de caja negra?
           </h2>
           <p className="mt-3 text-sm leading-relaxed text-[#c7b4a6]">
-            Comparación directa entre la estimación empírica convencional y la plataforma científica de AgroRaíces.
+            Comparación directa entre la estimación convencional y la arquitectura neuro-simbólica explicable de AgroRaíces.
           </p>
         </div>
 
@@ -333,25 +341,26 @@ export function ComparativaSection() {
           {/* Tradicional */}
           <div className="rounded-3xl border border-rose-900/40 bg-[#241716] p-7 sm:p-9">
             <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-rose-400">
-              <span>❌</span> Estimación Convencional
+              <XCircle className="size-4 shrink-0" aria-hidden="true" />
+              <span>Modelos Convencionales o Caja Negra</span>
             </div>
-            <h3 className="mt-2 text-xl font-bold text-white">Regresión Lineal Simple o Muestreo Tardío</h3>
+            <h3 className="mt-2 text-xl font-bold text-white">Regresión Global sin Explicabilidad ni Traducción</h3>
             <ul className="mt-6 space-y-4 text-xs text-[#e8c6c4]">
               <li className="flex items-start gap-2.5">
                 <span className="text-rose-400 shrink-0 font-bold">•</span>
-                <span><strong>Fórmula única para todo el país:</strong> Ignora si el predio está en ladera volcánica o en valle aluvial.</span>
+                <span><strong>Fórmula única sin contexto regional:</strong> Ignora la diferencia entre laderas volcánicas húmedas y mesetas altas de temporal.</span>
               </li>
               <li className="flex items-start gap-2.5">
                 <span className="text-rose-400 shrink-0 font-bold">•</span>
-                <span><strong>Margen de error elevado:</strong> Desviaciones habituales superiores a ±1.2 t/ha, inutilizables para fijar contratos de acopio.</span>
+                <span><strong>Saturación del NDVI en follaje denso:</strong> Sobreestima o subestima cosechas cuando el índice óptico se satura a mitad del ciclo.</span>
               </li>
               <li className="flex items-start gap-2.5">
                 <span className="text-rose-400 shrink-0 font-bold">•</span>
-                <span><strong>Ceguera ante heladas en floración:</strong> El NDVI satelital simple no detecta daño en grano cuando el follaje se mantiene verde.</span>
+                <span><strong>Predicciones sin explicación (Caja Negra):</strong> Entrega un número aislado sin detallar qué variables sumaron o restaron kilos.</span>
               </li>
               <li className="flex items-start gap-2.5">
                 <span className="text-rose-400 shrink-0 font-bold">•</span>
-                <span><strong>Decisión tardía:</strong> Se conoce el tonelaje hasta la trilla, imposibilitando logística previa de fletes.</span>
+                <span><strong>Jerga técnica inaccesible para el productor:</strong> Muestra siglas de sensores satelitales que no orientan el manejo en campo.</span>
               </li>
             </ul>
           </div>
@@ -359,25 +368,26 @@ export function ComparativaSection() {
           {/* AgroRaíces */}
           <div className="rounded-3xl border border-[#d87a52]/60 bg-[#291e17] p-7 sm:p-9 shadow-xl ring-1 ring-[#d87a52]/20">
             <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-[#e2b957]">
-              <span>✅</span> Pipeline AgroRaíces 2026
+              <CheckCircle2 className="size-4 shrink-0" aria-hidden="true" />
+              <span>Pipeline Oficial AgroRaíces (QBAF + DF-QuAD + SHAP + Gemini)</span>
             </div>
-            <h3 className="mt-2 text-xl font-bold text-white">Especialistas Desacoplados con Downscaling</h3>
+            <h3 className="mt-2 text-xl font-bold text-white">Deliberación Neuro-Simbólica, SHAP y Asesoría con IA</h3>
             <ul className="mt-6 space-y-4 text-xs text-[#f0ded3]">
               <li className="flex items-start gap-2.5">
                 <CheckCircle2 className="size-4 text-[#e2b957] shrink-0 mt-0.5" />
-                <span><strong>Enfoque territorial por cuenca:</strong> Tres motores de Machine Learning calibrados específicamente para Puebla, Hidalgo y Tlaxcala.</span>
+                <span><strong>Precisión OOF demostrada:</strong> Correlación global <b>r = 0.8584</b>, <b>R² = 73.62%</b> y error medio <b>MAE de solo 296.3 kg/ha</b>.</span>
               </li>
               <li className="flex items-start gap-2.5">
                 <CheckCircle2 className="size-4 text-[#e2b957] shrink-0 mt-0.5" />
-                <span><strong>Error acotado científicamente:</strong> MAE nacional de solo 307 kg/ha y R² de 72.8% en validación cruzada OOF estricta.</span>
+                <span><strong>Undercutting DF-QuAD en Capa 0:</strong> Inhibe automáticamente sensores ópticos saturados y prioriza humedad SWIR y emisión térmica.</span>
               </li>
               <li className="flex items-start gap-2.5">
                 <CheckCircle2 className="size-4 text-[#e2b957] shrink-0 mt-0.5" />
-                <span><strong>Diferencial dosel-aire CHIRTS-ERA5:</strong> Detecta riesgo de helada y estrés por calor en antesis aun con dosel verde.</span>
+                <span><strong>Auditoría SHAP Individual, Grupal y Campaña 2026:</strong> Descompone cada predicción (φ₀ + Σφᵢ = ŷ) y proyecta las 197 parcelas para el próximo ciclo.</span>
               </li>
               <li className="flex items-start gap-2.5">
                 <CheckCircle2 className="size-4 text-[#e2b957] shrink-0 mt-0.5" />
-                <span><strong>Previsión semanas antes de cosecha:</strong> Planificación anticipada de tolvas, liquidaciones y contratos industriales.</span>
+                <span><strong>Explicación para el Agricultor con Google Gemini:</strong> Convierte los pesos SHAP en diagnósticos claros, sin tecnicismos y con consejos prácticos.</span>
               </li>
             </ul>
           </div>
@@ -399,10 +409,10 @@ export function SuiteSection() {
             <Wheat className="size-4" /> Plataforma Integral
           </span>
           <h2 className="mt-3 text-balance text-3xl font-extrabold tracking-tight text-white sm:text-4xl">
-            Explora la Suite AgroRaíces
+            Explora la Suite AgroRaíces 2026
           </h2>
           <p className="mt-3 text-sm leading-relaxed text-[#c7b4a6]">
-            Diseñada tanto para productores a pie de parcela como para analistas agrícolas e industria cervecera.
+            Doble experiencia adaptada: lenguaje claro impulsado por Google Gemini para el agricultor y laboratorio matemático SHAP + proyección 2026 para el analista.
           </p>
         </div>
 
@@ -413,10 +423,10 @@ export function SuiteSection() {
               <div className="mb-6 flex size-12 items-center justify-center rounded-2xl bg-[#2e2017] text-[#d87a52]">
                 <Satellite className="size-6" />
               </div>
-              <span className="text-xs font-bold uppercase tracking-wider text-[#d87a52]">01 · Arquitectura</span>
-              <h3 className="mt-2 text-xl font-bold text-white">Quiénes somos y Modelo</h3>
+              <span className="text-xs font-bold uppercase tracking-wider text-[#d87a52]">01 · Arquitectura Neuro-Simbólica</span>
+              <h3 className="mt-2 text-xl font-bold text-white">QBAF + DF-QuAD + SHAP</h3>
               <p className="mt-3 text-sm leading-relaxed text-[#c2aba0]">
-                Conoce la formulación matemática y agronómica detrás del pipeline: integración de bandas satelitales, lapse rate altimétrico y validación cruzada K=3 sin fuga.
+                Conoce la formulación matemática detrás del árbitro gradual DF-QuAD, la descomposición aditiva de Shapley, la ingesta climática 2026 y la traducción con Google Gemini.
               </p>
             </div>
             <Link
@@ -433,17 +443,17 @@ export function SuiteSection() {
               <div className="mb-6 flex size-12 items-center justify-center rounded-2xl bg-[#3d271c] text-[#e2b957]">
                 <Zap className="size-6" />
               </div>
-              <span className="text-xs font-bold uppercase tracking-wider text-[#e2b957]">02 · Inferencia en Vivo</span>
-              <h3 className="mt-2 text-xl font-bold text-white">Asistente para Productores</h3>
+              <span className="text-xs font-bold uppercase tracking-wider text-[#e2b957]">02 · Doble Perfil Interactivo</span>
+              <h3 className="mt-2 text-xl font-bold text-white">Asistente Agricultor & Lab Analista</h3>
               <p className="mt-3 text-sm leading-relaxed text-[#d4bead]">
-                Ingresa los datos de tu predio paso a paso sin requerir conocimientos en satélites. El sistema sintetiza las variables biofísicas de tu municipio y entrega tu reporte en segundos.
+                Si eres agricultor, recibe un diagnóstico validado por Google Gemini sin tecnicismos. Si eres analista, audita casos particulares, grupos de parcelas con SHAP y ejecuta la predicción completa 2026.
               </p>
             </div>
             <Link
               href="/mapa#asistente-modelo"
               className="mt-8 inline-flex items-center gap-2 text-sm font-semibold text-[#e2b957] transition hover:text-white"
             >
-              Usar el asistente <ChevronRight className="size-4" />
+              Abrir asistente y laboratorio <ChevronRight className="size-4" />
             </Link>
           </div>
 
@@ -453,10 +463,10 @@ export function SuiteSection() {
               <div className="mb-6 flex size-12 items-center justify-center rounded-2xl bg-[#2e2017] text-[#d87a52]">
                 <MapPin className="size-6" />
               </div>
-              <span className="text-xs font-bold uppercase tracking-wider text-[#d87a52]">03 · Georreferencia</span>
-              <h3 className="mt-2 text-xl font-bold text-white">Mapa de Parcelas e INEGI</h3>
+              <span className="text-xs font-bold uppercase tracking-wider text-[#d87a52]">03 · Georreferencia 2026</span>
+              <h3 className="mt-2 text-xl font-bold text-white">Visor de 197 Parcelas e INEGI</h3>
               <p className="mt-3 text-sm leading-relaxed text-[#c2aba0]">
-                Explora los 197 polígonos del reto georreferenciados con Leaflet en mapa satelital Esri. Filtra por estado, pendiente y altitud, y consulta la telemetría individual de cada lote.
+                Explora los 197 polígonos (138 de entrenamiento y 59 de predicción) en mapa satelital Esri con fisiografía fija INEGI CEM 4.0 y proyecciones para la campaña 2026.
               </p>
             </div>
             <Link
@@ -488,7 +498,7 @@ export function CierreSection() {
           La cebada maltera del mañana se cultiva con precisión hoy.
         </h2>
         <p className="mx-auto mt-4 max-w-2xl text-sm leading-relaxed text-[#c7b4a6] sm:text-base">
-          Accede al visor de mapas interactivo, consulta la estimación de tu parcela o prueba los especialistas de Puebla, Hidalgo y Tlaxcala.
+          Consulta la explicación en lenguaje claro de tu parcela con Google Gemini o audita la proyección 2026 de las 197 parcelas con el motor QBAF + DF-QuAD + SHAP.
         </p>
 
         <div className="mt-9 flex flex-col justify-center gap-3.5 sm:flex-row sm:items-center">

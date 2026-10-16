@@ -14,6 +14,7 @@
 from pathlib import Path
 import csv
 import io
+import json
 import os
 import re
 import tempfile
@@ -882,15 +883,129 @@ def construir_features_4_fuentes(
 
 
 # ==============================================================================
-# MOTOR DE INFERENCIA DEL PIPELINE OFICIAL AGRORAÍCES
+METADATA_VARIABLES_SHAP: Dict[str, Dict[str, str]] = {
+    "bi_Tmin_anom25_04": {"etiqueta": "Anomalía Tmin Abril 2025 (°C)", "nodo": "Nodo 1: G_Bio (Clima/Helada)"},
+    "lp_Tmin_anom25_04": {"etiqueta": "Anomalía Tmin Adiabática CEM4 (°C)", "nodo": "Nodo 1: G_Bio (Downscaling)"},
+    "prior_municipal": {"etiqueta": "Prior Bayesiano Municipal (t/ha)", "nodo": "Nodo 1: G_Bio (Anclaje Regional)"},
+    "s2_mra_mean": {"etiqueta": "Absorción Borde Rojo Clorofila (MRA)", "nodo": "Nodo 1: G_Bio (Vigor Foliar S2)"},
+    "planet_lai_std": {"etiqueta": "Dinámica Área Foliar (LAI std 3m)", "nodo": "Nodo 1/3: Vigor PlanetScope 3m"},
+    "nn_vpd_vege_std": {"etiqueta": "Variabilidad Déficit Presión Vapor (VPD)", "nodo": "Nodo 1: G_Bio (Demanda Evaporativa)"},
+    "bi_canopy_air_diff": {"etiqueta": "Acoplamiento Térmico Dosel-Aire", "nodo": "Nodo 1: G_Bio (Termorregulación)"},
+    "landsat_vi6t_max": {"etiqueta": "Emisión Térmica Superficial Pico (VI6T)", "nodo": "Nodo 1: G_Bio (Landsat Térmico)"},
+    "s2_ndwi_mean": {"etiqueta": "Retención Hídrica Foliar Media (NDWI)", "nodo": "Nodo 1: G_Bio (Humedad S2)"},
+    "s2_dswi2_mean": {"etiqueta": "Índice Hídrico SWIR No Saturable (DSWI2)", "nodo": "Nodo 1/3: G_SWIR-Termo"},
+    "estres_termohidrico": {"etiqueta": "Índice Estrés Termo-Hídrico (VI6T×NDWI)", "nodo": "Nodo 1/3: Interacción Física"},
+    "persistencia_verde_m11": {"etiqueta": "Persistencia Verde Cierre Ciclo (M11)", "nodo": "Nodo 1: G_Bio (Senescencia)"},
+    "log_area": {"etiqueta": "Escala Predial Logarítmica ln(1+Área)", "nodo": "Nodo 1/2: Escala de Lote"},
+    "elevacion_msnm": {"etiqueta": "Altitud Digital INEGI CEM 4.0 (msnm)", "nodo": "Nodo 1/2: Fisiografía CEM 4.0"},
+    "pendiente_grados": {"etiqueta": "Pendiente Topográfica CEM 4.0 (°)", "nodo": "Nodo 1/2: Drenaje y Relieve"},
+    "lat_centro": {"etiqueta": "Latitud Centroide Parcelario (°N)", "nodo": "Nodo Geo: Gradiente Espacial"},
+    "lon_centro": {"etiqueta": "Longitud Centroide Parcelario (°O)", "nodo": "Nodo Geo: Gradiente Espacial"},
+    "s2_sti_presow": {"etiqueta": "Índice Labranza Pre-Siembra (STI M1-M4)", "nodo": "Nodo 2: G_Geo-Labranza"},
+    "proxy_relieve_m": {"etiqueta": "Rugosidad y Amplitud de Relieve Local (m)", "nodo": "Nodo 2: G_Geo-Labranza"},
+    "s2_ndwi_min": {"etiqueta": "Humedad Foliar Mínima Crítica (NDWI min)", "nodo": "Nodo 2/3: Estrés Hídrico S2"},
+    "landsat_vi6t_std": {"etiqueta": "Variabilidad Térmica Superficial (VI6T std)", "nodo": "Nodo 3: G_SWIR-Termo"},
+    "bi_vpd_ndwi_stress": {"etiqueta": "Índice Estrés Atmosférico VPD / NDWI", "nodo": "Nodo 3: G_SWIR-Termo"},
+    "planet_ndvi_mean": {"etiqueta": "Verdor Medio PlanetScope (NDVI Capa 0)", "nodo": "Capa 0: Sensor Óptico (Undercutting)"},
+    "Z1_pls_clima": {"etiqueta": "Componente Bioclimática Cardinal PLS 1", "nodo": "Nodo 4: G_Clima-PLS (k=2)"},
+    "Z2_pls_clima": {"etiqueta": "Componente Bioclimática Cardinal PLS 2", "nodo": "Nodo 4: G_Clima-PLS (k=2)"},
+    "planet_msavi_mean": {"etiqueta": "Vigor Ajustado al Suelo (MSAVI 3m)", "nodo": "Nodo 5: G_Meseta-Modal"},
+    "landsat_intra_vi6t_std": {"etiqueta": "Heterogeneidad Térmica Intrapredial (VI6T)", "nodo": "Nodo 5: G_Meseta-Modal"},
+    "elongacion_bbox": {"etiqueta": "Elongación Geométrica del Predio (UTM)", "nodo": "Nodo 5: G_Meseta-Modal"},
+}
+
+
+# ==============================================================================
+# MOTOR DE INFERENCIA DEL PIPELINE OFICIAL AGRORAÍCES (QBAF + DF-QuAD + SHAP)
 # ==============================================================================
 class AgroRaicesInferenceEngine:
-    """Motor de inferencia del Pipeline Oficial AgroRaíces para producción web."""
+    """Motor de inferencia y explicabilidad SHAP + DF-QuAD del Pipeline Oficial AgroRaíces."""
     def __init__(self, model_bundle: dict):
         self.b = model_bundle
 
+    def _eval_row_qbaf(self, row: dict, estado: str, muni: str) -> float:
+        df_input = pd.DataFrame([row])
+        if estado == "Hidalgo":
+            hid = self.b["hidalgo"]
+            if "fold_models" in hid and hid["fold_models"]:
+                preds_f = []
+                n_all = hid["muni_count"].get(muni, 0)
+                prior_all = (n_all * hid["muni_mean"].get(muni, hid["global_mean"]) + hid["m_weight"] * hid["global_mean"]) / (n_all + hid["m_weight"])
+                for (sc_b, imp_b, gb_m, sc_g, imp_g, svr_m) in hid["fold_models"]:
+                    xb = np.hstack([sc_b.transform(imp_b.transform(df_input[hid["feats_bio"]])), [[prior_all]]])
+                    xg = sc_g.transform(imp_g.transform(df_input[hid["feats_geo"]]))
+                    preds_f.append(0.75 * float(gb_m.predict(xb)[0]) + 0.25 * float(svr_m.predict(xg)[0]))
+                return float(np.clip(np.mean(preds_f), 1.50, 4.80))
+            n = hid["muni_count"].get(muni, 0)
+            prior = (n * hid["muni_mean"].get(muni, hid["global_mean"]) + hid["m_weight"] * hid["global_mean"]) / (n + hid["m_weight"])
+            X_bio = np.hstack([hid["scaler_bio"].transform(hid["imputer_bio"].transform(df_input[hid["feats_bio"]])), [[prior]]])
+            X_geo = hid["scaler_geo"].transform(hid["imputer_geo"].transform(df_input[hid["feats_geo"]]))
+            m_gb = hid.get("model_gb", hid["model_et"])
+            w_gb = hid["weights"].get("gb", hid["weights"]["et"])
+            w_sv = hid["weights"]["svr"]
+            return float(np.clip((w_gb * float(m_gb.predict(X_bio)[0]) + w_sv * float(hid["model_svr"].predict(X_geo)[0])) / (w_gb + w_sv), 1.50, 4.80))
+
+        elif estado == "Puebla":
+            pue = self.b["puebla"]
+            w = pue["sub_weights"]
+            Z_in = pue["pls"].transform(pue["scaler_pls"].transform(pue["imputer_pls"].transform(df_input[pue["pls_pool"]])))
+            ndvi_val = float(df_input["planet_ndvi_mean"].fillna(0).values[0])
+            if "fold_models" in pue and pue["fold_models"]:
+                preds_f = []
+                for (sc1, imp1, m_et, sc4, imp4, m_svr, sc5, imp5, m_hub, m_gpr, m_svr_pls, m_hub_pls, m_gpr_pls, ndvi_q75) in pue["fold_models"]:
+                    X1 = sc1.transform(imp1.transform(df_input[pue["feats_1"]]))
+                    X4 = sc4.transform(imp4.transform(df_input[pue["feats_4"]]))
+                    X5 = sc5.transform(imp5.transform(df_input[pue["feats_5"]]))
+                    p1 = float(m_et.predict(X1)[0])
+                    w_et = w.get("et_undercut", 0.001) if ndvi_val > ndvi_q75 else w["et"]
+                    tot = w["svr"] + w["hub"] + w["gpr"] + w_et
+                    pb = (w["svr"] * float(m_svr.predict(X4)[0]) + w["hub"] * float(m_hub.predict(X5)[0]) + w["gpr"] * float(m_gpr.predict(X4)[0]) + w_et * p1) / tot
+                    X4_z = np.hstack([X4, Z_in])
+                    X5_z = np.hstack([X5, Z_in])
+                    pp = (w["svr"] * float(m_svr_pls.predict(X4_z)[0]) + w["hub"] * float(m_hub_pls.predict(X5_z)[0]) + w["gpr"] * float(m_gpr_pls.predict(X4_z)[0]) + w_et * p1) / tot
+                    preds_f.append(0.50 * pb + 0.50 * pp)
+                return float(np.clip(np.mean(preds_f), 1.50, 4.80))
+            X1 = pue["scaler_1"].transform(pue["imputer_1"].transform(df_input[pue["feats_1"]]))
+            X4 = pue["scaler_4"].transform(pue["imputer_4"].transform(df_input[pue["feats_4"]]))
+            X5 = pue["scaler_5"].transform(pue["imputer_5"].transform(df_input[pue["feats_5"]]))
+            p_et = float(pue["model_et"].predict(X1)[0])
+            w_et = w.get("et_undercut", 0.001) if ndvi_val > pue.get("ndvi_q75", 0.3577) else w["et"]
+            tot_w = w["svr"] + w["hub"] + w["gpr"] + w_et
+            pred_base = (
+                w["svr"] * float(pue["model_svr"].predict(X4)[0])
+                + w["hub"] * float(pue["model_hub"].predict(X5)[0])
+                + w["gpr"] * float(pue["model_gpr"].predict(X4)[0])
+                + w_et * p_et
+            ) / tot_w
+            X4_pls = np.hstack([X4, Z_in])
+            X5_pls = np.hstack([X5, Z_in])
+            pred_pls = (
+                w["svr"] * float(pue["model_svr_pls"].predict(X4_pls)[0])
+                + w["hub"] * float(pue["model_hub_pls"].predict(X5_pls)[0])
+                + w["gpr"] * float(pue["model_gpr_pls"].predict(X4_pls)[0])
+                + w_et * p_et
+            ) / tot_w
+            return float(np.clip(pue["branch_weights"]["base"] * pred_base + pue["branch_weights"]["pls"] * pred_pls, 1.50, 4.80))
+
+        elif estado == "Tlaxcala":
+            tla = self.b["tlaxcala"]
+            if "fold_models" in tla and tla["fold_models"]:
+                preds_f = []
+                for (sc_t_f, imp_t_f, svc_m) in tla["fold_models"]:
+                    xt = sc_t_f.transform(imp_t_f.transform(df_input[tla["feats_geo"]]))
+                    cls_v = svc_m.classes_ / 2.0
+                    preds_f.append(0.55 * 3.000 + 0.45 * float(np.dot(svc_m.predict_proba(xt)[0], cls_v)))
+                return float(np.clip(np.mean(preds_f), 1.50, 4.80))
+            X_geo = tla["scaler"].transform(tla["imputer"].transform(df_input[tla["feats_geo"]]))
+            exp_val = float(np.dot(tla["model_svc"].predict_proba(X_geo)[0], tla["classes"]))
+            return float(np.clip(tla["weights"]["mediana"] * tla["mediana_regional"] + tla["weights"]["svc"] * exp_val, 1.50, 4.80))
+        return 3.50
+
     def predict_one(self, data: dict) -> dict:
         pid = str(data.get("id_poligono", data.get("ID_POLIGONO", data.get("plot", "")))).strip()
+        tele_map = self.b.get("parcelas_telemetria", {})
+        ref_tele = tele_map.get(pid)
+
         if pid and pid in self.b.get("parcelas_lookup", {}):
             row = self.b["parcelas_lookup"][pid].copy()
             estado = str(data.get("estado", data.get("Estado", row.get("Estado", "Puebla")))).strip().capitalize()
@@ -902,6 +1017,8 @@ class AgroRaicesInferenceEngine:
                 estado = "Hidalgo" if lat > 19.9 else ("Tlaxcala" if lat < 19.5 else "Puebla")
             muni = str(data.get("municipio", data.get("Municipio", ""))).strip()
             row = self.b["defaults_by_state"].get(estado, list(self.b["defaults_by_state"].values())[0]).copy()
+
+        row_orig = row.copy()
 
         for k, v in data.items():
             if k in row and v is not None:
@@ -921,11 +1038,17 @@ class AgroRaicesInferenceEngine:
                 row["landsat_vi6t_max"] = float(data["temp"])
             if "landsat_vi6t_mean" not in data:
                 row["landsat_vi6t_mean"] = float(data["temp"])
+        if "vi6t_std" in data and data["vi6t_std"] is not None and "landsat_vi6t_std" not in data:
+            row["landsat_vi6t_std"] = float(data["vi6t_std"])
         if "ndwi" in data and data["ndwi"] is not None:
             if "s2_ndwi_mean" not in data:
                 row["s2_ndwi_mean"] = float(data["ndwi"])
             if "s2_ndwi_min" not in data:
                 row["s2_ndwi_min"] = float(data["ndwi"])
+        if "ndwi_min" in data and data["ndwi_min"] is not None and "s2_ndwi_min" not in data:
+            row["s2_ndwi_min"] = float(data["ndwi_min"])
+        if "dswi2" in data and data["dswi2"] is not None and "s2_dswi2_mean" not in data:
+            row["s2_dswi2_mean"] = float(data["dswi2"])
         if "evi" in data and data["evi"] is not None and "s2_evi_intra_std" not in data:
             row["s2_evi_intra_std"] = float(data["evi"])
         if "lai" in data and data["lai"] is not None:
@@ -933,93 +1056,180 @@ class AgroRaicesInferenceEngine:
                 row["planet_lai_std"] = float(data["lai"])
             if "planet_lai_mean" not in data:
                 row["planet_lai_mean"] = float(data["lai"])
+        if "ndvi" in data and data["ndvi"] is not None and "planet_ndvi_mean" not in data:
+            row["planet_ndvi_mean"] = float(data["ndvi"])
         if "msavi" in data and data["msavi"] is not None and "planet_msavi_mean" not in data:
             row["planet_msavi_mean"] = float(data["msavi"])
         if "sti" in data and data["sti"] is not None and "s2_sti_presow" not in data:
             row["s2_sti_presow"] = float(data["sti"])
         if "mra" in data and data["mra"] is not None and "s2_mra_mean" not in data:
             row["s2_mra_mean"] = float(data["mra"])
-        if "elevacion" in data or ("elevacion_msnm" in data and "lp_Tmin_anom25_04" not in data):
-            elev_new = float(data.get("elevacion", data.get("elevacion_msnm", row.get("elevacion_msnm", 2450.0))))
-            elev_orig = float(row.get("elevacion_msnm", elev_new))
-            row["lp_Tmin_anom25_04"] = float(row.get("lp_Tmin_anom25_04", 0.0)) + (-0.0065 * (elev_new - elev_orig))
-            row["elevacion_msnm"] = elev_new
+        if "elevacion" in data and data["elevacion"] is not None:
+            elev_new = float(data["elevacion"])
+            elev_orig = float(row_orig.get("elevacion_msnm", elev_new))
+            if abs(elev_new - elev_orig) > 0.5:
+                row["lp_Tmin_anom25_04"] = float(row.get("lp_Tmin_anom25_04", 0.0)) + (-0.0065 * (elev_new - elev_orig))
+                row["elevacion_msnm"] = elev_new
         if "pendiente" in data and data["pendiente"] is not None:
-            row["pendiente_grados"] = float(data["pendiente"])
+            pend_new = float(data["pendiente"])
+            if abs(pend_new - float(row_orig.get("pendiente_grados", pend_new))) > 0.05:
+                row["pendiente_grados"] = pend_new
         if "lat" in data and data["lat"] is not None:
             row["lat_centro"] = float(data["lat"])
         if "lon" in data and data["lon"] is not None:
             row["lon_centro"] = float(data["lon"])
 
-        row["estres_termohidrico"] = float(row.get("landsat_vi6t_max", -0.58) * row.get("s2_ndwi_min", 0.22))
-        row["bi_canopy_air_diff"] = float(row.get("landsat_vi6t_mean", -0.58) - row.get("bi_tmean_pv_clim", 15.0))
-        row["bi_vpd_ndwi_stress"] = float(row.get("bi_vpd_pv_2025", 1.2) / (abs(row.get("s2_ndwi_mean", 0.22)) + 0.05))
+        changed_params = any(
+            abs(float(row.get(k, 0.0)) - float(row_orig.get(k, 0.0))) > 1e-3
+            for k in [
+                "AREA_HA", "landsat_vi6t_max", "landsat_vi6t_std", "s2_ndwi_mean", "s2_ndwi_min",
+                "s2_dswi2_mean", "planet_lai_std", "planet_ndvi_mean", "planet_msavi_mean",
+                "s2_sti_presow", "s2_mra_mean", "elevacion_msnm", "pendiente_grados"
+            ]
+        )
 
-        df_input = pd.DataFrame([row])
+        if not ref_tele or changed_params:
+            row["estres_termohidrico"] = float(row.get("landsat_vi6t_max", -0.58) * row.get("s2_ndwi_min", -0.18))
+            if "bi_tmean_pv_clim" in row:
+                row["bi_canopy_air_diff"] = float(row.get("landsat_vi6t_mean", -0.58) - row["bi_tmean_pv_clim"])
+            if "bi_vpd_pv_2025" in row:
+                row["bi_vpd_ndwi_stress"] = float(row["bi_vpd_pv_2025"] / (abs(row.get("s2_ndwi_mean", -0.18)) + 0.05))
 
-        if estado == "Hidalgo":
-            hid = self.b["hidalgo"]
-            n = hid["muni_count"].get(muni, 0)
-            prior = (n * hid["muni_mean"].get(muni, hid["global_mean"]) + hid["m_weight"] * hid["global_mean"]) / (n + hid["m_weight"])
-            X_bio = np.hstack([hid["scaler_bio"].transform(hid["imputer_bio"].transform(df_input[hid["feats_bio"]])), [[prior]]])
-            X_geo = hid["scaler_geo"].transform(hid["imputer_geo"].transform(df_input[hid["feats_geo"]]))
-            pred = hid["weights"]["et"] * float(hid["model_et"].predict(X_bio)[0]) + hid["weights"]["svr"] * float(hid["model_svr"].predict(X_geo)[0])
+        if ref_tele and not changed_params and estado == ref_tele["estado"]:
+            oof = self.b.get("metricas_oficiales_oof", {})
+            return {
+                "plot": pid,
+                "rendimiento_t_ha": round(float(ref_tele["rendimiento_t_ha"]), 4),
+                "rendimiento_kg_ha": int(ref_tele["rendimiento_kg_ha"]),
+                "produccion_estimada_t": round(float(ref_tele["rendimiento_t_ha"]) * area, 2),
+                "estado": estado,
+                "municipio": muni or ref_tele.get("municipio"),
+                "conjunto": ref_tele.get("conjunto", "PREDICCION"),
+                "rendimiento_real_t_ha": ref_tele.get("rendimiento_real_t_ha"),
+                "nivel_potencial": ref_tele["nivel_potencial"],
+                "diagnostico": ref_tele["diagnostico"],
+                "arquitectura": "QBAF + DF-QuAD + SHAP",
+                "grupo_homogeneo": ref_tele["grupo_homogeneo"],
+                "deliberacion_qbaf": ref_tele["deliberacion_qbaf"],
+                "undercutting_activo": bool(ref_tele.get("undercutting_activo", False)),
+                "base_regional_t_ha": float(ref_tele["base_regional_t_ha"]),
+                "suma_shap_kg_ha": float(ref_tele["suma_shap_kg_ha"]),
+                "top_impulsores": ref_tele["top_impulsores"],
+                "top_frenadores": ref_tele["top_frenadores"],
+                "shap_variables": ref_tele["shap_variables"],
+                "confianza_r2": float(oof.get("r2_global", 0.7362)),
+                "correlacion_r": float(oof.get("pearson_r_global", 0.8584)),
+            }
 
-        elif estado == "Puebla":
-            pue = self.b["puebla"]
-            w = pue["sub_weights"]
-            X1 = pue["scaler_1"].transform(pue["imputer_1"].transform(df_input[pue["feats_1"]]))
-            X4 = pue["scaler_4"].transform(pue["imputer_4"].transform(df_input[pue["feats_4"]]))
-            X5 = pue["scaler_5"].transform(pue["imputer_5"].transform(df_input[pue["feats_5"]]))
-            p_et = float(pue["model_et"].predict(X1)[0])
-            pred_base = (
-                w["svr"] * float(pue["model_svr"].predict(X4)[0])
-                + w["hub"] * float(pue["model_hub"].predict(X5)[0])
-                + w["gpr"] * float(pue["model_gpr"].predict(X4)[0])
-                + w["et"] * p_et
-            )
-            Z_in = pue["pls"].transform(pue["scaler_pls"].transform(pue["imputer_pls"].transform(df_input[pue["pls_pool"]])))
-            X4_pls = np.hstack([X4, Z_in])
-            X5_pls = np.hstack([X5, Z_in])
-            pred_pls = (
-                w["svr"] * float(pue["model_svr_pls"].predict(X4_pls)[0])
-                + w["hub"] * float(pue["model_hub_pls"].predict(X5_pls)[0])
-                + w["gpr"] * float(pue["model_gpr_pls"].predict(X4_pls)[0])
-                + w["et"] * p_et
-            )
-            pred = pue["branch_weights"]["base"] * pred_base + pue["branch_weights"]["pls"] * pred_pls
-
-        elif estado == "Tlaxcala":
-            tla = self.b["tlaxcala"]
-            X_geo = tla["scaler"].transform(tla["imputer"].transform(df_input[tla["feats_geo"]]))
-            exp_val = float(np.dot(tla["model_svc"].predict_proba(X_geo)[0], tla["classes"]))
-            pred = tla["weights"]["mediana"] * tla["mediana_regional"] + tla["weights"]["svc"] * exp_val
-        else:
-            pred = 3.50
-
-        rend_final = float(np.clip(pred, 1.50, 4.80))
+        rend_final = self._eval_row_qbaf(row, estado, muni)
         nivel = "bajo" if rend_final < 3.30 else ("medio" if rend_final <= 4.35 else "alto")
         diag = (
             "Rendimiento limitado por estrés termo-hídrico, helada reproductiva o baja retención edáfica."
             if nivel == "bajo"
-            else "Rendimiento comercial estable dentro del potencial agroclimático regional."
+            else "Rendimiento comercial estable dentro del potencial agroclimático regional QBAF."
             if nivel == "medio"
             else "Alto potencial productivo (óptima conservación de humedad, buen drenaje y confort térmico)."
         )
 
+        st_key = estado.lower()
+        st_bundle = self.b.get(st_key, {})
+        shap_bg = st_bundle.get("shap_bg", {})
+        cols_st = shap_bg.get("cols", [])
+        medians_st = shap_bg.get("medians", {})
+
+        base_map = {"Hidalgo": 3.7669, "Puebla": 4.5346, "Tlaxcala": 2.9941}
+        base_phi0 = float(ref_tele["base_regional_t_ha"]) if (ref_tele and ref_tele["estado"] == estado) else base_map.get(estado, 3.75)
+
+        undercut_act = False
+        if estado == "Hidalgo":
+            delib_str = "Nodo 1 GradientBoosting (σ=0.75) + Prior Bayesiano + SVR RBF (σ=0.25)"
+            grupo_h = "Hidalgo_G1_Valle_Humedo" if float(row.get("s2_ndwi_mean", -0.15)) >= -0.15 else "Hidalgo_G2_Ladera_Seca"
+        elif estado == "Puebla":
+            ndvi_q75 = float(self.b["puebla"].get("ndvi_q75", 0.3577))
+            undercut_act = float(row.get("planet_ndvi_mean", 0.34)) > ndvi_q75
+            delib_str = "Undercutting Activo (σ_ET=0.001) + SVR/Huber/PLS" if undercut_act else "Debate Completo SVR/Huber/GPR/ET + PLS"
+            grupo_h = "Puebla_G2_Dosel_Saturado" if undercut_act else "Puebla_G1_Conservacion_Labranza"
+        else:
+            delib_str = "Nodo 5 Anclaje Modal (σ=0.55) + SVC Ordinal (σ=0.45)"
+            grupo_h = "Tlaxcala_G1_Meseta_Modal"
+
+        raw_effects = []
+        for cname in cols_st:
+            if cname in ["prior_municipal", "Z1_pls_clima", "Z2_pls_clima"]:
+                if ref_tele and ref_tele["estado"] == estado:
+                    prev_v = next((x for x in ref_tele.get("shap_variables", []) if x["variable"] == cname), None)
+                    eff = float(prev_v["shap_t_ha"]) if prev_v else 0.0
+                    val_p = float(prev_v["valor_parcela"]) if prev_v else float(medians_st.get(cname, 0.0))
+                else:
+                    eff = 0.0
+                    val_p = float(medians_st.get(cname, 0.0))
+                raw_effects.append((cname, val_p, float(medians_st.get(cname, 0.0)), eff))
+            else:
+                val_p = float(row.get(cname, medians_st.get(cname, 0.0)))
+                med_v = float(medians_st.get(cname, val_p))
+                row_pert = row.copy()
+                row_pert[cname] = med_v
+                pred_without = self._eval_row_qbaf(row_pert, estado, muni)
+                eff = rend_final - pred_without
+                raw_effects.append((cname, val_p, med_v, eff))
+
+        total_diff = rend_final - base_phi0
+        sum_raw = sum(x[3] for x in raw_effects)
+        residual = total_diff - sum_raw
+        weights_abs = [abs(x[3]) + 1e-4 for x in raw_effects]
+        sum_w = sum(weights_abs) + 1e-9
+        adjusted_effects = [
+            (c, vp, mv, ef + residual * (w_i / sum_w))
+            for (c, vp, mv, ef), w_i in zip(raw_effects, weights_abs)
+        ]
+
+        tot_abs = sum(abs(x[3]) for x in adjusted_effects) + 1e-9
+        adjusted_effects.sort(key=lambda x: abs(x[3]), reverse=True)
+
+        shap_vars_list = []
+        for (cname, val_p, med_v, sv_t) in adjusted_effects:
+            meta_v = METADATA_VARIABLES_SHAP.get(cname, {"etiqueta": cname, "nodo": f"Árbitro {estado}"})
+            shap_vars_list.append({
+                "variable": cname,
+                "etiqueta": meta_v["etiqueta"],
+                "nodo_qbaf": meta_v["nodo"],
+                "valor_parcela": round(val_p, 3),
+                "mediana_estado": round(med_v, 3),
+                "shap_t_ha": round(sv_t, 4),
+                "shap_kg_ha": round(sv_t * 1000.0, 2),
+                "impacto_pct": round(abs(sv_t) / tot_abs * 100.0, 1),
+                "efecto": "positivo" if sv_t >= 0 else "negativo",
+            })
+
+        pos_items = [x for x in shap_vars_list if x["shap_kg_ha"] > 0][:2]
+        neg_items = sorted([x for x in shap_vars_list if x["shap_kg_ha"] < 0], key=lambda x: x["shap_kg_ha"])[:2]
+        pos_str = ", ".join([f"{x['variable']} ({x['shap_kg_ha']:+.0f} kg/ha)" for x in pos_items]) or "Neutral"
+        neg_str = ", ".join([f"{x['variable']} ({x['shap_kg_ha']:+.0f} kg/ha)" for x in neg_items]) or "Sin castigo"
+
         oof = self.b.get("metricas_oficiales_oof", {})
-        r2_val = float(oof.get("r2_global", 0.7276))
-        r_val = float(oof.get("pearson_r_global", 0.8535))
+        r2_val = float(oof.get("r2_global", 0.7362))
+        r_val = float(oof.get("pearson_r_global", 0.8584))
 
         return {
-            "plot": str(data.get("plot", data.get("ID_POLIGONO", data.get("id_poligono", "Parcela")))),
-            "rendimiento_t_ha": round(rend_final, 3),
+            "plot": str(data.get("plot", pid or "Parcela")),
+            "rendimiento_t_ha": round(rend_final, 4),
             "rendimiento_kg_ha": int(round(rend_final * 1000)),
             "produccion_estimada_t": round(rend_final * area, 2),
             "estado": estado,
             "municipio": muni or None,
+            "conjunto": ref_tele.get("conjunto", "PERSONALIZADO") if ref_tele else "PERSONALIZADO",
+            "rendimiento_real_t_ha": ref_tele.get("rendimiento_real_t_ha") if ref_tele else None,
             "nivel_potencial": nivel,
             "diagnostico": diag,
+            "arquitectura": "QBAF + DF-QuAD + SHAP",
+            "grupo_homogeneo": grupo_h,
+            "deliberacion_qbaf": delib_str,
+            "undercutting_activo": undercut_act,
+            "base_regional_t_ha": round(base_phi0, 4),
+            "suma_shap_kg_ha": round(total_diff * 1000.0, 1),
+            "top_impulsores": pos_str,
+            "top_frenadores": neg_str,
+            "shap_variables": shap_vars_list,
             "confianza_r2": r2_val,
             "correlacion_r": r_val,
         }
@@ -1064,8 +1274,31 @@ def startup_event():
 
 
 # ==============================================================================
-# ESQUEMAS PYDANTIC
+# ESQUEMAS PYDANTIC (ARQUITECTURA NEURO-SIMBÓLICA QBAF + DF-QuAD + SHAP)
 # ==============================================================================
+class ShapVariableContribution(BaseModel):
+    variable: str
+    etiqueta: str
+    nodo_qbaf: str
+    valor_parcela: float
+    mediana_estado: float
+    shap_t_ha: float
+    shap_kg_ha: float
+    impacto_pct: float
+    efecto: str
+
+
+class ShapGroupVariableSummary(BaseModel):
+    variable: str
+    etiqueta: str
+    nodo_qbaf: str
+    importancia_media_abs_kg_ha: float
+    impacto_neto_medio_kg_ha: float
+    importancia_relativa_pct: float
+    frecuencia_parcelas: int
+    efecto_dominante: str
+
+
 class PredictionRequest(BaseModel):
     plot: str = Field(default="Parcela", min_length=1)
     area: float = Field(gt=0, description="Superficie en hectáreas")
@@ -1073,6 +1306,11 @@ class PredictionRequest(BaseModel):
     ndwi: float = Field(description="Índice de humedad Sentinel-2 NDWI (aprox -0.25 a 0.10)")
     evi: Optional[float] = Field(default=0.35, description="Variabilidad de verdor EVI std")
     lai: Optional[float] = Field(default=0.40, description="Índice de área foliar PlanetScope LAI std")
+    ndvi: Optional[float] = Field(default=None, description="Verdor medio PlanetScope NDVI (Capa 0 Undercutting)")
+    msavi: Optional[float] = Field(default=None, description="Vigor ajustado al suelo MSAVI 3m")
+    dswi2: Optional[float] = Field(default=None, description="Índice hídrico SWIR no saturable DSWI2")
+    sti: Optional[float] = Field(default=None, description="Índice de labranza pre-siembra STI")
+    mra: Optional[float] = Field(default=None, description="Absorción borde rojo clorofila MRA")
     estado: Optional[str] = Field(default="Puebla", description="Hidalgo | Puebla | Tlaxcala")
     municipio: Optional[str] = Field(default="", description="Nombre del municipio")
     elevacion: Optional[float] = Field(default=None, description="Elevación msnm")
@@ -1088,10 +1326,21 @@ class PredictionResponse(BaseModel):
     produccion_estimada_t: float
     estado: str
     municipio: Optional[str] = None
+    conjunto: Optional[str] = "PREDICCION"
+    rendimiento_real_t_ha: Optional[float] = None
     nivel_potencial: str
     diagnostico: str
+    arquitectura: Optional[str] = "QBAF + DF-QuAD + SHAP"
+    grupo_homogeneo: Optional[str] = None
+    deliberacion_qbaf: Optional[str] = None
+    undercutting_activo: Optional[bool] = False
+    base_regional_t_ha: Optional[float] = None
+    suma_shap_kg_ha: Optional[float] = None
+    top_impulsores: Optional[str] = None
+    top_frenadores: Optional[str] = None
+    shap_variables: Optional[List[ShapVariableContribution]] = None
     confianza_r2: float
-    correlacion_r: Optional[float] = 0.8535
+    correlacion_r: Optional[float] = 0.8584
 
 
 class BatchPredictionResponse(BaseModel):
@@ -1101,8 +1350,68 @@ class BatchPredictionResponse(BaseModel):
     conteo_alto: int
     conteo_medio: int
     conteo_bajo: int
+    modo_grupo: Optional[str] = "PREDICCION"
+    filtro_estado: Optional[str] = "Todos"
+    filtro_grupo_homogeneo: Optional[str] = "Todos"
     archivos_validados: Optional[List[str]] = None
+    shap_resumen_grupal: Optional[List[ShapGroupVariableSummary]] = None
+    casos_particulares_nb: Optional[List[PredictionResponse]] = None
     predicciones: List[PredictionResponse]
+
+
+def calcular_resumen_shap_grupal(predicciones: List[PredictionResponse]) -> List[ShapGroupVariableSummary]:
+    """Calcula la importancia global media |SHAP| (kg/ha) e impacto neto para cualquier grupo de parcelas."""
+    acum: Dict[str, Dict[str, Any]] = {}
+    for p in predicciones:
+        if not p.shap_variables:
+            continue
+        for sv in p.shap_variables:
+            vname = sv.variable
+            if vname not in acum:
+                acum[vname] = {
+                    "variable": vname,
+                    "etiqueta": sv.etiqueta,
+                    "nodo_qbaf": sv.nodo_qbaf,
+                    "abs_vals": [],
+                    "signed_vals": [],
+                }
+            acum[vname]["abs_vals"].append(abs(float(sv.shap_kg_ha)))
+            acum[vname]["signed_vals"].append(float(sv.shap_kg_ha))
+
+    if not acum:
+        return []
+
+    items_raw = []
+    for vname, info in acum.items():
+        mean_abs = float(np.mean(info["abs_vals"]))
+        mean_net = float(np.mean(info["signed_vals"]))
+        items_raw.append({
+            "variable": vname,
+            "etiqueta": info["etiqueta"],
+            "nodo_qbaf": info["nodo_qbaf"],
+            "mean_abs": mean_abs,
+            "mean_net": mean_net,
+            "freq": len(info["abs_vals"]),
+        })
+
+    items_raw.sort(key=lambda x: x["mean_abs"], reverse=True)
+    tot_abs_group = sum(x["mean_abs"] for x in items_raw) + 1e-9
+
+    resumen: List[ShapGroupVariableSummary] = []
+    for x in items_raw[:15]:
+        resumen.append(
+            ShapGroupVariableSummary(
+                variable=x["variable"],
+                etiqueta=x["etiqueta"],
+                nodo_qbaf=x["nodo_qbaf"],
+                importancia_media_abs_kg_ha=round(x["mean_abs"], 1),
+                impacto_neto_medio_kg_ha=round(x["mean_net"], 1),
+                importancia_relativa_pct=round(x["mean_abs"] / tot_abs_group * 100.0, 1),
+                frecuencia_parcelas=x["freq"],
+                efecto_dominante="impulsor" if x["mean_net"] >= 0 else "frenador",
+            )
+        )
+    return resumen
 
 
 # ==============================================================================
@@ -1158,8 +1467,8 @@ def inferir_rendimiento(req: PredictionRequest) -> PredictionResponse:
         municipio=muni or None,
         nivel_potencial=nivel,
         diagnostico=diag,
-        confianza_r2=0.7276,
-        correlacion_r=0.8535,
+        confianza_r2=0.7362,
+        correlacion_r=0.8584,
     )
 
 
@@ -1172,13 +1481,32 @@ def ejecutar_lote_desde_4_dataframes(
     df_pro: pd.DataFrame,
     df_topo: pd.DataFrame,
     archivos_validados: Optional[List[str]] = None,
+    modo_grupo: str = "PREDICCION",
+    estado_filtro: Optional[str] = None,
+    grupo_homogeneo_filtro: Optional[str] = None,
 ) -> BatchPredictionResponse:
-    """Integra los DataFrames extraídos de los ZIPs/CSVs y ejecuta el Pipeline Oficial AgroRaíces."""
+    """Integra los DataFrames extraídos de los ZIPs/CSVs y ejecuta el Pipeline Oficial QBAF + DF-QuAD + SHAP."""
     get_model()
     master = construir_features_4_fuentes(df_parcelas, df_basico, df_pro, df_topo)
 
-    mask_pred = master["CONJUNTO"].astype(str).str.upper() == "PREDICCION"
-    df_eval = master[mask_pred].copy() if mask_pred.any() else master.copy()
+    modo_norm = (modo_grupo or "PREDICCION").strip().upper()
+    casos_nb_ids = ["AGC_003", "AGC_030", "AGC_042", "AGC_011", "AGC_016", "AGC_028", "AGC_025", "AGC_027", "AGC_029"]
+
+    if modo_norm == "CASOS_PASO6":
+        df_eval = master[master["ID_POLIGONO"].isin(casos_nb_ids)].copy()
+        df_eval["_order"] = df_eval["ID_POLIGONO"].apply(lambda x: casos_nb_ids.index(x) if x in casos_nb_ids else 999)
+        df_eval = df_eval.sort_values("_order").drop(columns=["_order"])
+    elif modo_norm == "ENTRENAMIENTO":
+        mask_tr = master["CONJUNTO"].astype(str).str.upper() == "ENTRENAMIENTO"
+        df_eval = master[mask_tr].copy() if mask_tr.any() else master.copy()
+    elif modo_norm == "TODOS":
+        df_eval = master.copy()
+    else:
+        mask_pred = master["CONJUNTO"].astype(str).str.upper() == "PREDICCION"
+        df_eval = master[mask_pred].copy() if mask_pred.any() else master.copy()
+
+    if estado_filtro and estado_filtro.strip().lower() not in ["todos", "all", ""]:
+        df_eval = df_eval[df_eval["Estado"].astype(str).str.lower() == estado_filtro.strip().lower()].copy()
 
     predicciones: List[PredictionResponse] = []
     conteo_alto = 0
@@ -1210,6 +1538,10 @@ def ejecutar_lote_desde_4_dataframes(
             )
             res = inferir_rendimiento(req)
 
+        if grupo_homogeneo_filtro and grupo_homogeneo_filtro.strip().lower() not in ["todos", "all", ""]:
+            if (res.grupo_homogeneo or "").lower() != grupo_homogeneo_filtro.strip().lower():
+                continue
+
         predicciones.append(res)
         if res.nivel_potencial == "alto":
             conteo_alto += 1
@@ -1220,6 +1552,14 @@ def ejecutar_lote_desde_4_dataframes(
 
     rend_prom = round(sum(p.rendimiento_t_ha for p in predicciones) / len(predicciones), 3) if predicciones else 0.0
     prod_tot = round(sum(p.produccion_estimada_t for p in predicciones), 2) if predicciones else 0.0
+    shap_grupal = calcular_resumen_shap_grupal(predicciones)
+
+    casos_nb_list: List[PredictionResponse] = []
+    if inference_engine is not None:
+        for cid in casos_nb_ids:
+            if cid in inference_engine.b.get("parcelas_telemetria", {}):
+                c_res = inference_engine.predict_one({"id_poligono": cid})
+                casos_nb_list.append(PredictionResponse(**c_res))
 
     return BatchPredictionResponse(
         total_parcelas=len(predicciones),
@@ -1228,12 +1568,17 @@ def ejecutar_lote_desde_4_dataframes(
         conteo_alto=conteo_alto,
         conteo_medio=conteo_medio,
         conteo_bajo=conteo_bajo,
+        modo_grupo=modo_norm,
+        filtro_estado=estado_filtro or "Todos",
+        filtro_grupo_homogeneo=grupo_homogeneo_filtro or "Todos",
         archivos_validados=archivos_validados or [
-            "1. parcelas.csv (Geometría WKT, Estado y Municipio sin rendimiento)",
-            "2. Conjunto_datos_BASICO_AgroCebada2026.csv (Sentinel-2 + Landsat)",
-            "3. Conjunto_datos_PRO_AgroCebada.csv (PlanetScope 3m)",
-            "4. Reto_AgroCebada_Topografia_INEGI_CEM4.zip + Reto_AgroCebada_Temperatura_2022_2025_RECORTADA_CHIRPS.zip (o topografia_inegi_cem4_parcelas.csv)",
+            "1. parcelas.csv (Geometría WKT, Estado y Municipio en backend/data/)",
+            "2. Conjunto_datos_BASICO_AgroCebada2026.csv (Sentinel-2 + Landsat en backend/data/agrocebada/)",
+            "3. Conjunto_datos_PRO_AgroCebada.csv (PlanetScope 3m en backend/data/agrocebada/)",
+            "4. Reto_AgroCebada_Topografia_INEGI_CEM4.zip + Reto_AgroCebada_Temperatura_2022_2025_RECORTADA_CHIRPS.zip",
         ],
+        shap_resumen_grupal=shap_grupal,
+        casos_particulares_nb=casos_nb_list,
         predicciones=predicciones,
     )
 
@@ -1311,7 +1656,6 @@ async def predict_upload_bundle(files: List[UploadFile] = File(...)) -> BatchPre
                     if tiene_temp_tif:
                         zips_pendientes["temp_zip"] = content
 
-                    # También revisar si dentro del ZIP vienen CSVs de sensores
                     for cname in names:
                         if cname.lower().endswith(".csv") and not cname.startswith("__MACOSX") and "inventario" not in cname.lower():
                             with z.open(cname) as zf:
@@ -1337,14 +1681,12 @@ async def predict_upload_bundle(files: List[UploadFile] = File(...)) -> BatchPre
             if cat != "desconocido":
                 datasets_cargados[cat] = df
 
-    # Si no se subió archivo de parcelas, usar automáticamente backend/data/parcelas.csv (sin columna de rendimiento)
     if "parcelas" not in datasets_cargados:
         try:
             datasets_cargados["parcelas"] = pd.read_csv(resolver_ruta_datos("parcelas.csv"), encoding="utf-8-sig")
         except Exception:
             pass
 
-    # Si se subieron ZIPs de GeoTIFFs (topografía y/o temperatura), procesarlos con las parcelas
     if ("topo_zip" in zips_pendientes or "temp_zip" in zips_pendientes) and "parcelas" in datasets_cargados:
         df_p_active = datasets_cargados["parcelas"]
         df_b_active = datasets_cargados.get("basico")
@@ -1391,7 +1733,6 @@ async def predict_upload_bundle(files: List[UploadFile] = File(...)) -> BatchPre
             },
         )
 
-    # Si se subió un CSV de topografía de solo 5 columnas, enriquecerlo extrayendo el ZIP de Temperatura en backend/data/agrocebada/
     df_topo_in = datasets_cargados["topografia"]
     if len(df_topo_in.columns) < 20:
         try:
@@ -1420,18 +1761,29 @@ async def predict_upload_bundle(files: List[UploadFile] = File(...)) -> BatchPre
 
 
 @app.get("/predict/demo-dataset", response_model=BatchPredictionResponse)
-def predict_demo_dataset():
+def predict_demo_dataset(
+    modo_grupo: Optional[str] = Query("PREDICCION", description="PREDICCION | CASOS_PASO6 | ENTRENAMIENTO | TODOS"),
+    estado: Optional[str] = Query(None, description="Hidalgo | Puebla | Tlaxcala"),
+    grupo_homogeneo: Optional[str] = Query(None, description="Filtrar por Grupo Homogéneo QBAF"),
+):
     """
-    Ejecuta la inferencia oficial sobre las 59 parcelas del conjunto PREDICCION
-    procesando directamente los archivos base (.zip con GeoTIFFs + .csv)
-    ubicados en backend/data/ y backend/data/agrocebada/.
+    Ejecuta la inferencia y auditoría SHAP (Paso 6 NB) sobre grupos de parcelas
+    o casos particulares a partir de las fuentes originales en backend/data/agrocebada/.
     """
     try:
         df_parcelas, df_basico, df_pro, df_topo = obtener_dataset_base_agrocebada()
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error procesando dataset base en backend/data/: {e}")
 
-    return ejecutar_lote_desde_4_dataframes(df_parcelas, df_basico, df_pro, df_topo)
+    return ejecutar_lote_desde_4_dataframes(
+        df_parcelas=df_parcelas,
+        df_basico=df_basico,
+        df_pro=df_pro,
+        df_topo=df_topo,
+        modo_grupo=modo_grupo or "PREDICCION",
+        estado_filtro=estado,
+        grupo_homogeneo_filtro=grupo_homogeneo,
+    )
 
 
 # ==============================================================================
@@ -1442,8 +1794,7 @@ def predict_demo_dataset():
 def get_parcelas(estado: Optional[str] = Query(None, description="Filtrar por estado (Puebla, Hidalgo, Tlaxcala)")):
     """
     Devuelve las 197 parcelas georreferenciadas en formato GeoJSON para el visor,
-    extraídas desde backend/data/parcelas.csv y los GeoTIFFs de
-    Reto_AgroCebada_Topografia_INEGI_CEM4.zip en backend/data/agrocebada/.
+    enriquecidas con la telemetría y auditoría SHAP del modelo QBAF + DF-QuAD.
     """
     get_model()
     df_parcelas, _, _, df_topo = obtener_dataset_base_agrocebada()
@@ -1459,6 +1810,15 @@ def get_parcelas(estado: Optional[str] = Query(None, description="Filtrar por es
             }
 
     lookup_map = modelo_bundle.get("parcelas_lookup", {}) if isinstance(modelo_bundle, dict) else {}
+    tele_map = modelo_bundle.get("parcelas_telemetria", {}) if isinstance(modelo_bundle, dict) else {}
+    meta_2026: Dict[str, Any] = {}
+    try:
+        ruta_m26 = resolver_ruta_datos("predicciones_2026_meta.json")
+        with open(ruta_m26, "r", encoding="utf-8") as fm26:
+            meta_2026 = json.load(fm26)
+    except Exception:
+        meta_2026 = {}
+    parcelas_2026_map = meta_2026.get("parcelas_2026", {})
 
     features: List[Dict[str, Any]] = []
     total_area_ha = 0.0
@@ -1505,18 +1865,22 @@ def get_parcelas(estado: Optional[str] = Query(None, description="Filtrar por es
 
         conjunto = str(r.get("CONJUNTO") or "ENTRENAMIENTO").strip().upper()
         l_row = lookup_map.get(pid, {})
+        t_row = tele_map.get(pid, {})
+        t26_row = parcelas_2026_map.get(pid, {})
 
-        vi6t_val = round(float(l_row.get("landsat_vi6t_max", -0.58)), 4)
-        ndwi_val = round(float(l_row.get("s2_ndwi_mean", 0.22)), 4)
-        evi_val = round(float(l_row.get("s2_evi_intra_std", 0.26)), 4)
-        lai_val = round(float(l_row.get("planet_lai_std", 0.38)), 4)
+        vi6t_val = round(float(t_row.get("vi6t_max", l_row.get("landsat_vi6t_max", -0.58))), 4)
+        ndwi_val = round(float(t_row.get("ndwi_mean", l_row.get("s2_ndwi_mean", -0.15))), 4)
+        evi_val = round(float(t_row.get("evi_std", l_row.get("s2_evi_intra_std", 0.06))), 4)
+        lai_val = round(float(t_row.get("lai_std", l_row.get("planet_lai_std", 0.38))), 4)
 
         rendimiento_t_ha: Optional[float] = None
         es_prediccion = conjunto == "PREDICCION"
         nivel_rendimiento = "Pendiente de inferencia"
 
         if not es_prediccion:
-            if inference_engine is not None:
+            if t_row and t_row.get("rendimiento_real_t_ha") is not None:
+                rendimiento_t_ha = round(float(t_row["rendimiento_real_t_ha"]), 2)
+            elif inference_engine is not None:
                 pred_info = inference_engine.predict_one({"id_poligono": pid})
                 rendimiento_t_ha = round(float(pred_info["rendimiento_t_ha"]), 2)
             else:
@@ -1547,6 +1911,24 @@ def get_parcelas(estado: Optional[str] = Query(None, description="Filtrar por es
                 "estado": est_raw,
                 "conjunto": conjunto,
                 "rendimiento_t_ha": rendimiento_t_ha,
+                "rendimiento_predicho_t_ha": t_row.get("rendimiento_t_ha"),
+                "rendimiento_2026_t_ha": t26_row.get("RENDIMIENTO_2026_PROYECTADO_T_HA", t_row.get("rendimiento_t_ha")),
+                "produccion_2026_t": t26_row.get("PRODUCCION_2026_ESTIMADA_T"),
+                "cambio_2026_vs_2025_kg_ha": t26_row.get("CAMBIO_2026_VS_2025_KG_HA", 0.0),
+                "anom_tmin_abril_2026_c": t26_row.get("anom_tmin_abril_2026_c", -1.72),
+                "tmean_pv_2026_c": t26_row.get("tmean_pv_2026_c", 18.5),
+                "gdd_cardinales_pv_2026": t26_row.get("gdd_cardinales_pv_2026", 2950.0),
+                "vpd_pv_2026_kpa": t26_row.get("vpd_pv_2026_kpa", 0.66),
+                "lluvia_proyectada_pv_2026_mm": t26_row.get("lluvia_proyectada_pv_2026_mm", 590.0),
+                "s2_ndwi_mean_2026": t26_row.get("s2_ndwi_mean_2026", ndwi_val),
+                "s2_ndwi_min_2026": t26_row.get("s2_ndwi_min_2026", ndwi_val),
+                "s2_dswi2_mean_2026": t26_row.get("s2_dswi2_mean_2026", t_row.get("dswi2_mean", 2.15)),
+                "landsat_vi6t_max_2026": t26_row.get("landsat_vi6t_max_2026", vi6t_val),
+                "planet_ndvi_mean_2026": t26_row.get("planet_ndvi_mean_2026", t_row.get("ndvi_mean", 0.36)),
+                "planet_lai_mean_2026": t26_row.get("planet_lai_mean_2026", 1.25),
+                "top_impulsores_shap_2026": t26_row.get("top_impulsores_shap_2026", t_row.get("top_impulsores")),
+                "top_frenadores_shap_2026": t26_row.get("top_frenadores_shap_2026", t_row.get("top_frenadores")),
+                "shap_variables_2026": t26_row.get("shap_variables", []),
                 "es_prediccion": es_prediccion,
                 "elevacion_msnm": elevacion_msnm,
                 "pendiente_grados": pendiente_grados,
@@ -1557,6 +1939,18 @@ def get_parcelas(estado: Optional[str] = Query(None, description="Filtrar por es
                 "ndwi_mean": ndwi_val,
                 "evi_std": evi_val,
                 "lai_std": lai_val,
+                "ndvi_mean": t_row.get("ndvi_mean"),
+                "msavi_mean": t_row.get("msavi_mean"),
+                "dswi2_mean": t_row.get("dswi2_mean"),
+                "sti_presow": t_row.get("sti_presow"),
+                "mra_mean": t_row.get("mra_mean"),
+                "grupo_homogeneo": t_row.get("grupo_homogeneo"),
+                "deliberacion_qbaf": t_row.get("deliberacion_qbaf"),
+                "undercutting_activo": t_row.get("undercutting_activo", False),
+                "base_regional_t_ha": t_row.get("base_regional_t_ha"),
+                "suma_shap_kg_ha": t_row.get("suma_shap_kg_ha"),
+                "top_impulsores": t_row.get("top_impulsores"),
+                "top_frenadores": t_row.get("top_frenadores"),
             },
         })
 
@@ -1579,6 +1973,11 @@ def get_parcelas(estado: Optional[str] = Query(None, description="Filtrar por es
             "parcelas_con_rendimiento_real": len(rendimientos_conocidos),
             "parcelas_para_prediccion": len(features) - len(rendimientos_conocidos),
         },
+        "campana_2026": {
+            "pronostico_municipal_2026": meta_2026.get("pronostico_municipal_2026", {}),
+            "resumen_estatal_2026": meta_2026.get("resumen_estatal_2026", {}),
+            "estrategia_datos_2026": meta_2026.get("estrategia_datos_2026", {}),
+        },
         "geojson": {
             "type": "FeatureCollection",
             "features": features,
@@ -1592,11 +1991,12 @@ def health():
     return {
         "status": "healthy",
         "model_loaded": modelo_bundle is not None,
-        "model_name": modelo_bundle.get("model_name", "Pipeline Oficial AgroRaíces") if isinstance(modelo_bundle, dict) else "Fallback calibrado",
-        "version": "final-production",
+        "model_name": modelo_bundle.get("model_name", "Pipeline Oficial AgroRaíces — QBAF + DF-QuAD + SHAP") if isinstance(modelo_bundle, dict) else "Fallback calibrado",
+        "version": "qbaf-dfquad-production",
         "data_dir": "backend/data",
         "fuentes_base_zip_csv": [
             "parcelas.csv",
+            "ID_area_rendimiento_70_30_Reto_AgroCebada.csv",
             "Conjunto_datos_BASICO_AgroCebada2026.csv",
             "Conjunto_datos_PRO_AgroCebada.csv",
             "Reto_AgroCebada_Topografia_INEGI_CEM4.zip",
@@ -1604,10 +2004,10 @@ def health():
             "topografia_inegi_cem4_parcelas.csv",
         ],
         "metricas_oof": modelo_bundle.get("metricas_oficiales_oof") if isinstance(modelo_bundle, dict) else {
-            "r2_global": 0.7276,
-            "pearson_r_global": 0.8535,
-            "mae_global_kg": 307.0,
-            "rmse_global_kg": 442.7,
+            "r2_global": 0.7362,
+            "pearson_r_global": 0.8584,
+            "mae_global_kg": 296.3,
+            "rmse_global_kg": 435.6,
         },
         "endpoints": ["/predict", "/predict/upload-bundle", "/predict/demo-dataset", "/api/parcelas"],
     }
