@@ -473,6 +473,11 @@ export default function MapaParcelas() {
   const [analistaPotencial, setAnalistaPotencial] = useState<string>('')
   const [analistaFullPred, setAnalistaFullPred] = useState<PrediccionItem | null>(null)
   const [analistaError, setAnalistaError] = useState('')
+  const [filtroEstadoCaso, setFiltroEstadoCaso] = useState<string>('Hidalgo')
+  const [filtroMunicipioCaso, setFiltroMunicipioCaso] = useState<string>('Singuilucan')
+  const [vistaShapCaso, setVistaShapCaso] = useState<'lista' | 'grafica'>('lista')
+  const [filtroEfectoShap, setFiltroEfectoShap] = useState<'todas' | 'positivas' | 'negativas'>('todas')
+  const [todasLasParcelas, setTodasLasParcelas] = useState<ParcelaFeature[]>([])
 
   // Estado del Analista — Análisis por Grupos de Parcelas + SHAP Grupal
   const [modoGrupoAnalista, setModoGrupoAnalista] = useState<'PREDICCION' | 'CASOS_PASO6' | 'ENTRENAMIENTO' | 'TODOS'>('PREDICCION')
@@ -551,6 +556,9 @@ export default function MapaParcelas() {
       }
       const json: ApiResponse = await res.json()
       setData(json)
+      if (filtro === 'todos' && json.geojson?.features?.length) {
+        setTodasLasParcelas(json.geojson.features)
+      }
     } catch (err: any) {
       console.warn('Fallo cargando de /api/parcelas, probando fallback...', err)
       try {
@@ -559,6 +567,9 @@ export default function MapaParcelas() {
         if (!resFb.ok) throw new Error('Servidor backend no disponible')
         const jsonFb = await resFb.json()
         setData(jsonFb)
+        if (filtro === 'todos' && jsonFb.geojson?.features?.length) {
+          setTodasLasParcelas(jsonFb.geojson.features)
+        }
       } catch (fbErr: any) {
         setError('No se pudieron obtener los datos satelitales de parcelas.')
       }
@@ -575,6 +586,30 @@ export default function MapaParcelas() {
   const filteredFeatures = useMemo(() => {
     return data?.geojson?.features || []
   }, [data])
+
+  // Catálogo base para el filtro en cascada de Casos Particulares (siempre las 197 parcelas)
+  const catalogoBaseCaso = useMemo(() => {
+    return todasLasParcelas.length > 0 ? todasLasParcelas : (data?.geojson?.features || [])
+  }, [todasLasParcelas, data])
+
+  const municipiosDisponiblesCaso = useMemo(() => {
+    if (filtroEstadoCaso === 'todos') {
+      return Object.keys(MUNICIPIOS_DATA)
+    }
+    return MUNICIPIOS_POR_ESTADO[filtroEstadoCaso] || []
+  }, [filtroEstadoCaso])
+
+  const parcelasFiltradasCaso = useMemo(() => {
+    return catalogoBaseCaso.filter((f) => {
+      const matchEst =
+        filtroEstadoCaso === 'todos' ||
+        f.properties.estado.toLowerCase() === filtroEstadoCaso.toLowerCase()
+      const matchMun =
+        filtroMunicipioCaso === 'todos' ||
+        f.properties.municipio.toLowerCase() === filtroMunicipioCaso.toLowerCase()
+      return matchEst && matchMun
+    })
+  }, [catalogoBaseCaso, filtroEstadoCaso, filtroMunicipioCaso])
 
   // Inicializar Leaflet con satélite Esri World Imagery
   useEffect(() => {
@@ -1280,7 +1315,7 @@ export default function MapaParcelas() {
   }
 
   const handleSeleccionarCasoParticular = async (plotId: string, centrarEnMapa = false) => {
-    const feat = data?.geojson?.features.find((f) => f.properties.id_poligono === plotId)
+    const feat = catalogoBaseCaso.find((f) => f.properties.id_poligono === plotId)
     const p = feat?.properties
     if (p) {
       selectParcela(p, centrarEnMapa)
@@ -1322,6 +1357,40 @@ export default function MapaParcelas() {
     }
   }
 
+  const handleCambioEstadoCaso = async (nuevoEstado: string) => {
+    setFiltroEstadoCaso(nuevoEstado)
+    const muns =
+      nuevoEstado === 'todos'
+        ? Object.keys(MUNICIPIOS_DATA)
+        : MUNICIPIOS_POR_ESTADO[nuevoEstado] || []
+    const primerMunicipio = muns[0] || 'Chignahuapan'
+    setFiltroMunicipioCaso(primerMunicipio)
+    const filtradas = catalogoBaseCaso.filter(
+      (f) =>
+        (nuevoEstado === 'todos' || f.properties.estado.toLowerCase() === nuevoEstado.toLowerCase()) &&
+        f.properties.municipio.toLowerCase() === primerMunicipio.toLowerCase()
+    )
+    if (filtradas.length > 0) {
+      await handleSeleccionarCasoParticular(filtradas[0].properties.id_poligono, false)
+    }
+  }
+
+  const handleCambioMunicipioCaso = async (nuevoMunicipio: string) => {
+    setFiltroMunicipioCaso(nuevoMunicipio)
+    const filtradas = catalogoBaseCaso.filter((f) => {
+      const matchEst =
+        filtroEstadoCaso === 'todos' ||
+        f.properties.estado.toLowerCase() === filtroEstadoCaso.toLowerCase()
+      const matchMun =
+        nuevoMunicipio === 'todos' ||
+        f.properties.municipio.toLowerCase() === nuevoMunicipio.toLowerCase()
+      return matchEst && matchMun
+    })
+    if (filtradas.length > 0) {
+      await handleSeleccionarCasoParticular(filtradas[0].properties.id_poligono, false)
+    }
+  }
+
   // Cargar automáticamente el primer caso particular (AGC_003) y el grupo de prueba ciega al activar modo Analista
   useEffect(() => {
     if (perfilActivo === 'analista' && !analistaFullPred) {
@@ -1348,7 +1417,7 @@ export default function MapaParcelas() {
       return
     }
 
-    const featMatch = data?.geojson?.features.find((f) => f.properties.id_poligono === analistaValues.plot.trim())
+    const featMatch = catalogoBaseCaso.find((f) => f.properties.id_poligono === analistaValues.plot.trim())
     const refProps = featMatch?.properties || selectedParcela
 
     await ejecutarInferenciaIndividual({
@@ -1369,6 +1438,8 @@ export default function MapaParcelas() {
 
   const cargarTelemetriaSeleccionadaAnalista = () => {
     if (!selectedParcela) return
+    setFiltroEstadoCaso(selectedParcela.estado)
+    setFiltroMunicipioCaso(selectedParcela.municipio)
     handleSeleccionarCasoParticular(selectedParcela.id_poligono, false)
   }
 
@@ -2984,74 +3055,127 @@ export default function MapaParcelas() {
             =========================================================================== */}
             {subPestanaAnalista === 'parametros' && (
               <div className="space-y-6">
-                {/* Selector Rápido de los 9 Casos Particulares del Paso 6 del Notebook + Catálogo Completo */}
-                <div className="p-4 sm:p-5 rounded-2xl bg-[#1e1713]/90 border border-white/10 space-y-3.5">
-                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                {/* Filtros en Cascada: Estado -> Municipio -> Todas las Parcelas */}
+                <div className="p-4 sm:p-5 rounded-2xl bg-[#1e1713]/90 border border-white/10 space-y-4">
+                  <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-4">
                     <div>
                       <span className="text-[11px] font-bold uppercase tracking-wider text-[#e2b957] flex items-center gap-1.5">
-                        <Sparkles className="w-3.5 h-3.5" aria-hidden="true" /> Casos Particulares Destacados
+                        <Sliders className="w-3.5 h-3.5" strokeWidth={1.75} aria-hidden="true" /> Filtros en Cascada · Selección de Parcela
                       </span>
                       <p className="text-xs text-[#c9b7aa] mt-0.5">
-                        Selecciona cualquiera de los 9 casos particulares de prueba ciega (3 por Estado) o elige cualquier polígono del catálogo para descomponer su predicción con SHAP:
+                        Filtra por Estado y Municipio para listar todas las parcelas correspondientes y auditar su predicción SHAP en vivo:
                       </p>
                     </div>
 
-                    {/* Selector desplegable de cualquiera de las 197 parcelas */}
-                    <div className="flex items-center gap-2 shrink-0">
-                      <select
-                        aria-label="Seleccionar polígono del catálogo AgroCebada"
-                        value={analistaValues.plot}
-                        onChange={(e) => handleSeleccionarCasoParticular(e.target.value, true)}
-                        className="h-9 rounded-xl border border-white/15 bg-[#291e17] px-3 text-xs text-white outline-none focus:border-sky-400"
-                      >
-                        {(data?.geojson?.features || []).map((f) => (
-                          <option key={f.properties.id_poligono} value={f.properties.id_poligono}>
-                            {f.properties.id_poligono} · {f.properties.estado} ({f.properties.municipio}) [{f.properties.conjunto}]
-                          </option>
-                        ))}
-                      </select>
+                    {/* Controles en cascada: Estado -> Municipio -> Parcela */}
+                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5 w-full lg:w-auto lg:min-w-[560px]">
+                      <label className="flex flex-col gap-1 text-[11px] font-semibold text-[#c9b7aa]">
+                        1. Estado
+                        <select
+                          aria-label="Filtrar por Estado"
+                          value={filtroEstadoCaso}
+                          onChange={(e) => handleCambioEstadoCaso(e.target.value)}
+                          className="h-9 rounded-xl border border-white/15 bg-[#291e17] px-3 text-xs text-white outline-none focus:border-sky-400"
+                        >
+                          <option value="todos">Todos los Estados</option>
+                          <option value="Puebla">Puebla</option>
+                          <option value="Hidalgo">Hidalgo</option>
+                          <option value="Tlaxcala">Tlaxcala</option>
+                        </select>
+                      </label>
+
+                      <label className="flex flex-col gap-1 text-[11px] font-semibold text-[#c9b7aa]">
+                        2. Municipio
+                        <select
+                          aria-label="Filtrar por Municipio"
+                          value={filtroMunicipioCaso}
+                          onChange={(e) => handleCambioMunicipioCaso(e.target.value)}
+                          className="h-9 rounded-xl border border-white/15 bg-[#291e17] px-3 text-xs text-white outline-none focus:border-sky-400"
+                        >
+                          {municipiosDisponiblesCaso.map((mun) => (
+                            <option key={mun} value={mun}>
+                              {mun}
+                            </option>
+                          ))}
+                        </select>
+                      </label>
+
+                      <label className="flex flex-col gap-1 text-[11px] font-semibold text-[#c9b7aa]">
+                        3. Parcela
+                        <select
+                          aria-label="Seleccionar polígono filtrado"
+                          value={analistaValues.plot}
+                          onChange={(e) => handleSeleccionarCasoParticular(e.target.value, true)}
+                          className="h-9 rounded-xl border border-white/15 bg-[#291e17] px-3 text-xs text-white font-mono tabular-nums outline-none focus:border-sky-400"
+                        >
+                          {parcelasFiltradasCaso.map((f) => (
+                            <option key={f.properties.id_poligono} value={f.properties.id_poligono}>
+                              {f.properties.id_poligono} · {f.properties.municipio} ({f.properties.area_ha} ha)
+                            </option>
+                          ))}
+                        </select>
+                      </label>
                     </div>
                   </div>
 
-                  {/* Tarjetas de los 9 Casos Particulares Destacados del Paso 6 NB */}
-                  <div className="grid grid-cols-1 sm:grid-cols-3 lg:grid-cols-9 gap-2">
-                    {CASOS_PARTICULARES_PASO6.map((caso) => {
-                      const isActive = analistaValues.plot === caso.id
-                      const badgeColor =
-                        caso.estado === 'Hidalgo'
-                          ? 'text-[#e2b957] border-[#e2b957]/40'
-                          : caso.estado === 'Puebla'
-                          ? 'text-[#d87a52] border-[#d87a52]/40'
-                          : 'text-sky-300 border-sky-400/40'
-                      return (
-                        <button
-                          key={caso.id}
-                          type="button"
-                          onClick={() => handleSeleccionarCasoParticular(caso.id, false)}
-                          className={`p-2.5 rounded-xl border text-left transition cursor-pointer flex flex-col justify-between ${
-                            isActive
-                              ? 'bg-sky-500/20 border-sky-400 ring-1 ring-sky-400/50 shadow-md'
-                              : 'bg-white/5 border-white/10 hover:bg-white/10 hover:border-white/25'
-                          }`}
-                        >
-                          <div className="flex items-center justify-between gap-1">
-                            <span className="font-mono font-bold text-xs text-white">{caso.id}</span>
-                            <span className={`text-[9px] px-1.5 py-0.2 rounded border font-semibold ${badgeColor}`}>
-                              {caso.estado.slice(0, 3).toUpperCase()}
-                            </span>
-                          </div>
-                          <div className="text-[10px] text-[#c9b7aa] mt-1 line-clamp-2 leading-tight">
-                            {caso.desc}
-                          </div>
-                        </button>
-                      )
-                    })}
+                  {/* Cuadrícula con todas las parcelas resultantes del filtro activo */}
+                  <div className="border-t border-white/10 pt-3">
+                    <div className="flex items-center justify-between mb-2">
+                      <span className="text-[11px] text-[#c9b7aa]">
+                        Mostrando <b className="text-white font-mono tabular-nums">{parcelasFiltradasCaso.length}</b> parcelas
+                        {filtroEstadoCaso !== 'todos' ? ` en ${filtroEstadoCaso}` : ''}
+                        {filtroMunicipioCaso !== 'todos' ? ` · ${filtroMunicipioCaso}` : ''}
+                      </span>
+                      <span className="text-[11px] font-mono tabular-nums text-sky-300">
+                        Activa: <b>{analistaValues.plot}</b>
+                      </span>
+                    </div>
+
+                    <div className="max-h-40 overflow-y-auto pr-1 grid grid-cols-2 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-8 gap-2">
+                      {parcelasFiltradasCaso.map((f) => {
+                        const p = f.properties
+                        const isActive = analistaValues.plot === p.id_poligono
+                        const badgeColor =
+                          p.estado === 'Hidalgo'
+                            ? 'text-[#e2b957] border-[#e2b957]/40'
+                            : p.estado === 'Puebla'
+                            ? 'text-[#d87a52] border-[#d87a52]/40'
+                            : 'text-sky-300 border-sky-400/40'
+                        return (
+                          <button
+                            key={p.id_poligono}
+                            type="button"
+                            onClick={() => handleSeleccionarCasoParticular(p.id_poligono, false)}
+                            className={`p-2 rounded-xl border text-left transition cursor-pointer flex flex-col justify-between ${
+                              isActive
+                                ? 'bg-sky-500/20 border-sky-400 ring-1 ring-sky-400/50 shadow-md'
+                                : 'bg-white/5 border-white/10 hover:bg-white/10 hover:border-white/25'
+                            }`}
+                          >
+                            <div className="flex items-center justify-between gap-1">
+                              <span className="font-mono font-bold text-xs text-white tabular-nums">
+                                {p.id_poligono}
+                              </span>
+                              <span className={`text-[9px] px-1.5 py-0.2 rounded border font-semibold ${badgeColor}`}>
+                                {p.estado.slice(0, 3).toUpperCase()}
+                              </span>
+                            </div>
+                            <div className="text-[10px] text-[#c9b7aa] mt-1 truncate">
+                              {p.municipio}
+                            </div>
+                            <div className="text-[10px] font-mono tabular-nums text-white/70 mt-0.5">
+                              {p.area_ha} ha
+                            </div>
+                          </button>
+                        )
+                      })}
+                    </div>
                   </div>
                 </div>
 
-                {/* Grid Principal: Izquierda Formulario Paramétrico + Resumen QBAF | Derecha Descomposición Aditiva SHAP */}
+                {/* Grid Principal: Izquierda Formulario Paramétrico | Derecha Descomposición Aditiva SHAP */}
                 <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-                  {/* Columna Izquierda (5 cols): Parámetros de Entrada y Resumen de Deliberación QBAF */}
+                  {/* Columna Izquierda (5 cols): Parámetros de Entrada */}
                   <div className="lg:col-span-5 space-y-4">
                     <form onSubmit={handleCalcularAnalista} className="bg-[#1e1713] border border-white/10 rounded-2xl p-5 space-y-4 shadow-xl">
                       <div className="flex items-center justify-between border-b border-white/10 pb-3">
@@ -3094,7 +3218,7 @@ export default function MapaParcelas() {
                             required
                             value={analistaValues.area}
                             onChange={(e) => setAnalistaValues({ ...analistaValues, area: e.target.value })}
-                            className="h-9 rounded-xl border border-white/10 bg-[#291e17]/80 px-3 text-xs text-white outline-none focus:border-[#e2b957]"
+                            className="h-9 rounded-xl border border-white/10 bg-[#291e17]/80 px-3 text-xs text-white font-mono tabular-nums outline-none focus:border-[#e2b957]"
                           />
                         </label>
 
@@ -3106,7 +3230,7 @@ export default function MapaParcelas() {
                             required
                             value={analistaValues.temp}
                             onChange={(e) => setAnalistaValues({ ...analistaValues, temp: e.target.value })}
-                            className="h-9 rounded-xl border border-white/10 bg-[#291e17]/80 px-3 text-xs text-white outline-none focus:border-[#e2b957]"
+                            className="h-9 rounded-xl border border-white/10 bg-[#291e17]/80 px-3 text-xs text-white font-mono tabular-nums outline-none focus:border-[#e2b957]"
                           />
                         </label>
 
@@ -3118,7 +3242,7 @@ export default function MapaParcelas() {
                             required
                             value={analistaValues.ndwi}
                             onChange={(e) => setAnalistaValues({ ...analistaValues, ndwi: e.target.value })}
-                            className="h-9 rounded-xl border border-white/10 bg-[#291e17]/80 px-3 text-xs text-white outline-none focus:border-[#e2b957]"
+                            className="h-9 rounded-xl border border-white/10 bg-[#291e17]/80 px-3 text-xs text-white font-mono tabular-nums outline-none focus:border-[#e2b957]"
                           />
                         </label>
 
@@ -3130,7 +3254,7 @@ export default function MapaParcelas() {
                             required
                             value={analistaValues.lai}
                             onChange={(e) => setAnalistaValues({ ...analistaValues, lai: e.target.value })}
-                            className="h-9 rounded-xl border border-white/10 bg-[#291e17]/80 px-3 text-xs text-white outline-none focus:border-[#e2b957]"
+                            className="h-9 rounded-xl border border-white/10 bg-[#291e17]/80 px-3 text-xs text-white font-mono tabular-nums outline-none focus:border-[#e2b957]"
                           />
                         </label>
 
@@ -3141,7 +3265,7 @@ export default function MapaParcelas() {
                             step="any"
                             value={analistaValues.ndvi}
                             onChange={(e) => setAnalistaValues({ ...analistaValues, ndvi: e.target.value })}
-                            className="h-9 rounded-xl border border-white/10 bg-[#291e17]/80 px-3 text-xs text-white outline-none focus:border-[#e2b957]"
+                            className="h-9 rounded-xl border border-white/10 bg-[#291e17]/80 px-3 text-xs text-white font-mono tabular-nums outline-none focus:border-[#e2b957]"
                           />
                         </label>
 
@@ -3152,7 +3276,7 @@ export default function MapaParcelas() {
                             step="any"
                             value={analistaValues.sti}
                             onChange={(e) => setAnalistaValues({ ...analistaValues, sti: e.target.value })}
-                            className="h-9 rounded-xl border border-white/10 bg-[#291e17]/80 px-3 text-xs text-white outline-none focus:border-[#e2b957]"
+                            className="h-9 rounded-xl border border-white/10 bg-[#291e17]/80 px-3 text-xs text-white font-mono tabular-nums outline-none focus:border-[#e2b957]"
                           />
                         </label>
 
@@ -3164,7 +3288,7 @@ export default function MapaParcelas() {
                             required
                             value={analistaValues.evi}
                             onChange={(e) => setAnalistaValues({ ...analistaValues, evi: e.target.value })}
-                            className="h-9 rounded-xl border border-white/10 bg-[#291e17]/80 px-3 text-xs text-white outline-none focus:border-[#e2b957]"
+                            className="h-9 rounded-xl border border-white/10 bg-[#291e17]/80 px-3 text-xs text-white font-mono tabular-nums outline-none focus:border-[#e2b957]"
                           />
                         </label>
                       </div>
@@ -3191,101 +3315,12 @@ export default function MapaParcelas() {
                         </button>
                       </div>
                     </form>
-
-                    {/* Tarjeta de Deliberación QBAF + DF-QuAD del Caso Particular */}
-                    {analistaFullPred && (
-                      <div className="bg-[#1e1713] border border-white/10 rounded-2xl p-5 space-y-3.5 shadow-xl">
-                        <div className="flex items-center justify-between border-b border-white/10 pb-2.5">
-                          <span className="text-xs uppercase tracking-wider text-[#e2b957] font-bold">
-                            Árbitro Regional {analistaFullPred.estado}
-                          </span>
-                          <span className="text-[10px] px-2 py-0.5 rounded bg-sky-500/20 text-sky-300 font-semibold">
-                            {analistaFullPred.conjunto || 'PREDICCION'}
-                          </span>
-                        </div>
-
-                        {/* Ecuación Aditiva SHAP: Base + Suma SHAP = Predicción */}
-                        <div className="grid grid-cols-3 gap-2 text-center bg-black/30 p-3 rounded-xl border border-white/5">
-                          <div>
-                            <span className="text-[10px] text-[#c9b7aa] block">Base Regional φ₀</span>
-                            <b className="text-sm sm:text-base text-white font-mono">
-                              {(analistaFullPred.base_regional_t_ha ?? 3.77).toFixed(3)}
-                            </b>
-                            <span className="text-[9px] text-white/40 block">t/ha</span>
-                          </div>
-                          <div>
-                            <span className="text-[10px] text-[#c9b7aa] block">Aporte Neto ΣSHAP</span>
-                            <b
-                              className={`text-sm sm:text-base font-mono ${
-                                (analistaFullPred.suma_shap_kg_ha ?? 0) >= 0 ? 'text-emerald-400' : 'text-rose-400'
-                              }`}
-                            >
-                              {(analistaFullPred.suma_shap_kg_ha ?? 0) >= 0 ? '+' : ''}
-                              {analistaFullPred.suma_shap_kg_ha ?? 0}
-                            </b>
-                            <span className="text-[9px] text-white/40 block">kg/ha</span>
-                          </div>
-                          <div>
-                            <span className="text-[10px] text-[#c9b7aa] block">Predicción Final ŷ</span>
-                            <b className="text-sm sm:text-base text-[#e2b957] font-mono">
-                              {analistaFullPred.rendimiento_t_ha.toFixed(3)}
-                            </b>
-                            <span className="text-[9px] text-white/40 block">
-                              t/ha ({analistaFullPred.produccion_estimada_t} t)
-                            </span>
-                          </div>
-                        </div>
-
-                        {/* Metadatos de Grupo Homogéneo y Undercutting */}
-                        <div className="space-y-2 text-xs">
-                          <div className="p-2.5 rounded-xl bg-white/5 border border-white/5 flex items-center justify-between">
-                            <span className="text-[#c9b7aa]">Grupo Homogéneo QBAF:</span>
-                            <span className="font-mono font-bold text-sky-300 text-[11px]">
-                              {analistaFullPred.grupo_homogeneo || 'General'}
-                            </span>
-                          </div>
-
-                          <div className="p-2.5 rounded-xl bg-white/5 border border-white/5">
-                            <span className="text-[#c9b7aa] block text-[11px]">Regla de Deliberación DF-QuAD:</span>
-                            <b className="text-white text-[11px] block mt-0.5">{analistaFullPred.deliberacion_qbaf}</b>
-                            {analistaFullPred.estado === 'Puebla' && (
-                              <span
-                                className={`inline-block mt-1 text-[10px] px-2 py-0.5 rounded font-semibold ${
-                                  analistaFullPred.undercutting_activo
-                                    ? 'bg-purple-500/20 text-purple-300 border border-purple-500/30'
-                                    : 'bg-emerald-500/15 text-emerald-300'
-                                }`}
-                              >
-                                {analistaFullPred.undercutting_activo
-                                  ? '⚡ Capa 0 Undercutting Activo (NDVI > P75 → σ_ET = 0.001)'
-                                  : '✓ Capa 0 Sin Saturación Óptica (Debate Completo)'}
-                              </span>
-                            )}
-                          </div>
-
-                          {analistaFullPred.rendimiento_real_t_ha !== null &&
-                            analistaFullPred.rendimiento_real_t_ha !== undefined && (
-                              <div className="p-2.5 rounded-xl bg-[#b85c38]/15 border border-[#d87a52]/30 flex items-center justify-between">
-                                <span className="text-[#f5e3d7]">Rendimiento Real (Entrenamiento):</span>
-                                <b className="text-white">
-                                  {analistaFullPred.rendimiento_real_t_ha.toFixed(2)} t/ha (Error:{' '}
-                                  {Math.round(
-                                    Math.abs(analistaFullPred.rendimiento_real_t_ha - analistaFullPred.rendimiento_t_ha) *
-                                      1000
-                                  )}{' '}
-                                  kg/ha)
-                                </b>
-                              </div>
-                            )}
-                        </div>
-                      </div>
-                    )}
                   </div>
 
-                  {/* Columna Derecha (7 cols): Cascada y Tabla de Explicabilidad SHAP Variable por Variable (Paso 6 NB) */}
+                  {/* Columna Derecha (7 cols): Cascada y Tabla / Gráfica de Explicabilidad SHAP Variable por Variable */}
                   <div className="lg:col-span-7 bg-[#1e1713] border border-white/10 rounded-2xl p-5 sm:p-6 flex flex-col justify-between shadow-xl">
                     <div>
-                      <div className="flex flex-wrap items-center justify-between gap-2 border-b border-white/10 pb-3 mb-4">
+                      <div className="flex flex-wrap items-center justify-between gap-3 border-b border-white/10 pb-3 mb-4">
                         <div>
                           <span className="text-xs uppercase tracking-wider text-[#e2b957] font-bold block">
                             Descomposición Aditiva SHAP · ¿Qué Variables Afectaron la Predicción?
@@ -3296,17 +3331,42 @@ export default function MapaParcelas() {
                             {analistaFullPred?.estado || 'Hidalgo'})
                           </span>
                         </div>
-                        <span className="text-[10px] px-2.5 py-1 rounded-lg bg-white/5 border border-white/10 text-[#c9b7aa]">
-                          r = 0.8584 · R² = 0.7362
-                        </span>
+
+                        {/* Selector para alternar entre Vista Detalle (igual) y Vista Gráfica */}
+                        <div className="inline-flex items-center rounded-xl bg-black/40 p-1 border border-white/10">
+                          <button
+                            type="button"
+                            onClick={() => setVistaShapCaso('lista')}
+                            className={`px-3 py-1.5 rounded-lg text-[11px] font-semibold flex items-center gap-1.5 transition cursor-pointer ${
+                              vistaShapCaso === 'lista'
+                                ? 'bg-sky-500/25 text-sky-300 border border-sky-400/40'
+                                : 'text-[#c9b7aa] hover:text-white'
+                            }`}
+                          >
+                            <Table className="w-3.5 h-3.5" strokeWidth={1.75} />
+                            <span>Detalle</span>
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => setVistaShapCaso('grafica')}
+                            className={`px-3 py-1.5 rounded-lg text-[11px] font-semibold flex items-center gap-1.5 transition cursor-pointer ${
+                              vistaShapCaso === 'grafica'
+                                ? 'bg-sky-500/25 text-sky-300 border border-sky-400/40'
+                                : 'text-[#c9b7aa] hover:text-white'
+                            }`}
+                          >
+                            <BarChart3 className="w-3.5 h-3.5" strokeWidth={1.75} />
+                            <span>Gráfica SHAP</span>
+                          </button>
+                        </div>
                       </div>
 
                       {!analistaFullPred || !analistaFullPred.shap_variables ? (
-                        <div className="py-16 text-center text-[#c9b7aa] flex flex-col items-center">
+                        <div className="py-16 text-center text-[#c9b7aa] flex flex-col items-center animate-pulse">
                           <BarChart3 className="w-10 h-10 text-white/20 mb-3" />
                           <p className="text-sm font-semibold text-white">Cargando auditoría SHAP del caso particular...</p>
                         </div>
-                      ) : (
+                      ) : vistaShapCaso === 'lista' ? (
                         <div className="space-y-4">
                           {/* Tarjetas Resumen: Top Impulsores vs Top Frenadores */}
                           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
@@ -3324,7 +3384,7 @@ export default function MapaParcelas() {
                             </div>
                           </div>
 
-                          {/* Barras Divergentes y Tabla Detallada de Variables SHAP */}
+                          {/* Barras Divergentes y Tabla Detallada de Variables SHAP (Vista Original) */}
                           <div className="max-h-[420px] overflow-y-auto pr-1 space-y-2">
                             {(() => {
                               const vars = analistaFullPred.shap_variables || []
@@ -3347,14 +3407,14 @@ export default function MapaParcelas() {
                                           {sv.nodo_qbaf}
                                         </span>
                                         <span
-                                          className={`font-mono font-bold text-xs ${
+                                          className={`font-mono font-bold text-xs tabular-nums ${
                                             isPos ? 'text-emerald-400' : 'text-rose-400'
                                           }`}
                                         >
                                           {isPos ? '+' : ''}
                                           {sv.shap_kg_ha.toFixed(1)} kg/ha
                                         </span>
-                                        <span className="text-[10px] text-white/40 w-11 text-right">
+                                        <span className="text-[10px] text-white/40 w-11 text-right font-mono tabular-nums">
                                           ({sv.impacto_pct}%)
                                         </span>
                                       </div>
@@ -3362,7 +3422,7 @@ export default function MapaParcelas() {
 
                                     {/* Barra visual de contribución SHAP y comparación Valor Parcela vs Mediana Regional */}
                                     <div className="mt-1.5 flex items-center gap-3">
-                                      <div className="text-[10px] text-[#c9b7aa] w-44 shrink-0 font-mono">
+                                      <div className="text-[10px] text-[#c9b7aa] w-44 shrink-0 font-mono tabular-nums">
                                         Valor: <b className="text-white">{sv.valor_parcela}</b>{' '}
                                         <span className="text-white/40">(Med: {sv.mediana_estado})</span>
                                       </div>
@@ -3375,6 +3435,160 @@ export default function MapaParcelas() {
                                               : 'bg-gradient-to-r from-rose-600 to-amber-500/80'
                                           }`}
                                         />
+                                      </div>
+                                    </div>
+                                  </div>
+                                )
+                              })
+                            })()}
+                          </div>
+                        </div>
+                      ) : (
+                        /* VISTA GRÁFICA SHAP: Gráfico de Barras Divergentes (Eje Central 0 kg/ha) + Filtros de Variables */
+                        <div className="space-y-4">
+                          {/* Ecuación visual: Base Regional + Suma SHAP = Predicción Final */}
+                          <div className="grid grid-cols-3 gap-2.5 text-center bg-black/30 p-3 rounded-xl border border-white/10">
+                            <div>
+                              <span className="text-[10px] text-[#c9b7aa] block">Base Regional φ₀</span>
+                              <b className="text-sm sm:text-base text-white font-mono tabular-nums">
+                                {(analistaFullPred.base_regional_t_ha ?? 3.77).toFixed(3)} t/ha
+                              </b>
+                            </div>
+                            <div>
+                              <span className="text-[10px] text-[#c9b7aa] block">Impacto Neto ΣSHAP</span>
+                              <b
+                                className={`text-sm sm:text-base font-mono tabular-nums ${
+                                  (analistaFullPred.suma_shap_kg_ha ?? 0) >= 0 ? 'text-emerald-400' : 'text-rose-400'
+                                }`}
+                              >
+                                {(analistaFullPred.suma_shap_kg_ha ?? 0) >= 0 ? '+' : ''}
+                                {analistaFullPred.suma_shap_kg_ha ?? 0} kg/ha
+                              </b>
+                            </div>
+                            <div>
+                              <span className="text-[10px] text-[#c9b7aa] block">Predicción Final ŷ</span>
+                              <b className="text-sm sm:text-base text-[#e2b957] font-mono tabular-nums">
+                                {analistaFullPred.rendimiento_t_ha.toFixed(3)} t/ha
+                              </b>
+                            </div>
+                          </div>
+
+                          {/* Filtros de variables dentro de la Gráfica SHAP */}
+                          <div className="flex flex-wrap items-center justify-between gap-2 bg-black/25 p-2 rounded-xl border border-white/10">
+                            <span className="text-[11px] font-semibold text-[#c9b7aa] pl-1">
+                              Filtrar variables en gráfica:
+                            </span>
+                            <div className="flex flex-wrap items-center gap-1.5">
+                              <button
+                                type="button"
+                                onClick={() => setFiltroEfectoShap('todas')}
+                                className={`px-2.5 py-1 rounded-lg text-[11px] font-semibold transition cursor-pointer ${
+                                  filtroEfectoShap === 'todas'
+                                    ? 'bg-sky-500/25 text-sky-300 border border-sky-400/40'
+                                    : 'bg-white/5 text-[#c9b7aa] hover:text-white border border-transparent'
+                                }`}
+                              >
+                                Todas
+                              </button>
+                              <button
+                                type="button"
+                                onClick={() => setFiltroEfectoShap('positivas')}
+                                className={`px-2.5 py-1 rounded-lg text-[11px] font-semibold transition cursor-pointer ${
+                                  filtroEfectoShap === 'positivas'
+                                    ? 'bg-emerald-500/25 text-emerald-300 border border-emerald-400/40'
+                                    : 'bg-white/5 text-[#c9b7aa] hover:text-emerald-300 border border-transparent'
+                                }`}
+                              >
+                                ▲ Variables que sumaron (+)
+                              </button>
+                              <button
+                                type="button"
+                                onClick={() => setFiltroEfectoShap('negativas')}
+                                className={`px-2.5 py-1 rounded-lg text-[11px] font-semibold transition cursor-pointer ${
+                                  filtroEfectoShap === 'negativas'
+                                    ? 'bg-rose-500/25 text-rose-300 border border-rose-400/40'
+                                    : 'bg-white/5 text-[#c9b7aa] hover:text-rose-300 border border-transparent'
+                                }`}
+                              >
+                                ▼ Variables que restaron (-)
+                              </button>
+                            </div>
+                          </div>
+
+                          {/* Leyenda de la gráfica divergente */}
+                          <div className="flex items-center justify-between text-[11px] px-2 text-[#c9b7aa]">
+                            <span className="flex items-center gap-1.5 text-rose-400 font-semibold">
+                              <span className="w-2.5 h-2.5 rounded-sm bg-rose-500 inline-block" />
+                              ◄ Variables que restaron (kg/ha)
+                            </span>
+                            <span className="font-mono text-[10px] text-white/50">Eje 0 kg/ha</span>
+                            <span className="flex items-center gap-1.5 text-emerald-400 font-semibold">
+                              Variables que sumaron (kg/ha) ►
+                              <span className="w-2.5 h-2.5 rounded-sm bg-emerald-500 inline-block" />
+                            </span>
+                          </div>
+
+                          {/* Lienzo del Gráfico de Barras Divergentes por Variable */}
+                          <div className="p-3.5 rounded-xl bg-black/25 border border-white/10 space-y-2.5 max-h-[380px] overflow-y-auto">
+                            {(() => {
+                              const allVars = analistaFullPred.shap_variables || []
+                              const maxAbsKg = Math.max(...allVars.map((v) => Math.abs(v.shap_kg_ha)), 50)
+                              const vars = allVars.filter((sv) => {
+                                if (filtroEfectoShap === 'positivas') return sv.shap_kg_ha >= 0
+                                if (filtroEfectoShap === 'negativas') return sv.shap_kg_ha < 0
+                                return true
+                              })
+
+                              if (vars.length === 0) {
+                                return (
+                                  <div className="py-8 text-center text-xs text-[#c9b7aa]">
+                                    No hay variables en este filtro para la parcela seleccionada.
+                                  </div>
+                                )
+                              }
+
+                              return vars.map((sv, idx) => {
+                                const isPos = sv.shap_kg_ha >= 0
+                                const halfPct = Math.min(100, Math.max(4, (Math.abs(sv.shap_kg_ha) / maxAbsKg) * 100))
+                                return (
+                                  <div key={sv.variable + idx} className="space-y-1">
+                                    <div className="flex items-center justify-between text-[11px]">
+                                      <span className="text-white font-medium truncate max-w-[60%]">
+                                        <b className="font-mono text-sky-300">{sv.variable}</b> · {sv.etiqueta}
+                                      </span>
+                                      <span
+                                        className={`font-mono font-bold tabular-nums ${
+                                          isPos ? 'text-emerald-400' : 'text-rose-400'
+                                        }`}
+                                      >
+                                        {isPos ? '+' : ''}
+                                        {sv.shap_kg_ha.toFixed(1)} kg/ha ({sv.impacto_pct}%)
+                                      </span>
+                                    </div>
+
+                                    {/* Barra bidireccional con centro en 0 */}
+                                    <div className="relative h-5 w-full rounded-lg bg-white/[0.04] border border-white/5 flex items-center overflow-hidden">
+                                      {/* Mitad izquierda (negativos) */}
+                                      <div className="w-1/2 h-full flex justify-end items-center pr-0.5">
+                                        {!isPos && (
+                                          <div
+                                            style={{ width: `${halfPct}%` }}
+                                            className="h-3.5 rounded-l-md bg-gradient-to-l from-rose-500 to-amber-500 transition-all duration-500"
+                                          />
+                                        )}
+                                      </div>
+
+                                      {/* Línea central 0 */}
+                                      <div className="w-px h-full bg-white/30 shrink-0" />
+
+                                      {/* Mitad derecha (positivos) */}
+                                      <div className="w-1/2 h-full flex justify-start items-center pl-0.5">
+                                        {isPos && (
+                                          <div
+                                            style={{ width: `${halfPct}%` }}
+                                            className="h-3.5 rounded-r-md bg-gradient-to-r from-emerald-500 to-teal-400 transition-all duration-500"
+                                          />
+                                        )}
                                       </div>
                                     </div>
                                   </div>
