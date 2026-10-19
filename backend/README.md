@@ -1,39 +1,29 @@
-# AgroRaices API (backend Python - Pipeline Oficial)
+# AgroRaíces API (Backend Python · QBAF + DF-QuAD + SHAP + Campaña 2026)
 
-API FastAPI de inferencia para estimación de rendimiento de cebada maltera (*Reto AgroCebada 2026*).
+API FastAPI y motor científico de entrenamiento, explicabilidad **SHAP** y proyección agroclimática **2026** para las **197 parcelas** de cebada maltera (*Reto AgroCebada 2026*).
 
-## Setup
+## 1. Instalación y Ejecución
 ```powershell
 cd backend
-python -m venv .venv
+py -m venv .venv
 .venv\Scripts\Activate.ps1
 pip install -r requirements.txt
-```
-
-## Ejecutar
-```powershell
 uvicorn main:app --reload --port 8000
 ```
 
-## Artefactos del Modelo
-- `routers/modelo_agroraices_final.joblib`: Modelo serializado final con especialistas desacoplados por entidad:
-  - **Hidalgo**: ExtraTrees (75%) + SVR RBF (25%) con prior bayesiano municipal y downscaling adiabático CHIRTS-ERA5.
-  - **Puebla**: Ensamble dual (Base 50% + PLS k=2 50%) con SVR (45%) + Huber (35%) + GPR (15%) + ExtraTrees (5%).
-  - **Tlaxcala**: Clasificador ordinal probabilístico SVC (45%) + anclaje a mediana regional de 3.0 t/ha (55%).
-- `routers/modelo_metadata.json`: Metadatos de desempeño OOF ($r = 0.8535$, $R^2 = 0.7276$, $\text{MAE} = 307.0\text{ kg/ha}$) y municipios soportados.
+## 2. Artefactos y Scripts del Modelo (`backend/routers/` y `backend/scripts/`)
+- `routers/empaquetar_modelo_agroraices_final.py`: Entrena los árbitros regionales **QBAF + DF-QuAD**, ejecuta la validación cruzada OOF ($K=3$) y calcula la descomposición aditiva **SHAP** ($\phi_0 + \sum \phi_i = \hat{y}$) para las 197 parcelas.
+- `scripts/generar_covariables_2026.py`: Separa las variables estáticas fijas (**INEGI CEM 4.0** + geometría WKT) de las variables dinámicas del ciclo **Abril – Octubre 2026** (pronósticos por coordenadas **OpenWeather / Open-Meteo Climate API** con *downscaling* adiabático $-0.0065\ ^\circ\text{C/m}$ + conector **Google Earth Engine** Sentinel-2/Landsat) y genera las 197 predicciones de la campaña 2026.
+- `routers/modelo_agroraices_final.joblib` y `routers/modelo_metadata.json`:
+  - **Métricas Oficiales OOF**: $r = 0.8584$, $R^2 = 0.7362$ ($73.62\%$), $\text{MAE} = 296.3\text{ kg/ha}$, $\text{RMSE} = 435.6\text{ kg/ha}$.
+  - **Hidalgo (51 parcelas)**: `GradientBoosting` ($\sigma=0.75$) + Prior Bayesiano Municipal + `SVR RBF` ($\sigma=0.25$).
+  - **Puebla (100 parcelas)**: Deliberación Dual (`SVR + Huber + GPR + ExtraTrees` + `PLS k=2`) con **Undercutting en Capa 0** ($\sigma_{\text{ET}}=0.001$ cuando $\text{NDVI} > P_{75}$).
+  - **Tlaxcala (46 parcelas)**: Anclaje Modal Regional $3.00\text{ t/ha}$ ($\sigma=0.55$) + `SVC Ordinal Probabilístico` ($\sigma=0.45$).
+- `routers/predicciones_2026_meta.json` y `data/agrocebada/predicciones_197_parcelas_2026.csv`: Telemetría y matriz completa de predicciones 2026 para las 197 parcelas (`138 ENTRENAMIENTO` + `59 PREDICCION`).
 
-## Fuentes de Datos Base (`backend/data/agrocebada/`)
-El backend procesa directamente el dataset original en su forma base (`.zip` con Shapefiles y capas GeoTIFF `.tif` + `.csv`):
-1. `Parcelas_Reto_AGC_CONJUNTO_70_30.zip` — Shapefile vectorial (`Parcelas_Reto_AGC_CONJUNTO.shp/.dbf/.shx/.prj`) de las 197 parcelas, del cual el backend extrae los polígonos WKT, área (`AREA_HA`), conjunto (`ENTRENAMIENTO` / `PREDICCION`), centroides, elongación UTM (`EPSG:32614`), rugosidad (`proxy_relieve_m`) y genera automáticamente `backend/data/parcelas.csv`.
-2. `Conjunto_datos_BASICO_AgroCebada2026.csv` — Series multitemporales Sentinel-2 y Landsat (2022–2025).
-3. `Conjunto_datos_PRO_AgroCebada.csv` — Series PlanetScope de 3 m (2025).
-4. `Reto_AgroCebada_Topografia_INEGI_CEM4.zip` — Rásters GeoTIFF `Elevacion_INEGI_CEM4_120m.tif` y `Pendiente_INEGI_CEM4_120m_grados.tif` (`EPSG:6372`), recortados por polígono mediante `rasterio.mask.mask`.
-5. `Reto_AgroCebada_Temperatura_2022_2025_RECORTADA_CHIRPS.zip` — 96 rásters GeoTIFF mensuales (`Tmax_YYYY_MM.tif` y `Tmin_YYYY_MM.tif`, 2022–2025), muestreados con interpolación bilineal sub-píxel (`bi_*`), vecino más cercano (`nn_*`), *downscaling* adiabático (`lp_*`), temperaturas cardinales y acoplamiento fenológico.
-
-## Endpoints
-- `POST /predict` — body JSON: `{ plot, area, temp, ndwi, evi, lai, estado, municipio, elevacion, pendiente }` → predicción oficial.
-- `POST /predict/upload-bundle` — recibe y procesa en tiempo real los `.zip` (con `.shp` y `.tif`) y `.csv` del dataset base.
-- `GET /predict/demo-dataset` — inferencia sobre las 59 parcelas del conjunto `PREDICCION` procesadas desde `backend/data/agrocebada/`.
-- `GET /api/parcelas` o `GET /parcelas` — GeoJSON de las 197 parcelas con polígonos, telemetría espectral/topográfica y estimaciones del modelo.
-- `GET /health` — chequeo de salud y metadatos del modelo cargado.
-- Documentación OpenAPI interactiva en `http://localhost:8000/docs`.
+## 3. Endpoints Principales
+- `POST /predict` — Inferencia individual y descomposición aditiva SHAP en vivo.
+- `GET /predict/demo-dataset` — Auditoría SHAP grupal e individual filtrada por subconjunto (`PREDICCION`, `ENTRENAMIENTO`, `TODOS`), estado y grupo homogéneo.
+- `POST /predict/upload-bundle` — Procesamiento nativo de lotes `.zip` (Shapefiles `.shp` y GeoTIFFs `.tif`) y `.csv`.
+- `GET /api/parcelas` — GeoJSON de las 197 parcelas enriquecido con telemetría 2025, proyecciones 2026 y explicabilidad SHAP.
+- `GET /health` — Estado del motor e inventario de fuentes activas.

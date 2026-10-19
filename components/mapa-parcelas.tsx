@@ -459,7 +459,7 @@ export default function MapaParcelas() {
   const [campana2026Data, setCampana2026Data] = useState<any | null>(null)
   const [campana2026Error, setCampana2026Error] = useState<string>('')
   const [campana2026Conjunto, setCampana2026Conjunto] = useState<'TODOS' | 'PREDICCION' | 'ENTRENAMIENTO'>('TODOS')
-  const [campana2026Estado, setCampana2026Estado] = useState<string>('todos')
+  const [campana2026Estado, setCampana2026Estado] = useState<string>('Puebla')
   const [campana2026Escenario, setCampana2026Escenario] = useState<'base_api' | 'humedo_favorable' | 'sequia_calor' | 'helada_abril'>('base_api')
   const [campana2026DeltaTemp, setCampana2026DeltaTemp] = useState<number>(0)
   const [campana2026DeltaLluvia, setCampana2026DeltaLluvia] = useState<number>(0)
@@ -480,9 +480,9 @@ export default function MapaParcelas() {
   const [todasLasParcelas, setTodasLasParcelas] = useState<ParcelaFeature[]>([])
 
   // Estado del Analista — Análisis por Grupos de Parcelas + SHAP Grupal
-  const [modoGrupoAnalista, setModoGrupoAnalista] = useState<'PREDICCION' | 'CASOS_PASO6' | 'ENTRENAMIENTO' | 'TODOS'>('PREDICCION')
+  const [modoGrupoAnalista, setModoGrupoAnalista] = useState<'PREDICCION' | 'CASOS_PASO6' | 'ENTRENAMIENTO' | 'TODOS'>('TODOS')
   const [filtroEstadoGrupo, setFiltroEstadoGrupo] = useState<string>('todos')
-  const [filtroMunicipioGrupo, setFiltroMunicipioGrupo] = useState<string>('todos')
+  const [filtroMunicipioGrupo, setFiltroMunicipioGrupo] = useState<string>('Singuilucan')
   const [filtroRendimientoGrupo, setFiltroRendimientoGrupo] = useState<string>('todos')
   const [filtroGrupoHomogeneo, setFiltroGrupoHomogeneo] = useState<string>('todos')
   const [parcelaDetalleGrupo, setParcelaDetalleGrupo] = useState<PrediccionItem | null>(null)
@@ -1391,13 +1391,13 @@ export default function MapaParcelas() {
     }
   }
 
-  // Cargar automáticamente el primer caso particular (AGC_003) y el grupo de prueba ciega al activar modo Analista
+  // Cargar automáticamente el primer caso particular (AGC_003) y el catálogo completo de parcelas al activar modo Analista
   useEffect(() => {
     if (perfilActivo === 'analista' && !analistaFullPred) {
       handleSeleccionarCasoParticular(selectedParcela?.id_poligono || 'AGC_003', false)
     }
     if (perfilActivo === 'analista' && !batchResult && !batchLoading) {
-      handleAnalizarGrupoParcelas('PREDICCION', 'todos', 'todos')
+      handleAnalizarGrupoParcelas('TODOS', 'todos', 'Singuilucan')
     }
   }, [perfilActivo])
 
@@ -3036,7 +3036,7 @@ export default function MapaParcelas() {
                 onClick={() => {
                   setSubPestanaAnalista('campana2026')
                   if (!campana2026Data) {
-                    ejecutarPrediccionCampana2026('TODOS', 'todos', 'base_api', 0, 0)
+                    ejecutarPrediccionCampana2026('TODOS', 'Puebla', 'base_api', 0, 0)
                   }
                 }}
                 className={`pb-3 px-4 text-xs sm:text-sm font-bold flex items-center gap-2 border-b-2 transition cursor-pointer ${
@@ -3640,57 +3640,29 @@ export default function MapaParcelas() {
                     </button>
                   </div>
 
-                  {/* Botones de Modo de Grupo */}
-                  <div className="flex flex-wrap gap-2 pt-1">
-                    {[
-                      { id: 'PREDICCION', label: 'Prueba Ciega · 59 Parcelas' },
-                      { id: 'ENTRENAMIENTO', label: 'Entrenamiento · 138 Parcelas' },
-                      { id: 'TODOS', label: 'Catálogo Completo · 197 Parcelas' },
-                    ].map((m) => {
-                      const active = modoGrupoAnalista === m.id
-                      return (
-                        <button
-                          key={m.id}
-                          type="button"
-                          onClick={() =>
-                            handleAnalizarGrupoParcelas(
-                              m.id as 'PREDICCION' | 'CASOS_PASO6' | 'ENTRENAMIENTO' | 'TODOS',
-                              filtroEstadoGrupo,
-                              filtroMunicipioGrupo,
-                              filtroRendimientoGrupo,
-                              filtroGrupoHomogeneo
-                            )
-                          }
-                          className={`px-3.5 py-2 rounded-xl text-xs font-bold border transition cursor-pointer flex items-center gap-1.5 ${
-                            active
-                              ? 'bg-sky-500/20 border-sky-400 text-white shadow-md'
-                              : 'bg-white/5 border-white/10 text-[#c9b7aa] hover:bg-white/10 hover:text-white'
-                          }`}
-                        >
-                          <span>{m.label}</span>
-                        </button>
-                      )
-                    })}
-                  </div>
-
-                  {/* Filtros por Estado, Municipio y Nivel de Rendimiento (Alto / Bajo) */}
+                  {/* Filtros en Cascada por Estado, Municipio y Nivel de Rendimiento (Alto / Bajo) */}
                   <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-1">
                     <select
                       aria-label="Filtrar grupo por Estado"
                       value={filtroEstadoGrupo}
                       onChange={(e) => {
                         const nuevoEst = e.target.value
+                        const munsDisponibles =
+                          nuevoEst !== 'todos'
+                            ? MUNICIPIOS_POR_ESTADO[nuevoEst] || []
+                            : Object.keys(MUNICIPIOS_DATA)
+                        const primerMun = munsDisponibles[0] || 'Singuilucan'
                         handleAnalizarGrupoParcelas(
-                          modoGrupoAnalista,
+                          'TODOS',
                           nuevoEst,
-                          'todos',
+                          primerMun,
                           filtroRendimientoGrupo,
                           filtroGrupoHomogeneo
                         )
                       }}
                       className="h-9 rounded-xl border border-white/15 bg-[#291e17] px-3 text-xs text-white outline-none focus:border-sky-400"
                     >
-                      <option value="todos">Estado: Todos</option>
+                      <option value="todos">Todos los Estados</option>
                       <option value="Puebla">Puebla</option>
                       <option value="Hidalgo">Hidalgo</option>
                       <option value="Tlaxcala">Tlaxcala</option>
@@ -3701,7 +3673,7 @@ export default function MapaParcelas() {
                       value={filtroMunicipioGrupo}
                       onChange={(e) =>
                         handleAnalizarGrupoParcelas(
-                          modoGrupoAnalista,
+                          'TODOS',
                           filtroEstadoGrupo,
                           e.target.value,
                           filtroRendimientoGrupo,
@@ -3710,7 +3682,6 @@ export default function MapaParcelas() {
                       }
                       className="h-9 rounded-xl border border-white/15 bg-[#291e17] px-3 text-xs text-white outline-none focus:border-sky-400"
                     >
-                      <option value="todos">Municipio: Todos</option>
                       {(filtroEstadoGrupo !== 'todos'
                         ? MUNICIPIOS_POR_ESTADO[filtroEstadoGrupo] || []
                         : Object.keys(MUNICIPIOS_DATA)
@@ -4180,7 +4151,7 @@ export default function MapaParcelas() {
                         type="button"
                         onClick={() =>
                           ejecutarPrediccionCampana2026(
-                            campana2026Conjunto,
+                            'TODOS',
                             campana2026Estado,
                             campana2026Escenario,
                             campana2026DeltaTemp,
@@ -4201,65 +4172,48 @@ export default function MapaParcelas() {
                         className="py-2.5 px-4 rounded-xl bg-sky-600/80 hover:bg-sky-600 text-white font-bold text-xs flex items-center gap-2 shadow-md transition cursor-pointer disabled:opacity-50"
                       >
                         <Download className="w-4 h-4" />
-                        <span>Exportar CSV 2026 ({campana2026Data?.total_parcelas ?? 197} Predios)</span>
+                        <span>Exportar CSV 2026</span>
                       </button>
                     </div>
                   </div>
 
-                  {/* Controles de Alcance, Estado y Escenario Climático/Satelital 2026 */}
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                    {/* Selector de Universo de Parcelas */}
-                    <label className="flex flex-col gap-1.5 text-xs text-[#c9b7aa]">
-                      <span className="font-semibold text-white">1. Universo de Parcelas a Predecir:</span>
-                      <select
-                        value={campana2026Conjunto}
-                        onChange={(e) => {
-                          const val = e.target.value as 'TODOS' | 'PREDICCION' | 'ENTRENAMIENTO'
-                          ejecutarPrediccionCampana2026(val, campana2026Estado, campana2026Escenario, campana2026DeltaTemp, campana2026DeltaLluvia)
-                        }}
-                        className="h-10 rounded-xl border border-white/15 bg-[#291e17] px-3 text-xs text-white outline-none focus:border-[#e2b957]"
-                      >
-                        <option value="TODOS">Universo Total: 197 Parcelas (138 Train + 59 Test)</option>
-                        <option value="PREDICCION">Solo 59 Parcelas Ocultas (Conjunto PREDICCIÓN)</option>
-                        <option value="ENTRENAMIENTO">Solo 138 Parcelas con Cosecha 2025 (ENTRENAMIENTO)</option>
-                      </select>
-                    </label>
-
+                  {/* Controles de Entidad Federativa y Escenario Climático/Satelital 2026 */}
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     {/* Selector de Estado */}
                     <label className="flex flex-col gap-1.5 text-xs text-[#c9b7aa]">
-                      <span className="font-semibold text-white">2. Filtrar por Entidad Federativa:</span>
+                      <span className="font-semibold text-white">1. Filtrar por Entidad Federativa:</span>
                       <select
                         value={campana2026Estado}
                         onChange={(e) => {
                           const val = e.target.value
-                          ejecutarPrediccionCampana2026(campana2026Conjunto, val, campana2026Escenario, campana2026DeltaTemp, campana2026DeltaLluvia)
+                          ejecutarPrediccionCampana2026('TODOS', val, campana2026Escenario, campana2026DeltaTemp, campana2026DeltaLluvia)
                         }}
                         className="h-10 rounded-xl border border-white/15 bg-[#291e17] px-3 text-xs text-white outline-none focus:border-[#e2b957]"
                       >
-                        <option value="todos">Todos los Estados (Hidalgo, Puebla, Tlaxcala)</option>
-                        <option value="Puebla">Puebla · Chignahuapan (100 parcelas)</option>
-                        <option value="Hidalgo">Hidalgo · Valle de Apan / Singuilucan (51 parcelas)</option>
-                        <option value="Tlaxcala">Tlaxcala · Calpulalpan / Nanacamilpa (46 parcelas)</option>
+                        <option value="todos">Todos los Estados</option>
+                        <option value="Puebla">Puebla</option>
+                        <option value="Hidalgo">Hidalgo</option>
+                        <option value="Tlaxcala">Tlaxcala</option>
                       </select>
                     </label>
 
                     {/* Selector de Escenario Agroclimático 2026 */}
                     <label className="flex flex-col gap-1.5 text-xs text-[#c9b7aa]">
-                      <span className="font-semibold text-white">3. Escenario Climático y Satelital 2026:</span>
+                      <span className="font-semibold text-white">2. Escenario Climático y Satelital 2026:</span>
                       <select
                         value={campana2026Escenario}
                         onChange={(e) => {
                           const esc = e.target.value as 'base_api' | 'humedo_favorable' | 'sequia_calor' | 'helada_abril'
                           const dT = esc === 'humedo_favorable' ? -0.3 : esc === 'sequia_calor' ? 1.1 : esc === 'helada_abril' ? -1.2 : 0
                           const dL = esc === 'humedo_favorable' ? 15 : esc === 'sequia_calor' ? -18 : esc === 'helada_abril' ? -5 : 0
-                          ejecutarPrediccionCampana2026(campana2026Conjunto, campana2026Estado, esc, dT, dL)
+                          ejecutarPrediccionCampana2026('TODOS', campana2026Estado, esc, dT, dL)
                         }}
                         className="h-10 rounded-xl border border-white/15 bg-[#291e17] px-3 text-xs text-white outline-none focus:border-[#e2b957]"
                       >
-                        <option value="base_api">Pronóstico Oficial API 2026 (OpenWeather / Open-Meteo + INEGI)</option>
-                        <option value="humedo_favorable">Escenario Húmedo Favorable (+15% lluvia / confort térmico)</option>
-                        <option value="sequia_calor">Escenario Sequía Moderada y Calor (+1.1°C / -18% lluvia)</option>
-                        <option value="helada_abril">Escenario Helada Tardía en Abril (-1.2°C Tmin Abril)</option>
+                        <option value="base_api">Pronóstico Oficial API 2026</option>
+                        <option value="humedo_favorable">Escenario Húmedo Favorable</option>
+                        <option value="sequia_calor">Escenario Sequía Moderada y Calor</option>
+                        <option value="helada_abril">Escenario Helada Tardía en Abril</option>
                       </select>
                     </label>
                   </div>
@@ -4268,7 +4222,7 @@ export default function MapaParcelas() {
                   <div className="p-4 rounded-xl bg-black/30 border border-white/10 grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
                       <div className="flex items-center justify-between text-xs mb-1">
-                        <span className="text-[#c9b7aa] font-medium">Ajuste Térmico Campaña 2026 (ΔT °C):</span>
+                        <span className="text-[#c9b7aa] font-medium">Ajuste Térmico Campaña 2026:</span>
                         <span className="font-mono font-bold text-amber-300">
                           {campana2026DeltaTemp >= 0 ? '+' : ''}
                           {campana2026DeltaTemp.toFixed(1)} °C
@@ -4286,7 +4240,7 @@ export default function MapaParcelas() {
                         }}
                         onMouseUp={() =>
                           ejecutarPrediccionCampana2026(
-                            campana2026Conjunto,
+                            'TODOS',
                             campana2026Estado,
                             campana2026Escenario,
                             campana2026DeltaTemp,
@@ -4299,7 +4253,7 @@ export default function MapaParcelas() {
 
                     <div>
                       <div className="flex items-center justify-between text-xs mb-1">
-                        <span className="text-[#c9b7aa] font-medium">Ajuste Precipitación / Humedad S2 2026 (Δ%):</span>
+                        <span className="text-[#c9b7aa] font-medium">Ajuste Precipitación / Humedad S2 2026:</span>
                         <span className="font-mono font-bold text-sky-300">
                           {campana2026DeltaLluvia >= 0 ? '+' : ''}
                           {campana2026DeltaLluvia}%
@@ -4317,7 +4271,7 @@ export default function MapaParcelas() {
                         }}
                         onMouseUp={() =>
                           ejecutarPrediccionCampana2026(
-                            campana2026Conjunto,
+                            'TODOS',
                             campana2026Estado,
                             campana2026Escenario,
                             campana2026DeltaTemp,
